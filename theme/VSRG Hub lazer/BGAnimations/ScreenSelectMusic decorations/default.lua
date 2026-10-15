@@ -53,10 +53,17 @@ local board = Def.ActorFrame {
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Board") end,
 	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" or TW.rankSource == "hub" then self:queuecommand("Board") end end,
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
-	LoginMessageCommand = function(self) self:queuecommand("Board") end,
-	LogOutMessageCommand = function(self) self:queuecommand("Board") end,
+	LoginMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
+	LogOutMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
 	OnCommand = function(self) self:queuecommand("Board") end,
 	BoardCommand = function(self)
+		-- (the same chart again, e.g. the game's song put back to the picked one after a scroll: the
+		-- board stays as it is instead of loading over)
+		local ck = ""
+		pcall(function() ck = GAMESTATE:GetCurrentSteps():GetChartKey() end)
+		local sig = ck .. "|" .. tostring(TW.rankSource) .. "|" .. tostring(getCurRateValue())
+		if sig == self.boardSig and ck ~= "" then return end
+		self.boardSig = sig
 		self:stoptweening()
 		if TW.rankSource == "hub" and TW.hubRanking then
 			fillBoard(self, {}, "loading", allScores()[1], nil)

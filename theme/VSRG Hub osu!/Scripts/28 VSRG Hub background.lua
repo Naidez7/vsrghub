@@ -98,6 +98,9 @@ function TW.songBackground(o)
 			want = s:GetBackgroundPath() or nil
 			if want == "" then want = nil end
 			if not want then return end
+			-- (the same picture again, e.g. the game's song put back to the picked one after a
+			-- scroll: nothing to do, or it would fade in over itself)
+			if want == self.shownPath then return end
 			self.changedAt = GetTimeSinceStart()
 			-- a full-size picture is only loaded once the list rests on the song: while it runs
 			-- past songs (a long spin of the mouse wheel), loading each one's picture made it stutter
