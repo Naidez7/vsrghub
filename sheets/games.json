@@ -1,0 +1,75 @@
+{
+ "sheet": "games",
+ "columns": [
+  "id",
+  "name",
+  "meltySlug",
+  "role",
+  "engine",
+  "language",
+  "argFlag",
+  "folderToken",
+  "contentRoot",
+  "contentRootConfig",
+  "brings",
+  "verified"
+ ],
+ "rows": [
+  {
+   "id": "etterna",
+   "name": "Etterna",
+   "meltySlug": "custom-etterna",
+   "role": "primary",
+   "engine": "StepMania 5 fork (RageFile VFS, Lua themes)",
+   "language": "C++",
+   "argFlag": "--etterna",
+   "folderToken": "{game}",
+   "contentRoot": "Program/Etterna.exe",
+   "contentRootConfig": "none",
+   "brings": "the wheel, judging, MSD ratings, profile and scores",
+   "verified": "ETTERNA_ADDITIONAL_SONG_DIRS string present in Program/Etterna.exe; mounts at /AdditionalSongs (src/Etterna/Globals/StepMania.cpp)"
+  },
+  {
+   "id": "quaver",
+   "name": "Quaver",
+   "meltySlug": "custom-quaver",
+   "role": "secondary",
+   "engine": "Wobble on MonoGame",
+   "language": "C#",
+   "argFlag": "--quaver",
+   "folderToken": "{game:custom-quaver}",
+   "contentRoot": "Songs",
+   "contentRootConfig": "quaver.cfg:SongDirectory",
+   "brings": "its map sets (.qua charts, audio, backgrounds, banners, preview times)",
+   "verified": "quaver.cfg has SongDirectory; Songs/<set>/*.qua YAML with AudioFile, BackgroundFile, SongPreviewTime, Mode, TimingPoints, HitObjects"
+  },
+  {
+   "id": "qwilight",
+   "name": "Qwilight",
+   "meltySlug": "custom-qwilight",
+   "role": "secondary",
+   "engine": "WinUI 3 / .NET",
+   "language": "C#",
+   "argFlag": "--qwilight",
+   "folderToken": "{game:custom-qwilight}",
+   "contentRoot": "SavesDir/Bundle",
+   "contentRootConfig": "none",
+   "brings": "its BMS bundles (keysounded .bms/.bme/.bml/.pms, stage files, banners, BGA, previews)",
+   "verified": "SavesDir/Bundle/<song>/*.bms|*.bme on this PC; Etterna's own NotesLoaderBMS reads them with keysounds"
+  },
+  {
+   "id": "osu",
+   "name": "osu!",
+   "meltySlug": "custom-osu",
+   "role": "secondary",
+   "engine": "osu!framework-less stable client (.NET Framework)",
+   "language": "C#",
+   "argFlag": "--osu",
+   "folderToken": "{game:custom-osu}",
+   "contentRoot": "Songs",
+   "contentRootConfig": "osu!.<user>.cfg:BeatmapDirectory, Skin",
+   "brings": "its osu!mania beatmaps, its skins (noteskins, judgments, fonts, menus, cursor, ranking letters)",
+   "verified": "osu!.<user>.cfg and Skins/ in the player's osu! folder; .osu v14 text format with [Mania] skin.ini sections"
+  }
+ ]
+}

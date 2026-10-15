@@ -1,0 +1,623 @@
+{
+  "sheet": "theme_elements",
+  "columns": [
+    "id",
+    "candidates",
+    "iniKey",
+    "usedBy"
+  ],
+  "rows": [
+    {
+      "id": "judge_W1",
+      "candidates": "mania-hit300g|hit300g|hit300",
+      "iniKey": "Mania4:Hit300g",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "judge_W2",
+      "candidates": "mania-hit300|hit300",
+      "iniKey": "Mania4:Hit300",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "judge_W3",
+      "candidates": "mania-hit200|hit100k|hit100",
+      "iniKey": "Mania4:Hit200",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "judge_W4",
+      "candidates": "mania-hit100|hit100",
+      "iniKey": "Mania4:Hit100",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "judge_W5",
+      "candidates": "mania-hit50|hit50",
+      "iniKey": "Mania4:Hit50",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "judge_Miss",
+      "candidates": "mania-hit0|hit0",
+      "iniKey": "Mania4:Hit0",
+      "usedBy": "Graphics/Player judgment"
+    },
+    {
+      "id": "combo_0",
+      "candidates": "{ComboPrefix}-0",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_1",
+      "candidates": "{ComboPrefix}-1",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_2",
+      "candidates": "{ComboPrefix}-2",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_3",
+      "candidates": "{ComboPrefix}-3",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_4",
+      "candidates": "{ComboPrefix}-4",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_5",
+      "candidates": "{ComboPrefix}-5",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_6",
+      "candidates": "{ComboPrefix}-6",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_7",
+      "candidates": "{ComboPrefix}-7",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_8",
+      "candidates": "{ComboPrefix}-8",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "combo_9",
+      "candidates": "{ComboPrefix}-9",
+      "iniKey": "Fonts:ComboPrefix",
+      "usedBy": "Graphics/Player combo"
+    },
+    {
+      "id": "score_0",
+      "candidates": "{ScorePrefix}-0",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_1",
+      "candidates": "{ScorePrefix}-1",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_2",
+      "candidates": "{ScorePrefix}-2",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_3",
+      "candidates": "{ScorePrefix}-3",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_4",
+      "candidates": "{ScorePrefix}-4",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_5",
+      "candidates": "{ScorePrefix}-5",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_6",
+      "candidates": "{ScorePrefix}-6",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_7",
+      "candidates": "{ScorePrefix}-7",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_8",
+      "candidates": "{ScorePrefix}-8",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_9",
+      "candidates": "{ScorePrefix}-9",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_dot",
+      "candidates": "{ScorePrefix}-dot",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_percent",
+      "candidates": "{ScorePrefix}-percent",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_comma",
+      "candidates": "{ScorePrefix}-comma",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "score_x",
+      "candidates": "{ScorePrefix}-x",
+      "iniKey": "Fonts:ScorePrefix",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "scorebar_bg",
+      "candidates": "scorebar-bg",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "scorebar_colour",
+      "candidates": "scorebar-colour",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay overlay; LifeP1 metric"
+    },
+    {
+      "id": "songpanel",
+      "candidates": "menu-button-background",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem NormalPart; ScreenTitleMenu scroll"
+    },
+    {
+      "id": "menu_bg",
+      "candidates": "menu-background",
+      "iniKey": "none",
+      "usedBy": "ScreenTitleMenu underlay"
+    },
+    {
+      "id": "menu_back",
+      "candidates": "menu-back",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_mode",
+      "candidates": "selection-mode",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_mode_over",
+      "candidates": "selection-mode-over",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_mods",
+      "candidates": "selection-mods",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_mods_over",
+      "candidates": "selection-mods-over",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_random",
+      "candidates": "selection-random",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_random_over",
+      "candidates": "selection-random-over",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_options",
+      "candidates": "selection-options",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "sel_options_over",
+      "candidates": "selection-options-over",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "cursor",
+      "candidates": "cursor",
+      "iniKey": "none",
+      "usedBy": "ScreenSystemLayer overlay"
+    },
+    {
+      "id": "rank_X",
+      "candidates": "ranking-X",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_S",
+      "candidates": "ranking-S",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_A",
+      "candidates": "ranking-A",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_B",
+      "candidates": "ranking-B",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_C",
+      "candidates": "ranking-C",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_D",
+      "candidates": "ranking-D",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "star",
+      "candidates": "star",
+      "iniKey": "none",
+      "usedBy": "wheel panels; info bar"
+    },
+    {
+      "id": "songselect_top",
+      "candidates": "songselect-top",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic decorations"
+    },
+    {
+      "id": "mode_icon",
+      "candidates": "mode-mania-small|mode-mania",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic decorations"
+    },
+    {
+      "id": "mode_icon_med",
+      "candidates": "mode-mania-med|mode-mania-small|mode-mania",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "mod_nofail",
+      "candidates": "selection-mod-nofail",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_halftime",
+      "candidates": "selection-mod-halftime",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_doubletime",
+      "candidates": "selection-mod-doubletime",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_hidden",
+      "candidates": "selection-mod-hidden",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_fadein",
+      "candidates": "selection-mod-fadein",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_mirror",
+      "candidates": "selection-mod-mirror",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_random",
+      "candidates": "selection-mod-random",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "stage_left",
+      "candidates": "mania-stage-left",
+      "iniKey": "Mania4:StageLeft",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "stage_right",
+      "candidates": "mania-stage-right",
+      "iniKey": "Mania4:StageRight",
+      "usedBy": "ScreenGameplay overlay"
+    },
+    {
+      "id": "stage_bottom",
+      "candidates": "mania-stage-bottom",
+      "iniKey": "Mania4:StageBottom",
+      "usedBy": "ScreenGameplay overlay (lane cover)"
+    },
+    {
+      "id": "ranking_panel",
+      "candidates": "ranking-panel",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "ranking_title",
+      "candidates": "ranking-title",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "ranking_maxcombo",
+      "candidates": "ranking-maxcombo",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "ranking_accuracy",
+      "candidates": "ranking-accuracy",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "rank_X_small",
+      "candidates": "ranking-X-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_S_small",
+      "candidates": "ranking-S-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_A_small",
+      "candidates": "ranking-A-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_B_small",
+      "candidates": "ranking-B-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_C_small",
+      "candidates": "ranking-C-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_D_small",
+      "candidates": "ranking-D-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "songselect_bottom",
+      "candidates": "songselect-bottom",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic overlay"
+    },
+    {
+      "id": "selection_tab",
+      "candidates": "selection-tab",
+      "iniKey": "none",
+      "usedBy": "ScreenSelectMusic decorations"
+    },
+    {
+      "id": "btn_left",
+      "candidates": "button-left",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "btn_middle",
+      "candidates": "button-middle",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "btn_right",
+      "candidates": "button-right",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_easy",
+      "candidates": "selection-mod-easy",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_hardrock",
+      "candidates": "selection-mod-hardrock",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_suddendeath",
+      "candidates": "selection-mod-suddendeath",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_nightcore",
+      "candidates": "selection-mod-nightcore",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_flashlight",
+      "candidates": "selection-mod-flashlight",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_autoplay",
+      "candidates": "selection-mod-autoplay",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "mod_perfect",
+      "candidates": "selection-mod-perfect",
+      "iniKey": "none",
+      "usedBy": "mod select panel"
+    },
+    {
+      "id": "ranking_graph",
+      "candidates": "ranking-graph",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "ranking_perfect",
+      "candidates": "ranking-perfect",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "ranking_retry",
+      "candidates": "ranking-retry",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "ranking_replay",
+      "candidates": "ranking-replay",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation overlay"
+    },
+    {
+      "id": "rank_XH",
+      "candidates": "ranking-XH",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "rank_SH",
+      "candidates": "ranking-SH",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation decorations"
+    },
+    {
+      "id": "rank_XH_small",
+      "candidates": "ranking-XH-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "rank_SH_small",
+      "candidates": "ranking-SH-small",
+      "iniKey": "none",
+      "usedBy": "MusicWheelItem grades"
+    },
+    {
+      "id": "pause_overlay",
+      "candidates": "pause-overlay",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay pause"
+    },
+    {
+      "id": "pause_continue",
+      "candidates": "pause-continue",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay pause"
+    },
+    {
+      "id": "pause_retry",
+      "candidates": "pause-retry",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay pause"
+    },
+    {
+      "id": "pause_back",
+      "candidates": "pause-back",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay pause"
+    },
+    {
+      "id": "play_skip",
+      "candidates": "play-skip",
+      "iniKey": "none",
+      "usedBy": "ScreenGameplay intro skip"
+    },
+    {
+      "id": "cursor_middle",
+      "candidates": "cursormiddle",
+      "iniKey": "none",
+      "usedBy": "ScreenSystemLayer overlay"
+    },
+    {
+      "id": "cursor_trail",
+      "candidates": "cursortrail",
+      "iniKey": "none",
+      "usedBy": "ScreenSystemLayer overlay"
+    },
+    {
+      "id": "ranking_bg_overlay",
+      "candidates": "ranking-background-overlay",
+      "iniKey": "none",
+      "usedBy": "ScreenEvaluation underlay"
+    }
+  ]
+}

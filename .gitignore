@@ -1,0 +1,4 @@
+dist/
+/triwheel
+cmd/triwheel/triwheel
+*.syso.bak

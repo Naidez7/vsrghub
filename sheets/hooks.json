@@ -1,0 +1,117 @@
+{
+ "sheet": "hooks",
+ "columns": [
+  "id",
+  "kind",
+  "target",
+  "value",
+  "game",
+  "reversible"
+ ],
+ "rows": [
+  {
+   "id": "library-root",
+   "kind": "folder",
+   "target": "{game}/Save/VSRGHub/Library",
+   "value": "generated .sm files and junctions only",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "song-dirs-env",
+   "kind": "env",
+   "target": "ETTERNA_ADDITIONAL_SONG_DIRS",
+   "value": "library-root (appended to any existing value with ;)",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "quaver-group",
+   "kind": "folder",
+   "target": "Library/Quaver/<set>/",
+   "value": "<set>.sm + junction src -> quaver Songs/<set>",
+   "game": "quaver",
+   "reversible": true
+  },
+  {
+   "id": "qwilight-group",
+   "kind": "junction",
+   "target": "Library/Qwilight/<song>",
+   "value": "-> qwilight SavesDir/Bundle/<song>",
+   "game": "qwilight",
+   "reversible": true
+  },
+  {
+   "id": "qwilight-pack-group",
+   "kind": "junction",
+   "target": "Library/Qwilight - <pack>",
+   "value": "-> qwilight SavesDir/Bundle/<pack> (folders of song folders)",
+   "game": "qwilight",
+   "reversible": true
+  },
+  {
+   "id": "launch-etterna",
+   "kind": "process",
+   "target": "{game}/Program/Etterna.exe",
+   "value": "cwd {game}/Program; wait for exit",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "log",
+   "kind": "file",
+   "target": "{game}/VSRGHub/vsrghub.log",
+   "value": "what was found, converted, skipped",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "osu-group",
+   "kind": "folder",
+   "target": "Library/osu!/<song>/",
+   "value": "<song>.sm + junction src -> osu! Songs/<set>",
+   "game": "osu",
+   "reversible": true
+  },
+  {
+   "id": "root-dirs-env",
+   "kind": "env",
+   "target": "ETTERNA_ADDITIONAL_ROOT_DIRS",
+   "value": "{game}/VSRGHub/Root (theme, noteskins, Data/Static.ini)",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "static-ini",
+   "kind": "file",
+   "target": "Root/Data/Static.ini",
+   "value": "[Options] Theme=VSRG Hub osu! (static: never saved to Preferences.ini)",
+   "game": "etterna",
+   "reversible": true
+  },
+  {
+   "id": "theme-skin",
+   "kind": "junction",
+   "target": "Root/Themes/VSRG Hub osu!/skin",
+   "value": "-> osu! Skins/<current skin> + Scripts/00 VSRG Hub skin.lua",
+   "game": "osu",
+   "reversible": true
+  },
+  {
+   "id": "noteskins",
+   "kind": "folder",
+   "target": "Root/NoteSkins/<dance|kb7>/<osu!|Quaver> <skin>/",
+   "value": "NoteSkin.lua + metrics.ini + junction src -> skin folder",
+   "game": "osu",
+   "reversible": true
+  },
+  {
+   "id": "theme-pref-restore",
+   "kind": "file",
+   "target": "{game}/Save/Preferences.ini",
+   "value": "after Etterna exits, put back the player's own Theme= line (Etterna drops static prefs when saving)",
+   "game": "etterna",
+   "reversible": true
+  }
+ ]
+}

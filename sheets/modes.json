@@ -1,0 +1,104 @@
+{
+ "sheet": "modes",
+ "columns": [
+  "id",
+  "source",
+  "sourceMode",
+  "lanes",
+  "etternaStepsType",
+  "etternaGame",
+  "rated",
+  "handledBy",
+  "action"
+ ],
+ "rows": [
+  {
+   "id": "quaver-4k",
+   "source": "quaver",
+   "sourceMode": "Keys4",
+   "lanes": 4,
+   "etternaStepsType": "dance-single",
+   "etternaGame": "dance",
+   "rated": true,
+   "handledBy": "triwheel .sm writer",
+   "action": "convert"
+  },
+  {
+   "id": "quaver-7k",
+   "source": "quaver",
+   "sourceMode": "Keys7",
+   "lanes": 7,
+   "etternaStepsType": "kb7-single",
+   "etternaGame": "kb7",
+   "rated": true,
+   "handledBy": "triwheel .sm writer",
+   "action": "convert"
+  },
+  {
+   "id": "quaver-7k-scratch",
+   "source": "quaver",
+   "sourceMode": "Keys7+HasScratchKey",
+   "lanes": 8,
+   "etternaStepsType": "none",
+   "etternaGame": "none",
+   "rated": false,
+   "handledBy": "triwheel .sm writer",
+   "action": "skip"
+  },
+  {
+   "id": "qwilight-4k",
+   "source": "qwilight",
+   "sourceMode": "BMS 4 lanes",
+   "lanes": 4,
+   "etternaStepsType": "dance-single",
+   "etternaGame": "dance",
+   "rated": true,
+   "handledBy": "Etterna NotesLoaderBMS",
+   "action": "mount"
+  },
+  {
+   "id": "qwilight-7k",
+   "source": "qwilight",
+   "sourceMode": "BMS 7 keys, no turntable",
+   "lanes": 7,
+   "etternaStepsType": "kb7-single",
+   "etternaGame": "kb7",
+   "rated": true,
+   "handledBy": "Etterna NotesLoaderBMS",
+   "action": "mount"
+  },
+  {
+   "id": "qwilight-7k-scratch",
+   "source": "qwilight",
+   "sourceMode": "BMS 7 keys + turntable",
+   "lanes": 8,
+   "etternaStepsType": "beat-single7",
+   "etternaGame": "beat",
+   "rated": false,
+   "handledBy": "Etterna NotesLoaderBMS",
+   "action": "mount"
+  },
+  {
+   "id": "osu-4k",
+   "source": "osu",
+   "sourceMode": "Keys4",
+   "lanes": 4,
+   "etternaStepsType": "dance-single",
+   "etternaGame": "dance",
+   "rated": true,
+   "handledBy": "triwheel .sm writer",
+   "action": "convert"
+  },
+  {
+   "id": "osu-7k",
+   "source": "osu",
+   "sourceMode": "Keys7",
+   "lanes": 7,
+   "etternaStepsType": "kb7-single",
+   "etternaGame": "kb7",
+   "rated": true,
+   "handledBy": "triwheel .sm writer",
+   "action": "convert"
+  }
+ ]
+}

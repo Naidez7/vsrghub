@@ -1,0 +1,61 @@
+{
+ "sheet": "noteskin_elements",
+ "columns": [
+  "id",
+  "etternaElement",
+  "osuSource",
+  "quaverSource",
+  "drawnAs"
+ ],
+ "rows": [
+  {
+   "id": "tap",
+   "etternaElement": "Tap Note / Tap Lift / Tap Fake",
+   "osuSource": "NoteImage{i} | mania-note{p}",
+   "quaverSource": "7k/HitObjects/note-hitobject-{n}",
+   "drawnAs": "sprite, width 64"
+  },
+  {
+   "id": "head",
+   "etternaElement": "Hold Head Active/Inactive",
+   "osuSource": "NoteImage{i}H | mania-note{p}H",
+   "quaverSource": "7k/HitObjects/note-holdhitobject-{n}",
+   "drawnAs": "sprite, else tap"
+  },
+  {
+   "id": "body",
+   "etternaElement": "Hold Body Active/Inactive",
+   "osuSource": "NoteImage{i}L | mania-note{p}L",
+   "quaverSource": "7k/HitObjects/note-holdbody-{n}",
+   "drawnAs": "sprite tiled by Etterna"
+  },
+  {
+   "id": "tail",
+   "etternaElement": "Hold BottomCap Active/Inactive",
+   "osuSource": "NoteImage{i}T | mania-note{p}T",
+   "quaverSource": "7k/HitObjects/note-holdend-{n}",
+   "drawnAs": "sprite, flipped for upscroll; blank if missing"
+  },
+  {
+   "id": "caps",
+   "etternaElement": "Hold TopCap / Hold Tail",
+   "osuSource": "(none)",
+   "quaverSource": "(none)",
+   "drawnAs": "blank"
+  },
+  {
+   "id": "receptor",
+   "etternaElement": "Receptor",
+   "osuSource": "KeyImage{i} + KeyImage{i}D | mania-key{p}(D)",
+   "quaverSource": "7k/Receptors/receptor-up-{n} + receptor-down-{n}",
+   "drawnAs": "idle sprite, pressed sprite on Press"
+  },
+  {
+   "id": "rest",
+   "etternaElement": "Explosions, mines",
+   "osuSource": "(none)",
+   "quaverSource": "(none)",
+   "drawnAs": "Etterna common noteskin"
+  }
+ ]
+}

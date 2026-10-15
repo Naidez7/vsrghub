@@ -1,0 +1,18 @@
+{
+  "sheet": "fields",
+  "columns": ["id", "source", "sourceField", "etternaTag", "transform", "required"],
+  "rows": [
+    {"id": "q-title", "source": "quaver", "sourceField": "Title", "etternaTag": "#TITLE", "transform": "as is", "required": true},
+    {"id": "q-artist", "source": "quaver", "sourceField": "Artist", "etternaTag": "#ARTIST", "transform": "as is", "required": true},
+    {"id": "q-badge", "source": "quaver", "sourceField": "(constant)", "etternaTag": "#SUBTITLE", "transform": "\"[Quaver]\"", "required": true},
+    {"id": "q-creator", "source": "quaver", "sourceField": "Creator", "etternaTag": "#CREDIT / chart author", "transform": "as is", "required": false},
+    {"id": "q-music", "source": "quaver", "sourceField": "AudioFile", "etternaTag": "#MUSIC", "transform": "src/<file> through the set junction", "required": true},
+    {"id": "q-bg", "source": "quaver", "sourceField": "BackgroundFile", "etternaTag": "#BACKGROUND", "transform": "src/<file>, most common in the song group", "required": false},
+    {"id": "q-banner", "source": "quaver", "sourceField": "BannerFile", "etternaTag": "#BANNER", "transform": "src/<file>, else the background", "required": false},
+    {"id": "q-preview", "source": "quaver", "sourceField": "SongPreviewTime", "etternaTag": "#SAMPLESTART", "transform": "ms / 1000", "required": false},
+    {"id": "q-diffname", "source": "quaver", "sourceField": "DifficultyName", "etternaTag": "#NOTES description", "transform": "as is; slot by note density", "required": true},
+    {"id": "q-timing", "source": "quaver", "sourceField": "TimingPoints", "etternaTag": "#OFFSET + #BPMS", "transform": "ms -> beats, first point is beat 0", "required": true},
+    {"id": "q-notes", "source": "quaver", "sourceField": "HitObjects", "etternaTag": "#NOTES data", "transform": "ms -> 48 rows/beat; EndTime -> hold 2..3", "required": true},
+    {"id": "w-all", "source": "qwilight", "sourceField": "BMS headers + channels", "etternaTag": "Etterna NotesLoaderBMS", "transform": "read in place through a junction", "required": true}
+  ]
+}
