@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.36",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.36.zip",
- "sha256": "5d58eec96336850846775a997cee1e5db96e76f10e6f0bd3deaf9ef424e28303",
- "notes": "- **Fixed: the launcher said a new version was out but showed no Update button** when Etterna had an older VSRG Hub that doesn't say which version it is (beta.20 and earlier). The Update button now always shows when there's a newer version, and the big button says UPDATE whenever Etterna's VSRG Hub isn't the launcher's version.",
+ "version": "1.8.0-beta.37",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.37.zip",
+ "sha256": "069d8b778e3694ad873906b8b97b5349ebbe72dbc3a213a8ae32f553d60cae44",
+ "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it.",
  "latest": {
-  "version": "1.8.0-beta.36",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.36.zip",
-  "sha256": "5d58eec96336850846775a997cee1e5db96e76f10e6f0bd3deaf9ef424e28303",
-  "notes": "- **Fixed: the launcher said a new version was out but showed no Update button** when Etterna had an older VSRG Hub that doesn't say which version it is (beta.20 and earlier). The Update button now always shows when there's a newer version, and the big button says UPDATE whenever Etterna's VSRG Hub isn't the launcher's version."
+  "version": "1.8.0-beta.37",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.37.zip",
+  "sha256": "069d8b778e3694ad873906b8b97b5349ebbe72dbc3a213a8ae32f553d60cae44",
+  "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.37",
+   "date": "2026-10-15",
+   "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it."
+  },
   {
    "version": "1.8.0-beta.36",
    "date": "2026-10-15",
