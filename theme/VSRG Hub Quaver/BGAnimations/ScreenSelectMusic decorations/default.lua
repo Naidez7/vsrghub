@@ -250,5 +250,6 @@ t[#t + 1] = Def.ActorFrame {
 -- (your older plays for VSRG Hub's ranking, when asked: 28 VSRG Hub online.lua)
 root[#root + 1] = TW.backfillActor and TW.backfillActor() or Def.Actor {}
 root[#root + 1] = TW.osuPlaysActor and TW.osuPlaysActor() or Def.Actor {}
+root[#root + 1] = TW.hubPlaceWatch and TW.hubPlaceWatch() or Def.Actor {}
 root[#root + 1] = TW.danOverlay("ScreenSelectMusic decorations/dan_overlay_bridge.lua")
 return root

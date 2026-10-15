@@ -302,6 +302,9 @@ function TW.hubResultLine(x, y, textFn)
 						line = line .. "   #" .. np
 						if op > 0 and op ~= np then line = line .. string.format(" (%s%d)", op > np and "+" or "-", math.abs(op - np)) end
 					end
+					-- (and your place on this chart, among everyone's best on it)
+					local cp = tonumber(f[7]) or 0
+					if cp > 0 then line = line .. string.format("   #%d on this chart", cp) end
 					t:settext(line)
 				else
 					t:settext("VSRG Hub didn't take this play: " .. (f[2] or ""))
@@ -322,6 +325,28 @@ function TW.hubResultLine(x, y, textFn)
 				p:GetChild("Bg"):zoomto(t:GetZoomedWidth() + 28, t:GetZoomedHeight() + 12)
 			end)
 		end },
+	}
+end
+
+-- "someone passed you": your 4K / 7K places are kept between starts (settings hubPlace4 / 7) and
+-- compared with me.txt's when song select comes up; a drop is told once
+function TW.hubPlaceWatch()
+	return Def.Actor {
+		OnCommand = function(self) self:sleep(2):queuecommand("Look") end,
+		LookCommand = function(self)
+			local me = TW.hubMe()
+			if not me or not TW.settings then return end
+			for _, k in ipairs({ 4, 7 }) do
+				local now = k == 4 and me.p4 or me.p7
+				local was = tonumber(TW.settings["hubPlace" .. k] or "") or 0
+				if now and now > 0 then
+					if was > 0 and now > was then
+						SCREENMAN:SystemMessage(string.format("Someone passed you in %dK on VSRG Hub's ranking: you're #%d now (were #%d)", k, now, was))
+					end
+					if now ~= was then pcall(function() TW.saveSetting("hubPlace" .. k, tostring(now)) end) end
+				end
+			end
+		end,
 	}
 end
 

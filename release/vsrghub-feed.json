@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.53",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.53.zip",
- "sha256": "a249affc9f24c719a5fc85ce531b4d02ef7935e95f41c60ce77e361817d24851",
- "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one).",
+ "version": "1.8.0-beta.54",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.54.zip",
+ "sha256": "1e7bb7a8a6ef1ea34779cb9c975bfa8d71b7fc18349ae1f0324b532e02e58dbd",
+ "notes": "- **Rankings on the web:** rankings, profiles (with pins, pictures and the rating graph), each chart's top, and a page to compare two players, at https://naidez7.github.io/vsrghub/rankings.html (once the site is turned on). Share a profile by link.\n- **Best plays per game:** on a profile, Best 4K / 7K can be narrowed to Etterna, osu!, lazer or Quaver plays.\n- **Results screen:** after a play, your place on that chart too.\n- **\"Someone passed you\":** when song select comes up and your 4K or 7K place dropped since last time, the game says so.\n- **Sending plays no longer gets stuck** on \"statement timeout\": the server checks replays much faster and the launcher sends smaller batches (and smaller still if the server is slow).\n- **Quaver dates** are read from the replay's own clock; plays sent with the wrong date get their real one the next time you press \"Send my osu! / Quaver plays again\".\n- The launcher says when the server is behind (its v2.sql needs running) instead of failing quietly, and the server caps how many scores one player can send in ten minutes.",
  "latest": {
-  "version": "1.8.0-beta.53",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.53.zip",
-  "sha256": "a249affc9f24c719a5fc85ce531b4d02ef7935e95f41c60ce77e361817d24851",
-  "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one)."
+  "version": "1.8.0-beta.54",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.54.zip",
+  "sha256": "1e7bb7a8a6ef1ea34779cb9c975bfa8d71b7fc18349ae1f0324b532e02e58dbd",
+  "notes": "- **Rankings on the web:** rankings, profiles (with pins, pictures and the rating graph), each chart's top, and a page to compare two players, at https://naidez7.github.io/vsrghub/rankings.html (once the site is turned on). Share a profile by link.\n- **Best plays per game:** on a profile, Best 4K / 7K can be narrowed to Etterna, osu!, lazer or Quaver plays.\n- **Results screen:** after a play, your place on that chart too.\n- **\"Someone passed you\":** when song select comes up and your 4K or 7K place dropped since last time, the game says so.\n- **Sending plays no longer gets stuck** on \"statement timeout\": the server checks replays much faster and the launcher sends smaller batches (and smaller still if the server is slow).\n- **Quaver dates** are read from the replay's own clock; plays sent with the wrong date get their real one the next time you press \"Send my osu! / Quaver plays again\".\n- The launcher says when the server is behind (its v2.sql needs running) instead of failing quietly, and the server caps how many scores one player can send in ten minutes."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.54",
+   "date": "2026-10-15",
+   "notes": "- **Rankings on the web:** rankings, profiles (with pins, pictures and the rating graph), each chart's top, and a page to compare two players, at https://naidez7.github.io/vsrghub/rankings.html (once the site is turned on). Share a profile by link.\n- **Best plays per game:** on a profile, Best 4K / 7K can be narrowed to Etterna, osu!, lazer or Quaver plays.\n- **Results screen:** after a play, your place on that chart too.\n- **\"Someone passed you\":** when song select comes up and your 4K or 7K place dropped since last time, the game says so.\n- **Sending plays no longer gets stuck** on \"statement timeout\": the server checks replays much faster and the launcher sends smaller batches (and smaller still if the server is slow).\n- **Quaver dates** are read from the replay's own clock; plays sent with the wrong date get their real one the next time you press \"Send my osu! / Quaver plays again\".\n- The launcher says when the server is behind (its v2.sql needs running) instead of failing quietly, and the server caps how many scores one player can send in ten minutes."
+  },
   {
    "version": "1.8.0-beta.53",
    "date": "2026-10-15",

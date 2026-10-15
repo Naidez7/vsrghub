@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rankings · VSRG Hub</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<div class="glow"></div>
+<main>
+	<header><img src="icon.png" alt=""><b><a href="index.html">VSRG Hub</a></b>
+		<nav><a href="rankings.html" class="on">Rankings</a><a href="compare.html" class="">Compare</a><a href="index.html#install">Download</a></nav></header>
+	<h1>Rankings</h1>
+	<p class="lead">Every 4K and 7K chart is ranked. Ratings are worked out as Etterna does, from each player's best plays.</p>
+	<div class="card">
+		<div class="row"><div class="seg" id="keys"><button data-k="4" class="on">4K</button><button data-k="7">7K</button></div>
+			<select id="skill"><option value="overall">Overall</option><option value="stream">Stream</option><option value="jumpstream">Jumpstream</option><option value="handstream">Handstream</option><option value="stamina">Stamina</option><option value="jackspeed">Jackspeed</option><option value="chordjack">Chordjack</option><option value="technical">Technical</option></select>
+			<input class="in" id="find" placeholder="Find a player" style="margin-left:auto"></div>
+		<div id="body"><div class="empty">Loading...</div></div>
+	</div>
+	<div class="card" style="margin-top:16px"><div class="row"><h2 style="font-size:18px">Latest plays</h2></div><div id="feed"><div class="empty">Loading...</div></div></div>
+</main>
+<script src="hub.js"></script>
+<script>
+let k = +HUB.param("k") || 4, skill = HUB.param("skill") || "overall", all = [];
+const $ = id => document.getElementById(id);
+function draw() {
+	const q = $("find").value.trim().toLowerCase();
+	const rows = all.filter(r => !q || r.username.toLowerCase().includes(q));
+	$("body").innerHTML = rows.length ? `<table class="rk"><tr><th>#</th><th>Player</th><th style="text-align:right">Rating</th><th style="text-align:right">Charts</th></tr>` +
+		rows.map(r => `<tr class="clickable" onclick="location.href='player.html?id=${r.user_id}'"><td class="n">${r.place}</td><td><div class="rkname">${HUB.avatar(HUB.picture(r.user_id, r.avatar, r.avatar_ext), r.username, "sm")}${HUB.esc(r.username)}</div></td><td class="r">${(+r.rating).toFixed(2)}</td><td class="p">${r.plays}</td></tr>`).join("") + `</table>`
+		: `<div class="empty">${q ? "No player by that name here." : "Nobody is ranked here yet."}</div>`;
+}
+async function load() {
+	$("body").innerHTML = `<div class="empty">Loading...</div>`;
+	const tech = $("skill").querySelector('option[value="technical"]'); tech.disabled = k === 7; if (k === 7 && skill === "technical") { skill = "overall"; $("skill").value = "overall"; }
+	try { all = await HUB.rpc("rankings", { k, skill, max_rows: 200, skip: 0 }); draw(); }
+	catch (e) { $("body").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`; }
+}
+document.querySelectorAll("#keys button").forEach(b => { b.classList.toggle("on", +b.dataset.k === k); b.onclick = () => { k = +b.dataset.k; document.querySelectorAll("#keys button").forEach(x => x.classList.toggle("on", x === b)); load(); }; });
+$("skill").value = skill; $("skill").onchange = () => { skill = $("skill").value; load(); };
+$("find").oninput = draw;
+load();
+HUB.get("scores?select=id,user_id,source,chart_key,keys,rate,wife,ssr_overall,song_title,chart_name,played_at,profiles!scores_user_id_fkey!inner(username,banned)&valid=eq.true&profiles.banned=eq.false&played_at=not.is.null&order=played_at.desc&limit=20")
+	.then(rows => { $("feed").innerHTML = rows.map(s => `<a class="play" href="chart.html?key=${encodeURIComponent(s.chart_key)}&title=${encodeURIComponent((s.song_title || "?") + (s.chart_name ? " · " + s.chart_name : "") + " · " + s.keys + "K")}">
+		<span class="t">${HUB.dot(s.source)}<b>${HUB.esc(s.profiles.username)}</b> <small>${HUB.esc(s.song_title || "?")}${s.chart_name ? " · " + HUB.esc(s.chart_name) : ""} · ${s.keys}K · ${HUB.rate(s.rate)}</small></span>
+		<span class="s">${(+s.ssr_overall).toFixed(2)}</span><span class="d">${HUB.ago(s.played_at)}</span><span class="a">${(+s.wife).toFixed(2)}%</span></a>`).join("") || `<div class="empty">Nothing played yet.</div>`; })
+	.catch(e => $("feed").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`);
+</script>
+</body>
+</html>

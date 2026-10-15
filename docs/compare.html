@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare · VSRG Hub</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<div class="glow"></div>
+<main>
+	<header><img src="icon.png" alt=""><b><a href="index.html">VSRG Hub</a></b>
+		<nav><a href="rankings.html" class="">Rankings</a><a href="compare.html" class="on">Compare</a><a href="index.html#install">Download</a></nav></header>
+	<h1>Compare two players</h1>
+	<p class="lead">Skillset by skillset, and the charts they've both played.</p>
+	<div class="card"><div class="row"><select id="a"></select><span class="dim">vs</span><select id="b"></select><div class="seg" id="keys" style="margin-left:auto"><button data-k="4" class="on">4K</button><button data-k="7">7K</button></div></div>
+	<div id="body"><div class="empty">Pick two players.</div></div></div>
+</main>
+<script src="hub.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let k = 4, players = [];
+async function fill() {
+	const [r4, r7] = await Promise.all([HUB.rpc("rankings", { k: 4, max_rows: 200 }), HUB.rpc("rankings", { k: 7, max_rows: 200 })]);
+	const seen = new Map(); [...r4, ...r7].forEach(r => seen.set(r.user_id, r.username));
+	players = [...seen].sort((x, y) => x[1].localeCompare(y[1]));
+	for (const id of ["a", "b"]) { $(id).innerHTML = `<option value="">Player ${id.toUpperCase()}</option>` + players.map(([u, n]) => `<option value="${u}">${HUB.esc(n)}</option>`).join(""); $(id).value = HUB.param(id); $(id).onchange = draw; }
+	draw();
+}
+async function draw() {
+	const a = $("a").value, b = $("b").value;
+	if (!a || !b) { $("body").innerHTML = `<div class="empty">Pick two players.</div>`; return; }
+	if (a === b) { $("body").innerHTML = `<div class="empty">Two different players.</div>`; return; }
+	$("body").innerHTML = `<div class="empty">Loading...</div>`;
+	history.replaceState(null, "", `?a=${a}&b=${b}`);
+	try {
+		const [pa, pb] = await Promise.all([HUB.profile(a), HUB.profile(b)]);
+		const ra = (pa.ratings || []).find(r => r.keys === k) || {}, rb = (pb.ratings || []).find(r => r.keys === k) || {};
+		const skills = [["overall", "Overall"], ...HUB.skillsFor(k)];
+		const max = Math.max(1, ...skills.map(([id]) => Math.max(+ra[id] || 0, +rb[id] || 0)));
+		const bars = skills.map(([id, nm]) => { const va = +ra[id] || 0, vb = +rb[id] || 0; return `<div class="lbl">${nm.toUpperCase()}</div><div class="bar"><span class="l">${va.toFixed(2)}</span><span class="m"><i class="a" style="width:${va / max * 50}%"></i><i class="b" style="width:${vb / max * 50}%"></i></span><span class="r">${vb.toFixed(2)}</span></div>`; }).join("");
+		// the charts both played (their best at any rate)
+		const [sa, sb] = await Promise.all([a, b].map(id => HUB.get(`scores?select=chart_key,ssr_overall,wife,rate,song_title,chart_name,keys,source&user_id=eq.${id}&keys=eq.${k}&valid=eq.true&order=ssr_overall.desc&limit=2000`)));
+		const bestOf = list => { const m = new Map(); for (const s of list) if (!m.has(s.chart_key)) m.set(s.chart_key, s); return m; };
+		const ma = bestOf(sa), mb = bestOf(sb);
+		const both = [...ma.keys()].filter(key => mb.has(key)).map(key => [ma.get(key), mb.get(key)]).sort((x, y) => Math.max(y[0].ssr_overall, y[1].ssr_overall) - Math.max(x[0].ssr_overall, x[1].ssr_overall)).slice(0, 60);
+		let wa = 0, wb = 0; both.forEach(([x, y]) => x.ssr_overall > y.ssr_overall ? wa++ : y.ssr_overall > x.ssr_overall ? wb++ : 0);
+		$("body").innerHTML = `<div class="cmp"><div class="who">${HUB.avatar(pa.picture, pa.username, "lg")}<div><b>${HUB.esc(pa.username)}</b></div><div class="dim">${pa.place[k] ? "#" + pa.place[k] : "unranked"} in ${k}K</div></div><div class="dim">vs</div><div class="who">${HUB.avatar(pb.picture, pb.username, "lg")}<div><b>${HUB.esc(pb.username)}</b></div><div class="dim">${pb.place[k] ? "#" + pb.place[k] : "unranked"} in ${k}K</div></div></div>
+			${bars}
+			<h2 style="font-size:17px;margin-top:22px">Charts both played <span class="dim">(${both.length}; ${HUB.esc(pa.username)} ahead on ${wa}, ${HUB.esc(pb.username)} on ${wb})</span></h2>
+			<div style="margin-top:10px">${both.map(([x, y]) => `<a class="play" href="chart.html?key=${encodeURIComponent(x.chart_key)}&title=${encodeURIComponent((x.song_title || "?") + (x.chart_name ? " · " + x.chart_name : "") + " · " + k + "K")}"><span class="t">${HUB.esc(x.song_title || "?")} <small>${x.chart_name ? HUB.esc(x.chart_name) : ""}</small></span><span class="s" style="color:${x.ssr_overall >= y.ssr_overall ? "var(--pink)" : "var(--violet)"}">${(+x.ssr_overall).toFixed(2)} · ${(+y.ssr_overall).toFixed(2)}</span><span class="d">${HUB.rate(x.rate)} · ${(+x.wife).toFixed(2)}% vs ${HUB.rate(y.rate)} · ${(+y.wife).toFixed(2)}%</span><span class="a"></span></a>`).join("") || `<div class="empty">No chart in common yet.</div>`}</div>`;
+	} catch (e) { $("body").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`; }
+}
+document.querySelectorAll("#keys button").forEach(b => b.onclick = () => { k = +b.dataset.k; document.querySelectorAll("#keys button").forEach(x => x.classList.toggle("on", x === b)); draw(); });
+fill();
+</script>
+</body>
+</html>

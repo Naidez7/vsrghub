@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chart · VSRG Hub</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<div class="glow"></div>
+<main>
+	<header><img src="icon.png" alt=""><b><a href="index.html">VSRG Hub</a></b>
+		<nav><a href="rankings.html" class="">Rankings</a><a href="compare.html" class="">Compare</a><a href="index.html#install">Download</a></nav></header>
+	<h1 id="title">Chart</h1>
+	<p class="lead">Each player's best on this chart, at any rate, by SSR.</p>
+	<div class="card" id="body"><div class="empty">Loading...</div></div>
+</main>
+<script src="hub.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const title = HUB.param("title") || "Chart"; $("title").textContent = title; document.title = title + " · VSRG Hub";
+HUB.rpc("chart_leaderboard", { chart: HUB.param("key"), max_rows: 100 }).then(rows => {
+	$("body").innerHTML = rows.map(s => `<a class="play" href="player.html?id=${s.user_id}"><span class="t">${HUB.dot(s.source)}#${s.place} ${HUB.esc(s.username)} <small>${HUB.rate(s.rate)} · ${s.marvelous}/${s.perfect}/${s.great}/${s.good}/${s.bad}/${s.miss} · ${s.max_combo}x · ${HUB.date(s.played_at)}</small></span><span class="s">${(+s.ssr_overall).toFixed(2)}</span><span class="d"></span><span class="a">${(+s.wife).toFixed(2)}%</span></a>`).join("") || `<div class="empty">No plays on this chart yet.</div>`;
+}).catch(e => $("body").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`);
+</script>
+</body>
+</html>

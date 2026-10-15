@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player · VSRG Hub</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<div class="glow"></div>
+<main>
+	<header><img src="icon.png" alt=""><b><a href="index.html">VSRG Hub</a></b>
+		<nav><a href="rankings.html" class="">Rankings</a><a href="compare.html" class="">Compare</a><a href="index.html#install">Download</a></nav></header>
+	<div id="body"><div class="empty">Loading...</div></div>
+</main>
+<script src="hub.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let p = null, tab = "top4", src = "all";
+function hist(points, k) {
+	if (!points || points.length < 2) return "";
+	const W = 260, H = 90, lo = Math.min(...points.map(x => x.rating)), hi = Math.max(...points.map(x => x.rating));
+	const t0 = new Date(points[0].day).getTime(), t1 = new Date(points[points.length - 1].day).getTime();
+	const x = q => 4 + (W - 8) * (t1 > t0 ? (new Date(q.day).getTime() - t0) / (t1 - t0) : 0);
+	const y = q => 8 + (H - 22) * (hi > lo ? 1 - (q.rating - lo) / (hi - lo) : 0.5);
+	const line = points.map((q, i) => `${i ? "L" : "M"}${x(q).toFixed(1)},${y(q).toFixed(1)}`).join("");
+	const last = points[points.length - 1];
+	return `<div class="hist"><div class="k">${k}K RATING OVER TIME</div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+		<defs><linearGradient id="hg${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5c9e" stop-opacity=".35"/><stop offset="1" stop-color="#ff5c9e" stop-opacity="0"/></linearGradient></defs>
+		<path d="${line}L${x(last).toFixed(1)},${H - 14}L4,${H - 14}Z" fill="url(#hg${k})"/><path d="${line}" fill="none" stroke="#ff5c9e" stroke-width="2" vector-effect="non-scaling-stroke"/>
+		<text x="4" y="${H - 2}" fill="#8f86a8" font-size="9">${HUB.date(points[0].day)}</text><text x="${W - 4}" y="${H - 2}" fill="#8f86a8" font-size="9" text-anchor="end">${HUB.date(last.day)}</text></svg></div>`;
+}
+// Etterna's rating from SSRs (as the server works it out), for the history
+function aggregate(ssrs) {
+	if (!ssrs.length) return 0;
+	let rating = 0, res = 10.24;
+	const erfc = v => { const s = v < 0 ? -1 : 1, x = Math.abs(v), t = 1 / (1 + 0.3275911 * x); return 1 - s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); };
+	for (let i = 0; i < 11; i++) {
+		for (;;) { rating += res; let s = 0; for (const v of ssrs) { const e = erfc(0.1 * (v - rating)); s += e > 0 ? Math.max(0, 2 / e - 2) : 1e300; } if (!(Math.pow(2, rating * 0.1) < s)) break; }
+		rating -= res; res /= 2;
+	}
+	return Math.min(100, Math.max(0, (rating + res * 2) * 1.05));
+}
+async function history(id, k) {
+	const plays = await HUB.get(`scores?select=chart_key,rate,ssr_overall,ssr_stream,ssr_jumpstream,ssr_handstream,ssr_stamina,ssr_jackspeed,ssr_chordjack,ssr_technical,played_at,submitted_at,verified&user_id=eq.${encodeURIComponent(id)}&keys=eq.${k}&valid=eq.true&limit=10000`);
+	const day = q => (q.played_at || q.submitted_at || "").slice(0, 10);
+	const list = plays.filter(q => q.verified !== false && day(q)).sort((a, b) => day(a) < day(b) ? -1 : 1);
+	const best = new Map(), out = [], names = ["ssr_stream", "ssr_jumpstream", "ssr_handstream", "ssr_stamina", "ssr_jackspeed", "ssr_chordjack", "ssr_technical"];
+	const n = k === 7 ? 6 : 7;
+	for (let i = 0; i < list.length;) {
+		const d = day(list[i]);
+		for (; i < list.length && day(list[i]) === d; i++) { const q = list[i], key = q.chart_key + "@" + (+q.rate).toFixed(2); const b = best.get(key); if (!b || q.ssr_overall > b.ssr_overall) best.set(key, q); }
+		let total = 0; for (let j = 0; j < n; j++) total += aggregate([...best.values()].map(q => +q[names[j]] || 0));
+		out.push({ day: d, rating: Math.round(total / n * 100) / 100 });
+	}
+	return out;
+}
+function draw() {
+	const r = {}; (p.ratings || []).forEach(x => r[x.keys] = x);
+	const has4 = !!(r[4] && r[4].plays), has7 = !!(r[7] && r[7].plays), hasPins = !!(p.pinned || []).length;
+	if (tab === "top7" && !has7) tab = "top4"; if (tab === "top4" && !has4 && has7) tab = "top7"; if (tab === "pinned" && !hasPins) tab = "top4";
+	const topTab = tab === "top4" || tab === "top7", tk = tab === "top7" ? 7 : 4;
+	let list = tab === "top4" ? p.top4 : tab === "top7" ? p.top7 : tab === "pinned" ? p.pinned : p.recent;
+	if (topTab && src !== "all") {
+		p.bySrc = p.bySrc || {};
+		const key = tk + ":" + src;
+		if (!p.bySrc[key]) { p.bySrc[key] = []; HUB.get(`scores?select=id,source,chart_key,keys,rate,wife,ssr_overall,msd,song_title,song_artist,chart_name,marvelous,perfect,great,good,bad,miss,max_combo,played_at&user_id=eq.${p.id}&keys=eq.${tk}&valid=eq.true&verified=eq.true&source=eq.${src}&order=ssr_overall.desc&limit=25`).then(rows => { p.bySrc[key] = rows; draw(); }).catch(() => {}); }
+		list = p.bySrc[key];
+	}
+	const ranks = [p.place[4] ? `#${p.place[4]} in 4K` : "", p.place[7] ? `#${p.place[7]} in 7K` : ""].filter(Boolean).map(t => `<span>${t}</span>`).join("");
+	$("body").innerHTML = `<div class="row">${HUB.avatar(p.picture, p.username, "lg")}<div><h1>${HUB.esc(p.username)}${p.banned ? ` <small class="err">(banned)</small>` : ""}</h1><div class="dim">Joined ${HUB.date(p.created_at)}</div><div class="ranks">${ranks}</div></div>
+		<a class="btn ghost" style="margin-left:auto" href="compare.html?a=${p.id}">Compare with...</a></div>
+		<div class="pbody"><div><div class="ratings">${has4 || !has7 ? HUB.ratingBox(r[4], 4) : ""}${has7 ? HUB.ratingBox(r[7], 7) : ""}</div><div id="hist"></div></div>
+		<div><div class="seg" id="tabs">${has4 || !has7 ? `<button data-t="top4">Best 4K</button>` : ""}${has7 ? `<button data-t="top7">Best 7K</button>` : ""}<button data-t="recent">Latest</button>${hasPins ? `<button data-t="pinned">Pinned</button>` : ""}</div>
+		${topTab ? `<div class="seg" id="src" style="margin-left:8px">${[["all", "All"], ["etterna", "Etterna"], ["osu", "osu!"], ["lazer", "lazer"], ["quaver", "Quaver"]].map(([v, n]) => `<button data-s="${v}" class="${src === v ? "on" : ""}">${n}</button>`).join("")}</div>` : ""}
+		<div style="margin-top:10px">${(list || []).map(s => HUB.play(s, { when: tab !== "top4" && tab !== "top7" })).join("") || `<div class="empty">No plays here yet.</div>`}</div>
+		<div class="srclegend"><span><span class="src"></span>Etterna</span><span><span class="src osu"></span>osu!</span><span><span class="src lazer"></span>osu!lazer</span><span><span class="src quaver"></span>Quaver</span></div></div></div>`;
+	document.querySelectorAll("#tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === tab); b.onclick = () => { tab = b.dataset.t; draw(); }; });
+	document.querySelectorAll("#src button").forEach(b => b.onclick = () => { src = b.dataset.s; draw(); });
+	const hk = tab === "top7" ? 7 : 4;
+	if (hk === 7 ? has7 : has4) { if (p.hist && p.hist[hk]) $("hist").innerHTML = hist(p.hist[hk], hk); else history(p.id, hk).then(pts => { p.hist = p.hist || {}; p.hist[hk] = pts; if ((tab === "top7" ? 7 : 4) === hk) $("hist").innerHTML = hist(pts, hk); }).catch(() => {}); }
+}
+HUB.profile(HUB.param("id")).then(x => { p = x; document.title = p.username + " · VSRG Hub"; draw(); }).catch(e => $("body").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`);
+</script>
+</body>
+</html>

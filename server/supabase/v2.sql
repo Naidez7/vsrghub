@@ -12,6 +12,20 @@
 -- player.
 
 alter table public.profiles add column if not exists is_admin boolean not null default false;
+alter table public.profiles add column if not exists submit_window timestamptz not null default now();
+alter table public.profiles add column if not exists submit_count int not null default 0;
+
+-- which version of this script the server has (the launcher asks, and says when it's behind)
+create table if not exists public.vh_meta (key text primary key, value text not null);
+alter table public.vh_meta enable row level security;
+drop policy if exists "meta is public" on public.vh_meta;
+create policy "meta is public" on public.vh_meta for select using (true);
+revoke insert, update, delete on public.vh_meta from anon, authenticated;
+create or replace function public.server_version() returns int
+language sql stable security definer set search_path = public as $$
+	select coalesce((select value::int from public.vh_meta where key = 'schema_version'), 0)
+$$;
+grant execute on function public.server_version() to anon, authenticated;
 alter table public.scores add column if not exists verified boolean not null default false;
 alter table public.scores add column if not exists notes int not null default 0;
 alter table public.scores add column if not exists removed_by uuid;
@@ -78,20 +92,25 @@ begin
 	return -5.5;
 end $$;
 
--- a play's Wife% (J4) from its replay
+-- a play's Wife% (J4) from its replay (one SQL expression over the offsets: a loop calling
+-- vh_wife3 for each of thousands of offsets, a hundred scores at a time, ran past the server's
+-- statement timeout)
 create or replace function public.vh_rescore(offsets real[], taps int, holds_missed int, mines_hit int)
-returns double precision language plpgsql immutable as $$
-declare
-	p double precision := 0;
-	o real;
-begin
-	if taps is null or taps <= 0 then return null; end if;
-	foreach o in array offsets loop
-		p := p + public.vh_wife3(o, 1);
-	end loop;
-	p := p + coalesce(holds_missed, 0) * -4.5 + coalesce(mines_hit, 0) * -7.0;
-	return p / (taps * 2.0) * 100.0;
-end $$;
+returns double precision language sql immutable as $$
+	select case when taps is null or taps <= 0 then null else
+		((select coalesce(sum(
+			case when abs(o) <= 5.0 then 2.0
+				when abs(o) <= 65.0 then 2.0 * (
+					-- erf((65 - |o|) / 22.7), Abramowitz & Stegun 7.1.26
+					(select s * (1.0 - (((((1.061405429 * tt + -1.453152027) * tt) + 1.421413741) * tt + -0.284496736) * tt + 0.254829592) * tt * exp(-x * x))
+					 from (select (65.0 - abs(o)) / 22.7 as x0) a,
+						lateral (select sign(x0) as s, abs(x0) as x) b,
+						lateral (select 1.0 / (1.0 + 0.3275911 * x) as tt) c))
+				when abs(o) <= 180.0 then (abs(o) - 65.0) * -5.5 / (180.0 - 65.0)
+				else -5.5 end), 0)
+		  from unnest(offsets) as o)
+		 + coalesce(holds_missed, 0) * -4.5 + coalesce(mines_hit, 0) * -7.0) / (taps * 2.0) * 100.0 end
+$$;
 
 -- where a play came from: Etterna, or an osu! stable / osu!lazer replay VSRG Hub rated
 alter table public.scores add column if not exists source text not null default 'etterna';
@@ -248,6 +267,14 @@ begin
 	if jsonb_typeof(list) <> 'array' or jsonb_array_length(list) > 500 then
 		raise exception 'send at most 500 scores at a time';
 	end if;
+	-- (a cap per player: 5000 scores in ten minutes is more than any real backfill needs)
+	update public.profiles set submit_window = case when submit_window < now() - interval '10 minutes' then now() else submit_window end,
+		submit_count = case when submit_window < now() - interval '10 minutes' then 0 else submit_count end
+		where id = uid;
+	if (select submit_count from public.profiles where id = uid) + jsonb_array_length(list) > 5000 then
+		raise exception 'rate limit: too many scores sent lately, try again in a few minutes';
+	end if;
+	update public.profiles set submit_count = submit_count + jsonb_array_length(list) where id = uid;
 	for s in select * from jsonb_array_elements(list) loop
 		begin
 			k := public.vh_insert_score(uid, s);
@@ -476,6 +503,31 @@ begin
 		perform public.vh_refresh_rating(r.user_id, 7::smallint);
 	end loop;
 end $$;
+
+-- when imported plays were really played: the launcher sends the dates it reads from the replays
+-- again, for the ones sent before it read them right (own plays only, osu! / lazer / Quaver ones)
+create or replace function public.fix_played_at(list jsonb) returns int
+language plpgsql security definer set search_path = public as $$
+declare
+	uid uuid := auth.uid();
+	n int;
+begin
+	if uid is null then raise exception 'not signed in'; end if;
+	if jsonb_typeof(list) <> 'array' or jsonb_array_length(list) > 1000 then raise exception 'at most 1000 at a time'; end if;
+	update public.scores s set played_at = (x->>'played_at')::timestamptz
+	from jsonb_array_elements(list) as x
+	where s.user_id = uid and s.score_key = x->>'score_key' and s.source in ('osu', 'lazer', 'quaver')
+		and (x->>'played_at')::timestamptz is not null
+		and (s.played_at is null or abs(extract(epoch from s.played_at - (x->>'played_at')::timestamptz)) > 60);
+	get diagnostics n = row_count;
+	return n;
+end $$;
+revoke all on function public.fix_played_at(jsonb) from public, anon;
+grant execute on function public.fix_played_at(jsonb) to authenticated;
+
+-- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
+insert into public.vh_meta (key, value) values ('schema_version', '9')
+on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):
 --   update public.profiles set is_admin = true where username = 'YourName';
