@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.64",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.64.zip",
- "sha256": "f204b00a851ceac7fdb6ea788730d97286103924f982d4050f303517836ab4d7",
- "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not.",
+ "version": "1.8.0-beta.65",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.65.zip",
+ "sha256": "b7fbc39d7ca2c913c3b1441dd9d6e92e032e1c36b3dd92c2100f6d8428b544d7",
+ "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before.",
  "latest": {
-  "version": "1.8.0-beta.64",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.64.zip",
-  "sha256": "f204b00a851ceac7fdb6ea788730d97286103924f982d4050f303517836ab4d7",
-  "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not."
+  "version": "1.8.0-beta.65",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.65.zip",
+  "sha256": "b7fbc39d7ca2c913c3b1441dd9d6e92e032e1c36b3dd92c2100f6d8428b544d7",
+  "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.65",
+   "date": "2026-10-15",
+   "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before."
+  },
   {
    "version": "1.8.0-beta.64",
    "date": "2026-10-15",
