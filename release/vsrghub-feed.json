@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.44",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.44.zip",
- "sha256": "944e6ec9bfed69da51a1ada5664dd4e44c229ec67e063d206472b198b53c5f10",
- "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in.",
+ "version": "1.8.0-beta.45",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.45.zip",
+ "sha256": "b5f18bfb7da461b22d0067b3792680d4fbded586b642b00a1beb9df00d11fdcd",
+ "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first).",
  "latest": {
-  "version": "1.8.0-beta.44",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.44.zip",
-  "sha256": "944e6ec9bfed69da51a1ada5664dd4e44c229ec67e063d206472b198b53c5f10",
-  "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in."
+  "version": "1.8.0-beta.45",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.45.zip",
+  "sha256": "b5f18bfb7da461b22d0067b3792680d4fbded586b642b00a1beb9df00d11fdcd",
+  "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.45",
+   "date": "2026-10-15",
+   "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first)."
+  },
   {
    "version": "1.8.0-beta.44",
    "date": "2026-10-15",
