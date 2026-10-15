@@ -46,14 +46,16 @@ local bg = Def.ActorFrame {
 local pic = Def.Sprite {
 	Name = "Pic",
 	InitCommand = function(self)
-		local p = randomBackground()
+		local own = TW.menuBgFile()
+		local p = own or randomBackground()
 		if p then self:LoadBackground(p) end
 		self:scaletocover(-M(20), -M(20), SCREEN_WIDTH + M(20), SCREEN_HEIGHT + M(20))
-		self:diffusealpha(0):linear(0.8):diffusealpha(0.08)
+		-- (your own picture shows in full; a song's barely, under lazer's triangles)
+		self:diffusealpha(0):linear(0.8):diffusealpha(own and 0.7 or 0.08)
 	end,
 	-- the menu's song changed: its picture
 	TWMenuMusicMessageCommand = function(self)
-		if not TW.menu.song then return end
+		if not TW.menu.song or TW.menuBgChoice() ~= "song" then return end
 		local p = TW.bigPicture(TW.menu.song)
 		if not p or p == "" or p == self.shown then return end
 		self.shown = p

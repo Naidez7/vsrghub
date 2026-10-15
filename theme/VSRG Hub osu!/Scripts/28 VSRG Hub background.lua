@@ -273,3 +273,32 @@ function TW.bigPicture(song)
 	local bg = song:GetBackgroundPath()
 	return (bg and bg ~= "") and bg or nil
 end
+
+-- The main menu's picture (Options > Menu background): the song playing's picture ("song", the
+-- default), one song's picture kept for the session ("random"), or a picture of your own from
+-- Save/VSRGHub/menu/ (png or jpg; the option lists what's there).
+local MENU_DIR = "Save/VSRGHub/menu/"
+function TW.menuBgChoice() return TW.settings.menuBg or "song" end
+function TW.menuBgFile()
+	local c = TW.menuBgChoice()
+	if c == "song" or c == "random" then return nil end
+	local p = MENU_DIR .. c
+	return FILEMAN:DoesFileExist(p) and p or nil
+end
+function TW.menuBgItems()
+	local items = { { label = "The song playing", value = "song" }, { label = "A random song (kept while the game runs)", value = "random" } }
+	local files = {}
+	pcall(function() files = FILEMAN:GetDirListing(MENU_DIR) or {} end)
+	table.sort(files)
+	for _, f in ipairs(files) do
+		local ext = f:lower():match("%.(%w+)$")
+		if ext == "png" or ext == "jpg" or ext == "jpeg" then items[#items + 1] = { label = f, value = f } end
+	end
+	return items
+end
+function TW.menuBgLabel()
+	local c = TW.menuBgChoice()
+	if c == "song" then return "Song playing" elseif c == "random" then return "Random song" end
+	return TW.menuBgFile() and c or "Song playing"
+end
+function TW.setMenuBg(v) TW.saveSetting("menuBg", v) end

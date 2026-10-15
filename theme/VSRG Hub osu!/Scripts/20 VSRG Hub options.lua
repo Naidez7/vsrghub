@@ -413,6 +413,11 @@ local function rows()
 		  end },
 		{ label = "Cursor size", value = function() return string.format("%.1fx", TW.cursorSize()) end,
 		  change = function(d) TW.setCursorSize(TW.cursorSize() + d * 0.1) end },
+		-- the main menu's picture (Scripts/28 VSRG Hub background.lua)
+		{ label = "Menu background", value = TW.menuBgLabel, activate = function()
+			  TW.openList { title = "Menu background (put your own pictures in Save/VSRGHub/menu)", items = TW.menuBgItems(), current = TW.menuBgChoice(),
+				  onPick = function(v) TW.setMenuBg(v) end }
+		  end },
 		-- the song select's background picture (Scripts/28 VSRG Hub background.lua)
 		{ label = "Background dim", value = function() return TW.bgDim() .. "%" end,
 		  change = function(d) TW.setBgDim(TW.bgDim() + d * 5) end },

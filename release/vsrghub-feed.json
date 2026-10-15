@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.67",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.67.zip",
- "sha256": "b64d87613d153433697267b8c78494eb66c252557ffb0d49ccc7965cef628163",
- "notes": "- lazer look: the cards' titles at their size, the rating slider's right end on the screen, the main menu's backdrop with lazer's lighter and darker triangles and the picture barely there (as lazer's \"triangles\" background).",
+ "version": "1.8.0-beta.68",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.68.zip",
+ "sha256": "e928ebd86619dae5f461a9b19afc77d0368491b14b6d870415526e05f2ded646",
+ "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks.",
  "latest": {
-  "version": "1.8.0-beta.67",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.67.zip",
-  "sha256": "b64d87613d153433697267b8c78494eb66c252557ffb0d49ccc7965cef628163",
-  "notes": "- lazer look: the cards' titles at their size, the rating slider's right end on the screen, the main menu's backdrop with lazer's lighter and darker triangles and the picture barely there (as lazer's \"triangles\" background)."
+  "version": "1.8.0-beta.68",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.68.zip",
+  "sha256": "e928ebd86619dae5f461a9b19afc77d0368491b14b6d870415526e05f2ded646",
+  "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.68",
+   "date": "2026-10-15",
+   "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks."
+  },
   {
    "version": "1.8.0-beta.67",
    "date": "2026-10-15",

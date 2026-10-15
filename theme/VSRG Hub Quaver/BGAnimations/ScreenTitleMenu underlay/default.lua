@@ -28,9 +28,10 @@ local t = Def.ActorFrame {
 	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(color("#000000")) end },
 	Def.Sprite {
 		InitCommand = function(self)
-			local p = pick and TW.bigPicture(pick)
+			local own = TW.menuBgFile()
+			local p = own or (pick and TW.bigPicture(pick))
 			if p and p ~= "" then
-				self:LoadBackground(p):scaletocover(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT):diffusealpha(0.22)
+				self:LoadBackground(p):scaletocover(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT):diffusealpha(own and 0.5 or 0.22)
 			end
 		end
 	},

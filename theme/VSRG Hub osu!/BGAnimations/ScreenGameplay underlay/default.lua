@@ -47,7 +47,9 @@ local function layout()
 	end
 	local fz = nf and nf:GetZoom() or 1
 	local half = cols * w * zoom * fz / 2
-	local cx = pl:GetX() + (nf and nf:GetX() or 0) * zoom
+	-- (the notefield's own x isn't scaled by Mini: Etterna zooms the field about its own origin, so
+	-- a field moved with Customize gameplay moves the same whatever the receptor size)
+	local cx = pl:GetX() + (nf and nf:GetX() or 0) * pl:GetZoom()
 	local ry = THEME:GetMetric("Player", reverse and "ReceptorArrowsYReverse" or "ReceptorArrowsYStandard")
 	TW.stage = { cx = cx, left = cx - half, right = cx + half, width = half * 2, cols = cols, colWidth = w * zoom * fz,
 		fieldScale = zoom * fz, -- the notefield's size (Mini, Customize gameplay's notefield size)

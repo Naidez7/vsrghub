@@ -22,7 +22,9 @@ local bg = Def.ActorFrame {
 local pic = Def.Sprite {
 	Name = "Pic",
 	InitCommand = function(self)
-		if TW.has("menu_bg") then self:Load(TW.img("menu_bg")) else
+		local own = TW.menuBgFile()
+		if own then self:LoadBackground(own)
+		elseif TW.has("menu_bg") then self:Load(TW.img("menu_bg")) else
 			local p = randomBackground()
 			if p then self:LoadBackground(p) end
 		end
@@ -32,7 +34,7 @@ local pic = Def.Sprite {
 	end,
 	-- the menu's song changed: its background, if the skin has none of its own
 	TWMenuMusicMessageCommand = function(self)
-		if TW.has("menu_bg") or not TW.menu.song then return end
+		if TW.has("menu_bg") or not TW.menu.song or TW.menuBgChoice() ~= "song" then return end
 		local p = TW.bigPicture(TW.menu.song)
 		if not p or p == "" or p == self.shown then return end
 		self.shown = p
