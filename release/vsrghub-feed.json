@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.61",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.61.zip",
- "sha256": "01439fa38d48ac19ee5df9acb70d1f1276e126a740894eceb925d01502720bbe",
- "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart).",
+ "version": "1.8.0-beta.62",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.62.zip",
+ "sha256": "d95d665f0dc90924d7025190eea8b070cc769f1b84b825ee5848fd01ef221b20",
+ "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12).",
  "latest": {
-  "version": "1.8.0-beta.61",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.61.zip",
-  "sha256": "01439fa38d48ac19ee5df9acb70d1f1276e126a740894eceb925d01502720bbe",
-  "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart)."
+  "version": "1.8.0-beta.62",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.62.zip",
+  "sha256": "d95d665f0dc90924d7025190eea8b070cc769f1b84b825ee5848fd01ef221b20",
+  "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.62",
+   "date": "2026-10-15",
+   "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12)."
+  },
   {
    "version": "1.8.0-beta.61",
    "date": "2026-10-15",

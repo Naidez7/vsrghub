@@ -339,7 +339,7 @@ language sql stable security definer set search_path = public as $$
 	from public.scores s join public.profiles p on p.id = s.user_id
 	where s.valid and not p.banned and s.played_at is not null and (k = 0 or s.keys = k)
 	order by ((s.played_at at time zone 'UTC') + make_interval(mins => tz_minutes))::date desc, s.ssr_overall desc, s.id
-	limit least(greatest(max_days, 1), 365)
+	limit least(greatest(max_days, 1), 5000)
 $$;
 grant execute on function public.plays_of_the_day(int, int, smallint) to anon, authenticated;
 
@@ -546,7 +546,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '11')
+insert into public.vh_meta (key, value) values ('schema_version', '12')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):
