@@ -64,6 +64,8 @@ return Def.ActorFrame { TW.mouse(), f, replay,
 		-- (your play, for VSRG Hub's online ranking: 28 VSRG Hub online.lua)
 		if TW.exportScore then TW.exportScore() end
 	end,
+	-- (what VSRG Hub's ranking made of it, at the bottom)
+	TW.hubResultLine and TW.hubResultLine(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(16), function(init) return TW.text(TW.M(13), true, init) end) or Def.Actor {},
 	OffCommand = function(self) TW.closeOptions() end,
 	TW.optionsPanel(), TW.listPanel(),
 	TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua") }

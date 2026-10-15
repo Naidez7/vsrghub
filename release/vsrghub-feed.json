@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.41",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.41.zip",
- "sha256": "b346829c817ed284da34c17dfb4e595f52c89cb6104e6501ef252ccbfd844b67",
- "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away.",
+ "version": "1.8.0-beta.42",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.42.zip",
+ "sha256": "af2e1f11adcfae1807ffaff111e31527b8dd8b0fab3dbaec54446878e9fa8864",
+ "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results).",
  "latest": {
-  "version": "1.8.0-beta.41",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.41.zip",
-  "sha256": "b346829c817ed284da34c17dfb4e595f52c89cb6104e6501ef252ccbfd844b67",
-  "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away."
+  "version": "1.8.0-beta.42",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.42.zip",
+  "sha256": "af2e1f11adcfae1807ffaff111e31527b8dd8b0fab3dbaec54446878e9fa8864",
+  "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.42",
+   "date": "2026-10-15",
+   "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results)."
+  },
   {
    "version": "1.8.0-beta.41",
    "date": "2026-10-15",

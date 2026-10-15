@@ -1,0 +1,340 @@
+-- VSRG Hub online, update 2: replays checked against the score, plays sent in bulk, admins.
+--
+-- Run this whole file once in the Supabase SQL editor, after schema.sql (it can be run again).
+--
+-- Every score now comes with its replay's hit offsets. The server works the score's Wife% out again
+-- from them, exactly as Etterna does (Wife3, judge 4), and only a score whose replay gives back its
+-- Wife% counts for the rankings ("verified"); one whose replay gives something else is refused.
+-- Every chart's note count is kept from its first verified score, so a later score claiming
+-- another count doesn't count either. Scores sent before this update stay counted.
+--
+-- Admins (profiles.is_admin, set by hand: see the end) can take a score off the rankings and ban a
+-- player.
+
+alter table public.profiles add column if not exists is_admin boolean not null default false;
+alter table public.scores add column if not exists verified boolean not null default false;
+alter table public.scores add column if not exists notes int not null default 0;
+alter table public.scores add column if not exists removed_by uuid;
+
+-- (the scores sent before this update were already counted: they stay so)
+update public.scores set verified = true where not verified and not exists (select 1 from public.scores s2 where s2.verified);
+
+create table if not exists public.replays (
+	score_id bigint primary key references public.scores (id) on delete cascade,
+	offsets real[] not null,          -- each tap's offset in ms (misses as Etterna keeps them, 1000)
+	taps int not null,
+	holds_missed int not null default 0,
+	mines_hit int not null default 0
+);
+alter table public.replays enable row level security;
+drop policy if exists "replays are public" on public.replays;
+create policy "replays are public" on public.replays for select using (true);
+revoke insert, update, delete on public.replays from anon, authenticated;
+
+create table if not exists public.charts (
+	chart_key text primary key,
+	keys smallint not null,
+	notes int not null,
+	song_title text not null default '',
+	song_artist text not null default '',
+	chart_name text not null default '',
+	first_score bigint
+);
+alter table public.charts enable row level security;
+drop policy if exists "charts are public" on public.charts;
+create policy "charts are public" on public.charts for select using (true);
+revoke insert, update, delete on public.charts from anon, authenticated;
+
+-- ---------------------------------------------------------------------------------------------
+-- Etterna's Wife3 (RageUtil.h): points for a hit at maxms from the note at window scale ts (1 = J4),
+-- with Etterna's own erf approximation (Abramowitz & Stegun 7.1.26) so the numbers are the same
+
+create or replace function public.vh_erf(x double precision) returns double precision
+language plpgsql immutable as $$
+declare
+	s double precision := sign(x);
+	t double precision;
+	y double precision;
+begin
+	if s = 0 then return 0; end if;
+	x := abs(x);
+	t := 1.0 / (1.0 + 0.3275911 * x);
+	y := 1.0 - (((((1.061405429 * t + -1.453152027) * t) + 1.421413741) * t + -0.284496736) * t + 0.254829592) * t * exp(-x * x);
+	return s * y;
+end $$;
+
+create or replace function public.vh_wife3(ms double precision, ts double precision default 1) returns double precision
+language plpgsql immutable as $$
+declare
+	m double precision := abs(ms);
+	ridic double precision := 5.0 * ts;
+	max_boo double precision := 180.0 * ts;
+	zero double precision := 65.0 * power(ts, 0.75);
+	dev double precision := 22.7 * power(ts, 0.75);
+begin
+	if m <= ridic then return 2.0; end if;
+	if m <= zero then return 2.0 * public.vh_erf((zero - m) / dev); end if;
+	if m <= max_boo then return (m - zero) * -5.5 / (max_boo - zero); end if;
+	return -5.5;
+end $$;
+
+-- a play's Wife% (J4) from its replay
+create or replace function public.vh_rescore(offsets real[], taps int, holds_missed int, mines_hit int)
+returns double precision language plpgsql immutable as $$
+declare
+	p double precision := 0;
+	o real;
+begin
+	if taps is null or taps <= 0 then return null; end if;
+	foreach o in array offsets loop
+		p := p + public.vh_wife3(o, 1);
+	end loop;
+	p := p + coalesce(holds_missed, 0) * -4.5 + coalesce(mines_hit, 0) * -7.0;
+	return p / (taps * 2.0) * 100.0;
+end $$;
+
+-- ---------------------------------------------------------------------------------------------
+-- ratings and rankings: verified scores only
+
+create or replace function public.vh_refresh_rating(uid uuid, k smallint) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+	r public.player_ratings%rowtype;
+begin
+	with best as (
+		select distinct on (chart_key, rate) *
+		from public.scores
+		where user_id = uid and keys = k and valid and verified
+		order by chart_key, rate, ssr_overall desc
+	)
+	select uid, k, 0,
+		public.vh_aggregate(array_agg(ssr_stream)), public.vh_aggregate(array_agg(ssr_jumpstream)),
+		public.vh_aggregate(array_agg(ssr_handstream)), public.vh_aggregate(array_agg(ssr_stamina)),
+		public.vh_aggregate(array_agg(ssr_jackspeed)), public.vh_aggregate(array_agg(ssr_chordjack)),
+		public.vh_aggregate(array_agg(ssr_technical)), count(*), now()
+	into r from best;
+	r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack + r.technical) / 7.0;
+	insert into public.player_ratings values (r.*)
+	on conflict (user_id, keys) do update set
+		overall = excluded.overall, stream = excluded.stream, jumpstream = excluded.jumpstream,
+		handstream = excluded.handstream, stamina = excluded.stamina, jackspeed = excluded.jackspeed,
+		chordjack = excluded.chordjack, technical = excluded.technical, plays = excluded.plays,
+		updated_at = excluded.updated_at;
+end $$;
+revoke all on function public.vh_refresh_rating(uuid, smallint) from public, anon, authenticated;
+
+-- one score, kept (the replay checked): returns its keys, or null when it was already there.
+-- Raises when it is refused.
+create or replace function public.vh_insert_score(uid uuid, s jsonb) returns smallint
+language plpgsql security definer set search_path = public as $$
+declare
+	k smallint := (s->>'keys')::smallint;
+	wife real := (s->>'wife')::real;
+	offs real[];
+	taps int := coalesce((s->>'total_taps')::int, 0);
+	holds int := coalesce((s->>'holds_missed')::int, 0);
+	mines int := coalesce((s->>'mines_hit')::int, 0);
+	judged int;
+	again double precision;
+	ok boolean := false;
+	known public.charts;
+	sid bigint;
+begin
+	judged := coalesce((s->>'marvelous')::int, 0) + coalesce((s->>'perfect')::int, 0) + coalesce((s->>'great')::int, 0)
+		+ coalesce((s->>'good')::int, 0) + coalesce((s->>'bad')::int, 0) + coalesce((s->>'miss')::int, 0);
+	if jsonb_typeof(s->'offsets') = 'array' then
+		select array_agg(x::real) into offs from jsonb_array_elements_text(s->'offsets') as x;
+	end if;
+	if offs is not null then
+		if taps <> judged or cardinality(offs) < taps - 2 or cardinality(offs) > taps + 2 then
+			raise exception 'the replay doesn''t match the score''s judgements';
+		end if;
+		again := public.vh_rescore(offs, taps, holds, mines);
+		if again is null or abs(again - wife) > 1.0 then
+			raise exception 'the replay doesn''t give the score''s accuracy (% against %)', round(again::numeric, 2)::text || '%', round(wife::numeric, 2)::text || '%';
+		end if;
+		ok := abs(again - wife) <= 0.3;
+		-- (the chart's note count, from the first verified score on it)
+		select * into known from public.charts where chart_key = s->>'chart_key';
+		if found and known.notes <> taps then ok := false; end if;
+	end if;
+	insert into public.scores (user_id, score_key, chart_key, keys, rate, wife,
+		ssr_overall, ssr_stream, ssr_jumpstream, ssr_handstream, ssr_stamina, ssr_jackspeed,
+		ssr_chordjack, ssr_technical, msd, marvelous, perfect, great, good, bad, miss, holds_ok,
+		holds_ng, mines_hit, max_combo, modifiers, song_title, song_artist, chart_name, played_at,
+		has_replay, verified, notes)
+	values (uid, s->>'score_key', s->>'chart_key', k, (s->>'rate')::real, wife,
+		coalesce((s->>'ssr_overall')::real, 0), coalesce((s->>'ssr_stream')::real, 0),
+		coalesce((s->>'ssr_jumpstream')::real, 0), coalesce((s->>'ssr_handstream')::real, 0),
+		coalesce((s->>'ssr_stamina')::real, 0), coalesce((s->>'ssr_jackspeed')::real, 0),
+		coalesce((s->>'ssr_chordjack')::real, 0), coalesce((s->>'ssr_technical')::real, 0),
+		coalesce((s->>'msd')::real, 0),
+		coalesce((s->>'marvelous')::int, 0), coalesce((s->>'perfect')::int, 0),
+		coalesce((s->>'great')::int, 0), coalesce((s->>'good')::int, 0),
+		coalesce((s->>'bad')::int, 0), coalesce((s->>'miss')::int, 0),
+		coalesce((s->>'holds_ok')::int, 0), coalesce((s->>'holds_ng')::int, 0),
+		mines, coalesce((s->>'max_combo')::int, 0),
+		left(coalesce(s->>'modifiers', ''), 200), left(coalesce(s->>'song_title', ''), 200),
+		left(coalesce(s->>'song_artist', ''), 200), left(coalesce(s->>'chart_name', ''), 100),
+		(s->>'played_at')::timestamptz, offs is not null, ok, taps)
+	on conflict (user_id, score_key) do nothing
+	returning id into sid;
+	if sid is null then return null; end if;
+	if offs is not null then
+		insert into public.replays (score_id, offsets, taps, holds_missed, mines_hit) values (sid, offs, taps, holds, mines);
+		if ok and known.chart_key is null then
+			insert into public.charts (chart_key, keys, notes, song_title, song_artist, chart_name, first_score)
+			values (s->>'chart_key', k, taps, left(coalesce(s->>'song_title', ''), 200), left(coalesce(s->>'song_artist', ''), 200),
+				left(coalesce(s->>'chart_name', ''), 100), sid)
+			on conflict (chart_key) do nothing;
+		end if;
+	end if;
+	return k;
+end $$;
+revoke all on function public.vh_insert_score(uuid, jsonb) from public, anon, authenticated;
+
+create or replace function public.submit_score(s jsonb) returns public.player_ratings
+language plpgsql security definer set search_path = public as $$
+declare
+	uid uuid := auth.uid();
+	k smallint := (s->>'keys')::smallint;
+	r public.player_ratings;
+begin
+	if uid is null then raise exception 'not signed in'; end if;
+	if not exists (select 1 from public.profiles where id = uid and not banned) then
+		raise exception 'no player profile';
+	end if;
+	perform public.vh_insert_score(uid, s);
+	perform public.vh_refresh_rating(uid, k);
+	select * into r from public.player_ratings where user_id = uid and keys = k;
+	return r;
+end $$;
+grant execute on function public.submit_score(jsonb) to authenticated;
+
+-- many scores at once (your older plays): each kept or refused on its own; the ratings worked out once.
+-- Returns {"kept": n, "refused": [{"score_key": ..., "error": ...}]}
+create or replace function public.submit_scores(list jsonb) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+	uid uuid := auth.uid();
+	s jsonb;
+	kept int := 0;
+	refused jsonb := '[]'::jsonb;
+	did4 boolean := false;
+	did7 boolean := false;
+	k smallint;
+begin
+	if uid is null then raise exception 'not signed in'; end if;
+	if not exists (select 1 from public.profiles where id = uid and not banned) then
+		raise exception 'no player profile';
+	end if;
+	if jsonb_typeof(list) <> 'array' or jsonb_array_length(list) > 500 then
+		raise exception 'send at most 500 scores at a time';
+	end if;
+	for s in select * from jsonb_array_elements(list) loop
+		begin
+			k := public.vh_insert_score(uid, s);
+			if k is not null then
+				kept := kept + 1;
+				if k = 4 then did4 := true; elsif k = 7 then did7 := true; end if;
+			end if;
+		exception when others then
+			refused := refused || jsonb_build_object('score_key', s->>'score_key', 'error', sqlerrm);
+		end;
+	end loop;
+	if did4 then perform public.vh_refresh_rating(uid, 4::smallint); end if;
+	if did7 then perform public.vh_refresh_rating(uid, 7::smallint); end if;
+	return jsonb_build_object('kept', kept, 'refused', refused);
+end $$;
+grant execute on function public.submit_scores(jsonb) to authenticated;
+
+create or replace function public.chart_leaderboard(chart text, at_rate real default null,
+	max_rows int default 50)
+returns table (place bigint, username text, user_id uuid, wife real, rate real, ssr_overall real,
+	marvelous int, perfect int, great int, good int, bad int, miss int, max_combo int,
+	modifiers text, played_at timestamptz)
+language sql stable security definer set search_path = public as $$
+	with best as (
+		select distinct on (s.user_id) s.*
+		from public.scores s join public.profiles p on p.id = s.user_id
+		where s.chart_key = chart and s.valid and s.verified and not p.banned
+			and (at_rate is null or abs(s.rate - at_rate) < 0.001)
+		order by s.user_id, (case when at_rate is null then s.ssr_overall else s.wife end) desc
+	)
+	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc),
+		p.username, b.user_id, b.wife, b.rate, b.ssr_overall, b.marvelous, b.perfect, b.great,
+		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at
+	from best b join public.profiles p on p.id = b.user_id
+	order by 1
+	limit least(greatest(max_rows, 1), 200)
+$$;
+
+create or replace function public.top_scores(player uuid, k smallint default 4, max_rows int default 25)
+returns setof public.scores
+language sql stable security definer set search_path = public as $$
+	select * from public.scores
+	where user_id = player and keys = k and valid and verified
+	order by ssr_overall desc
+	limit least(greatest(max_rows, 1), 100)
+$$;
+
+-- a player's place in 4K or 7K (0 when unranked)
+create or replace function public.player_place(player uuid, k smallint default 4) returns int
+language sql stable security definer set search_path = public as $$
+	select case when not exists (select 1 from public.player_ratings where user_id = player and keys = k and plays > 0) then 0
+	else 1 + (select count(*)::int from public.player_ratings r join public.profiles p on p.id = r.user_id
+		where r.keys = k and r.plays > 0 and not p.banned
+			and r.overall > (select overall from public.player_ratings where user_id = player and keys = k)) end
+$$;
+grant execute on function public.player_place(uuid, smallint) to anon, authenticated;
+
+-- ---------------------------------------------------------------------------------------------
+-- admins
+
+create or replace function public.vh_is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+	select coalesce((select is_admin from public.profiles where id = auth.uid()), false)
+$$;
+
+-- a score off the rankings (kept, marked removed), or back on
+create or replace function public.admin_remove_score(score bigint, remove boolean default true) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+	u uuid;
+	k smallint;
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	update public.scores set valid = not remove, removed_by = case when remove then auth.uid() else null end
+	where id = score returning user_id, keys into u, k;
+	if u is not null then perform public.vh_refresh_rating(u, k); end if;
+end $$;
+grant execute on function public.admin_remove_score(bigint, boolean) to authenticated;
+
+create or replace function public.admin_ban(player uuid, ban boolean default true) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	if player = auth.uid() then raise exception 'not yourself'; end if;
+	update public.profiles set banned = ban where id = player;
+end $$;
+grant execute on function public.admin_ban(uuid, boolean) to authenticated;
+
+-- scores worth a look: the newest unverified ones, and the newest very high accuracies
+create or replace function public.admin_suspicious(max_rows int default 50)
+returns table (id bigint, username text, user_id uuid, song_title text, chart_name text, keys smallint,
+	rate real, wife real, ssr_overall real, verified boolean, valid boolean, has_replay boolean, submitted_at timestamptz)
+language plpgsql stable security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	return query
+	select s.id, p.username, s.user_id, s.song_title, s.chart_name, s.keys, s.rate, s.wife, s.ssr_overall,
+		s.verified, s.valid, s.has_replay, s.submitted_at
+	from public.scores s join public.profiles p on p.id = s.user_id
+	where (not s.verified or s.wife >= 99.7 or not s.valid)
+	order by s.submitted_at desc
+	limit least(greatest(max_rows, 1), 200);
+end $$;
+grant execute on function public.admin_suspicious(int) to authenticated;
+
+-- To make yourself an admin, run once (with your player name):
+--   update public.profiles set is_admin = true where username = 'YourName';

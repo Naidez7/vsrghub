@@ -23,6 +23,8 @@ local t = Def.ActorFrame {
 		-- (your play, for VSRG Hub's online ranking: 28 VSRG Hub online.lua)
 		if TW.exportScore then TW.exportScore() end
 	end,
+	-- (what VSRG Hub's ranking made of it, at the bottom)
+	TW.hubResultLine and TW.hubResultLine(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(70), function(init) return TW.text(TW.M(13), true, init) end) or Def.Actor {},
 	OffCommand = function(self) TW.closeOptions() end,
 	-- the footer's shade
 	Def.Quad { InitCommand = function(self)

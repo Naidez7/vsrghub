@@ -223,5 +223,7 @@ local preview = Def.ActorFrame {
 	end),
 }
 t[#t + 1] = preview
+-- (your older plays for VSRG Hub's ranking, when asked: 28 VSRG Hub online.lua)
+t[#t + 1] = TW.backfillActor and TW.backfillActor() or Def.Actor {}
 t[#t + 1] = TW.danOverlay("ScreenSelectMusic decorations/dan_overlay_bridge.lua")
 return t

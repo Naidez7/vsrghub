@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VSRG Hub</title>
+<meta name="description" content="Your osu!, Quaver and Qwilight songs and skins, played in Etterna, with online rankings where every chart is ranked.">
+<link rel="icon" href="icon.png">
+<style>
+:root { --bg: #0b0912; --text: #f4f0fb; --dim: #a39cb6; --dim2: #6f6886; --edge: rgba(255,255,255,.09); --card: rgba(255,255,255,.045);
+	--pink: #ff5c9e; --violet: #8a4dff; --ok: #5fe3a1; --grad: linear-gradient(135deg, #ff5c9e, #8a4dff); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font: 16px/1.55 "Segoe UI", system-ui, -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; }
+.glow { position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+.g1 { width: 620px; height: 620px; background: #4c1d9e; left: -160px; top: -340px; opacity: .5; }
+.g2 { width: 560px; height: 560px; background: #b02a68; right: -240px; top: 300px; opacity: .3; }
+main { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 56px 24px 64px; }
+header { display: flex; align-items: center; gap: 14px; }
+header img { width: 44px; height: 44px; }
+header b { font-size: 20px; letter-spacing: -.2px; }
+header nav { margin-left: auto; display: flex; gap: 18px; }
+header nav a { color: var(--dim); text-decoration: none; font-weight: 600; font-size: 14.5px; }
+header nav a:hover { color: var(--text); }
+.hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; margin-top: 70px; }
+h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.02; letter-spacing: -1.5px; font-weight: 800;
+	background: linear-gradient(90deg, #fff, #ffc4dd 55%, #cdb0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { color: var(--dim); font-size: 18.5px; margin-top: 18px; max-width: 560px; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 14px; font-weight: 700; text-decoration: none; color: #fff; transition: transform .15s, box-shadow .15s; }
+.btn.primary { background: var(--grad); box-shadow: 0 12px 36px rgba(255,92,158,.35); }
+.btn.primary:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(255,92,158,.5); }
+.btn.ghost { border: 1px solid var(--edge); background: var(--card); }
+.btn.ghost:hover { background: rgba(255,255,255,.08); }
+.small { color: var(--dim2); font-size: 13.5px; margin-top: 12px; }
+.lanes { position: relative; aspect-ratio: 4 / 5; border-radius: 26px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01)); border: 1px solid var(--edge); overflow: hidden; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+h2 { font-size: 28px; letter-spacing: -.5px; margin: 80px 0 8px; }
+.sub { color: var(--dim); max-width: 640px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+.card { padding: 22px; border-radius: 18px; background: var(--card); border: 1px solid var(--edge); }
+.card b { display: block; font-size: 17px; margin-bottom: 6px; }
+.card p { color: var(--dim); font-size: 14.5px; }
+.card i { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--grad); font-style: normal; font-weight: 800; margin-bottom: 14px; }
+ol.steps { margin: 26px 0 0 0; list-style: none; counter-reset: s; display: grid; gap: 12px; max-width: 760px; }
+ol.steps li { counter-increment: s; position: relative; padding: 16px 18px 16px 62px; border-radius: 16px; background: var(--card); border: 1px solid var(--edge); color: var(--dim); }
+ol.steps li b { color: var(--text); }
+ol.steps li::before { content: counter(s); position: absolute; left: 18px; top: 15px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,92,158,.16); color: var(--pink); display: grid; place-items: center; font-weight: 800; }
+code { font: 13.5px "Cascadia Mono", Consolas, monospace; background: rgba(255,255,255,.07); padding: 1px 6px; border-radius: 6px; color: var(--text); }
+.note { margin-top: 18px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,179,92,.3); background: rgba(255,179,92,.07); color: #f3d9b8; font-size: 14.5px; max-width: 760px; }
+#banner { display: none; margin-top: 26px; padding: 14px 18px; border-radius: 14px; background: rgba(95,227,161,.1); border: 1px solid rgba(95,227,161,.35); color: var(--ok); font-weight: 600; }
+footer { margin-top: 80px; padding-top: 22px; border-top: 1px solid var(--edge); color: var(--dim2); font-size: 13.5px; display: flex; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--dim); }
+@media (max-width: 820px) { .hero { grid-template-columns: 1fr; } .lanes { max-width: 380px; } .grid { grid-template-columns: 1fr; } header nav { display: none; } }
+</style>
+</head>
+<body>
+<div class="glow g1"></div><div class="glow g2"></div>
+<main>
+	<header><img src="icon.png" alt=""><b>VSRG Hub</b>
+		<nav><a href="#features">Features</a><a href="#install">Install</a><a href="https://github.com/Naidez7/vsrghub">GitHub</a></nav></header>
+	<div id="banner"></div>
+	<section class="hero">
+		<div>
+			<h1>All your rhythm games' songs, one place.</h1>
+			<p class="lead">VSRG Hub plays your osu!mania, Quaver and Qwilight songs and skins in Etterna, with the look of the game you know, and online rankings where every chart is ranked.</p>
+			<div class="cta">
+				<a class="btn primary" href="https://github.com/Naidez7/vsrghub/raw/main/release/VSRGHub-Setup.zip">Download for Windows</a>
+				<a class="btn ghost" href="https://github.com/Naidez7/vsrghub">Source code</a>
+			</div>
+			<p class="small">Free. Windows 10 and 11. Needs Etterna (free, from etternaonline.com).</p>
+		</div>
+		<div class="lanes"><canvas id="lanes"></canvas></div>
+	</section>
+
+	<h2 id="features">What it does</h2>
+	<p class="sub">Everything stays where it is: VSRG Hub reads your games' folders and builds Etterna's library and skins from them.</p>
+	<div class="grid">
+		<div class="card"><i>♪</i><b>Your songs, in Etterna</b><p>osu!mania 4K and 7K, Quaver and Qwilight charts, rated with Etterna's MSD by pattern: stream, jumpstream, handstream, stamina, jack, chordjack, tech.</p></div>
+		<div class="card"><i>✦</i><b>Your skins</b><p>Notes, judgements, cursor and interface from your osu! and Quaver skins, laid out as in the game they come from.</p></div>
+		<div class="card"><i>◐</i><b>The look you know</b><p>Play in osu! stable's look, osu!lazer's or Quaver's: main menu, song select, mods and results.</p></div>
+		<div class="card"><i>#</i><b>Every chart ranked</b><p>Make a VSRG Hub account and every play counts: your rating is worked out as Etterna does, 4K and 7K apart, overall and by pattern.</p></div>
+		<div class="card"><i>✓</i><b>Checked scores</b><p>Each score is sent with its replay, and the server works its accuracy out again before it counts.</p></div>
+		<div class="card"><i>↻</i><b>Always up to date</b><p>The launcher updates VSRG Hub and itself when a new version is out.</p></div>
+	</div>
+
+	<h2 id="install">Install</h2>
+	<ol class="steps">
+		<li><b>Install Etterna</b> if you don't have it (etternaonline.com).</li>
+		<li><b>Download VSRG Hub</b> above, unzip it and open <code>VSRG Hub Setup.exe</code>. It asks where to put itself, finds Etterna and your games, and installs.</li>
+		<li><b>Press Play.</b> To be on the rankings, make your account on the launcher's <b>Online</b> page.</li>
+	</ol>
+	<div class="note">Windows may warn about a new program (SmartScreen: <b>More info</b> → <b>Run anyway</b>) or Windows Defender may flag it: VSRG Hub isn't signed yet. It's open source; you can read every line on GitHub.</div>
+
+	<footer><span>VSRG Hub is a fan project, not affiliated with osu!, Quaver, Qwilight or Etterna.</span><a href="https://github.com/Naidez7/vsrghub">GitHub</a><a href="reset.html">Reset your password</a></footer>
+</main>
+<script>
+// a confirmed e-mail lands here (Supabase's Site URL)
+(function () {
+	const h = new URLSearchParams(location.hash.slice(1));
+	const b = document.getElementById("banner");
+	if (h.get("type") === "signup" || h.get("type") === "email_change") { b.textContent = "Your e-mail is confirmed: sign in on the launcher's Online page."; b.style.display = "block"; }
+	else if (h.get("type") === "recovery") { location.replace("reset.html" + location.hash); }
+	else if (h.get("error_description")) { b.textContent = h.get("error_description").replace(/\+/g, " "); b.style.display = "block"; b.style.color = "#ff6b81"; }
+	if (location.hash) history.replaceState(null, "", location.pathname);
+})();
+// four lanes, arrows falling onto their receptors
+const cv = document.getElementById("lanes"), cx = cv.getContext("2d");
+let W, H, D, notes = [], t0 = performance.now();
+function size() { D = devicePixelRatio || 1; const r = cv.getBoundingClientRect(); W = cv.width = r.width * D; H = cv.height = r.height * D; }
+addEventListener("resize", size); size();
+const TURN = [Math.PI / 2, 0, Math.PI, -Math.PI / 2], COL = ["#ff5c9e", "#8a4dff", "#8a4dff", "#ff5c9e"];
+const A = new Path2D(); [[0, .47], [.47, 0], [.29, -.15], [.115, .03], [.115, -.47], [-.115, -.47], [-.115, .03], [-.29, -.15], [-.47, 0]].forEach(([x, y], k) => k ? A.lineTo(x, y) : A.moveTo(x, y)); A.closePath();
+let next = 0, hits = [0, 0, 0, 0];
+function frame(now) {
+	const t = (now - t0) / 1000, lw = W / 4, sz = lw * .62, ry = H * .14, speed = H * .55;
+	if (t > next) { notes.push({ lane: Math.floor(Math.random() * 4), t: t + (H - ry) / speed }); next = t + .18 + Math.random() * .25; }
+	cx.clearRect(0, 0, W, H);
+	for (let i = 0; i < 4; i++) {
+		cx.save(); cx.translate(lw * (i + .5), ry); cx.rotate(TURN[i]); cx.scale(sz, sz);
+		cx.lineWidth = .05; cx.strokeStyle = "rgba(255,255,255," + (.25 + hits[i] * .6) + ")"; cx.stroke(A);
+		if (hits[i] > 0) { cx.fillStyle = "rgba(255,255,255," + hits[i] * .35 + ")"; cx.fill(A); }
+		cx.restore(); hits[i] = Math.max(0, hits[i] - .04);
+	}
+	notes = notes.filter(n => {
+		const y = ry + (n.t - t) * speed;
+		if (y <= ry) { hits[n.lane] = 1; return false; }
+		cx.save(); cx.translate(lw * (n.lane + .5), y); cx.rotate(TURN[n.lane]); cx.scale(sz, sz);
+		cx.fillStyle = COL[n.lane]; cx.shadowColor = COL[n.lane]; cx.shadowBlur = 18; cx.fill(A); cx.restore();
+		return true;
+	});
+	requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

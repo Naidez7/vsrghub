@@ -552,6 +552,10 @@ end
 -- score's rate to show them and puts yours back only when the results are left with its own
 -- Start button, so VSRG Hub keeps it too and puts it back on song select (TW.afterScoreView).
 function TW.showScore(hs)
+	if TW.isHubScore and TW.isHubScore(hs) then
+		SCREENMAN:SystemMessage(string.format("%s: %.2f%% at %sx", hs:GetDisplayName(), hs:GetWifeScore() * 100, (string.format("%.2f", hs:GetMusicRate()):gsub("0$", ""))))
+		return true
+	end
 	local top = SCREENMAN:GetTopScreen()
 	if not (hs and top and top.ShowEvalScreenForScore) then return false end
 	local rate = GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate()

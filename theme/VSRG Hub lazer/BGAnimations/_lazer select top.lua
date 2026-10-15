@@ -196,7 +196,7 @@ t[#t + 1] = wedge
 -- Local / Global / Preview over the scores (lazer's Details / Ranking tabs and its scope), and the
 -- rate (left click faster, right click slower, as in Etterna)
 -- ------------------------------------------------------------------------------------------------
-local tabs = { { "Local", "local" }, { "Global", "online" }, { "Preview" } }
+local tabs = { { "Local", "local" }, { "Global", "hub" }, { "EtternaOnline", "online" }, { "Preview" } }
 local function tabOn(tb)
 	if tb[1] == "Preview" then return TW.osuLeft == "Preview" end
 	return TW.osuLeft ~= "Preview" and TW.rankSource == tb[2]
@@ -212,7 +212,7 @@ end
 -- (the osu! look's ranking box steps through these; kept for the keybind and right clicks)
 function TW.osuLeftStep(d)
 	local cur = 1
-	if TW.osuLeft == "Preview" then cur = 3 elseif TW.rankSource == "online" then cur = 2 end
+	if TW.osuLeft == "Preview" then cur = 4 elseif TW.rankSource == "hub" then cur = 2 elseif TW.rankSource == "online" then cur = 3 end
 	pickTab(tabs[(cur - 1 + d) % #tabs + 1])
 end
 local tabRow = Def.ActorFrame { InitCommand = function(self) self:xy(M(18), M(274)) end }

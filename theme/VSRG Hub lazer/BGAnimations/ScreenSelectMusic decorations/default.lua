@@ -36,7 +36,11 @@ local function fillBoard(self, list, status, pb, pbPlace)
 	local msg = ({
 		loading = "Loading the online ranking...", login = "Log in to EtternaOnline to see the online ranking (click)",
 		unranked = "This chart isn't ranked online", empty = "No online scores on this chart yet",
+		offline = "VSRG Hub's ranking can't be reached right now",
+		nohub = "VSRG Hub's ranking needs the game started from VSRG Hub",
 	})[status] or ((#list == 0 and status == "ok") and "No scores yet. Go play it!" or "")
+	if TW.rankSource == "hub" and status == "loading" then msg = "Loading VSRG Hub's ranking..." end
+	if TW.rankSource == "hub" and status == "empty" then msg = "Nobody has a score on this chart yet: be the first!" end
 	self:GetChild("Status"):settext(msg)
 	self:GetChild("StatusBtn"):visible(status == "login")
 end
@@ -47,13 +51,18 @@ end
 local board = Def.ActorFrame {
 	CurrentStepsChangedMessageCommand = function(self) self:queuecommand("Board") end,
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Board") end,
-	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" then self:queuecommand("Board") end end,
+	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" or TW.rankSource == "hub" then self:queuecommand("Board") end end,
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self:queuecommand("Board") end,
 	LogOutMessageCommand = function(self) self:queuecommand("Board") end,
 	OnCommand = function(self) self:queuecommand("Board") end,
 	BoardCommand = function(self)
 		self:stoptweening()
+		if TW.rankSource == "hub" and TW.hubRanking then
+			fillBoard(self, {}, "loading", allScores()[1], nil)
+			self:sleep(0.35):queuecommand("Hub")
+			return
+		end
 		if TW.rankSource == "online" and TW.onlineRanking then
 			fillBoard(self, {}, TW.loggedIn() and "loading" or "login", allScores()[1], nil)
 			self:sleep(0.35):queuecommand("Online")
@@ -69,6 +78,17 @@ local board = Def.ActorFrame {
 			fillBoard(self, list, status, pb, place)
 		end)
 	end,
+	-- VSRG Hub's own ranking (28 VSRG Hub online.lua)
+	HubCommand = function(self)
+		if TW.rankSource ~= "hub" then return end
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status)
+			local pb, place
+			for i, hs in ipairs(list) do if TW.isMyScore(hs) then pb, place = hs, i break end end
+			if not pb then pb = allScores()[1] end
+			fillBoard(self, list, status, pb, place)
+		end, self)
+	end,
+	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
 	LZ.text(M(13), "regular", function(self) self:align(0.5, 0.5):xy(X0 + M(315), Y0 + M(110)):maxwidth(M(560) / self:GetZoom()):diffuse(LZ.dim) end) .. { Name = "Status" },
 	TW.button(M(560), M(60), function()
 		if TW.rankSource == "online" and not TW.loggedIn() and TWProfileLogin then TWProfileLogin() end
@@ -192,5 +212,7 @@ local preview = Def.ActorFrame {
 	end),
 }
 t[#t + 1] = preview
+-- (your older plays for VSRG Hub's ranking, when asked: 28 VSRG Hub online.lua)
+t[#t + 1] = TW.backfillActor and TW.backfillActor() or Def.Actor {}
 t[#t + 1] = TW.danOverlay("ScreenSelectMusic decorations/dan_overlay_bridge.lua")
 return t

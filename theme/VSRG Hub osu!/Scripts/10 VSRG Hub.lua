@@ -1094,12 +1094,31 @@ function TW.userCard(x, y, h, bare)
 					self:settext(n ~= "" and n or "Guest")
 				end
 			},
+			-- (signed in to VSRG Hub: its rating for the key count you play, and your place, as osu!'s
+			-- pp and rank; else Etterna's rating)
 			TW.text(9.1 * s, false, line(9.1, 29.2)) .. {
 				SetCommand = function(self)
+					local me = TW.hubMe and TW.hubMe()
+					if me then
+						local seven = TW.gameName and TW.gameName() == "kb7"
+						self:settextf("Performance:%.2f", seven and me.r7 or me.r4)
+						return
+					end
 					local p = TW.profile()
 					self:settextf("Performance:%.2f", p and p:GetPlayerRating() or 0)
 				end
 			},
+			TW.text(30 * s, false, function(self) self:align(1, 0.5):xy(W - 6 * s, 52 * s):diffusealpha(0.18):shadowlength(0) end) .. {
+				SetCommand = function(self)
+					local me = TW.hubMe and TW.hubMe()
+					local seven = TW.gameName and TW.gameName() == "kb7"
+					local place = me and (seven and me.p7 or me.p4) or 0
+					self:settext(place > 0 and ("#" .. place) or "")
+				end
+			},
+			-- (VSRG Hub writes your ratings a moment after the game starts, and after each play)
+			Def.Actor { OnCommand = function(self) self:sleep(3):queuecommand("Again") end,
+				AgainCommand = function(self) self:GetParent():playcommand("Set"); self:sleep(10):queuecommand("Again") end },
 			TW.text(9.1 * s, false, line(9.1, 45.9)) .. {
 				SetCommand = function(self) self:settextf("Accuracy:%.2f%%", TW.profileAccuracy()) end
 			},

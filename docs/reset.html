@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reset your password · VSRG Hub</title>
+<link rel="icon" href="icon.png">
+<style>
+:root { --bg: #0b0912; --text: #f4f0fb; --dim: #a39cb6; --edge: rgba(255,255,255,.12); --pink: #ff5c9e; --ok: #5fe3a1; --bad: #ff6b81; --grad: linear-gradient(135deg, #ff5c9e, #8a4dff); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font: 15px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif; min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.glow { position: fixed; width: 560px; height: 560px; border-radius: 50%; filter: blur(120px); background: #4c1d9e; opacity: .45; left: -180px; top: -300px; z-index: 0; }
+.box { position: relative; z-index: 1; width: 100%; max-width: 400px; padding: 30px 28px; border-radius: 20px; background: rgba(255,255,255,.045); border: 1px solid var(--edge); }
+.top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.top img { width: 40px; height: 40px; }
+h1 { font-size: 22px; }
+p { color: var(--dim); margin-bottom: 14px; }
+label { display: block; margin-top: 12px; color: var(--dim); font-size: 13px; font-weight: 600; }
+input { width: 100%; margin-top: 6px; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--edge); background: rgba(0,0,0,.3); color: var(--text); font: inherit; outline: none; }
+input:focus { border-color: rgba(255,92,158,.6); }
+button { width: 100%; margin-top: 18px; padding: 12px; border: 0; border-radius: 12px; background: var(--grad); color: #fff; font: 700 15px inherit; cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+.msg { margin-top: 14px; font-size: 14px; }
+.msg.err { color: var(--bad); } .msg.ok { color: var(--ok); }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="box">
+	<div class="top"><img src="icon.png" alt=""><h1>Reset your password</h1></div>
+	<div id="body"><p>Open this page from the link in the password mail VSRG Hub sent you (use "Forgot your password?" on the launcher's Online page).</p></div>
+</div>
+<script>
+const URL_ = "https://ekojitajoifsjdrrjzsv.supabase.co", KEY = "sb_publishable_yDIFMoghR6MJl7IRlkq6bw_xHHrbpH9";
+const h = new URLSearchParams(location.hash.slice(1));
+const token = h.get("access_token");
+if (location.hash) history.replaceState(null, "", location.pathname);
+const body = document.getElementById("body");
+if (h.get("error_description")) {
+	body.innerHTML = `<p class="msg err"></p><p>Ask for a new mail from the launcher's Online page ("Forgot your password?").</p>`;
+	body.querySelector(".msg").textContent = h.get("error_description").replace(/\+/g, " ");
+} else if (token && h.get("type") === "recovery") {
+	body.innerHTML = `<p>Choose a new password for your VSRG Hub account.</p>
+		<label>New password<input id="p1" type="password" autocomplete="new-password"></label>
+		<label>Again<input id="p2" type="password" autocomplete="new-password"></label>
+		<button id="go">Save the new password</button><div class="msg" id="msg"></div>`;
+	const msg = (t, k) => { const m = document.getElementById("msg"); m.textContent = t; m.className = "msg " + (k || ""); };
+	document.getElementById("go").onclick = async () => {
+		const p1 = document.getElementById("p1").value, p2 = document.getElementById("p2").value;
+		if (p1.length < 6) return msg("Use at least 6 characters.", "err");
+		if (p1 !== p2) return msg("The two passwords aren't the same.", "err");
+		const b = document.getElementById("go"); b.disabled = true; msg("Saving...");
+		try {
+			const r = await fetch(URL_ + "/auth/v1/user", { method: "PUT", headers: { apikey: KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ password: p1 }) });
+			if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.msg || e.message || e.error_description || ("error " + r.status)); }
+			body.innerHTML = `<p class="msg ok">Your password is changed. Sign in with it on the launcher's Online page.</p>`;
+		} catch (e) { b.disabled = false; msg(e.message === "Failed to fetch" ? "The server can't be reached: try again in a moment." : e.message, "err"); }
+	};
+}
+</script>
+</body>
+</html>

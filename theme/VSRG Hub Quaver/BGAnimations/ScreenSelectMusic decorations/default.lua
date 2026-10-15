@@ -111,7 +111,10 @@ local function fillBoard(root, list, status, pb)
 	local msg = ({
 		ok = "", loading = "Loading the online leaderboard...", unranked = "This map isn't ranked online",
 		login = "Log in to EtternaOnline to see the online leaderboard (click)", none = "",
+		offline = "VSRG Hub's leaderboard can't be reached right now",
+		nohub = "VSRG Hub's leaderboard needs the game started from VSRG Hub",
 	})[status] or "No scores yet. Be the first!"
+	if TW.rankSource == "hub" and status == "loading" then msg = "Loading VSRG Hub's leaderboard..." end
 	board:GetChild("Empty"):settext(msg):visible(#list == 0)
 	board:GetChild("EmptyBtn"):visible(status == "login")
 	root:GetChild("PBFrame"):GetChild("PBInner"):GetChild("PB"):playcommand("Fill", { hs = pb })
@@ -124,7 +127,7 @@ end
 t[#t + 1] = Def.Actor {
 	CurrentStepsChangedMessageCommand = function(self) self:queuecommand("Board") end,
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Board") end,
-	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" then self:queuecommand("Board") end end,
+	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" or TW.rankSource == "hub" then self:queuecommand("Board") end end,
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self:queuecommand("Board") end,
 	LogOutMessageCommand = function(self) self:queuecommand("Board") end,
@@ -132,6 +135,11 @@ t[#t + 1] = Def.Actor {
 	BoardCommand = function(self)
 		self:stoptweening()
 		local root = self:GetParent()
+		if TW.rankSource == "hub" and TW.hubRanking then
+			fillBoard(root, {}, "loading", allScores()[1])
+			self:sleep(0.35):queuecommand("Hub")
+			return
+		end
 		if TW.rankSource == "online" and TW.onlineRanking then
 			-- (asked a moment after the chart settles, not for every chart scrolled past)
 			fillBoard(root, {}, TW.loggedIn() and "loading" or "login", allScores()[1])
@@ -146,6 +154,13 @@ t[#t + 1] = Def.Actor {
 		local root = self:GetParent()
 		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(root, list, status, myBest(list)) end)
 	end,
+	-- VSRG Hub's own leaderboard (28 VSRG Hub online.lua)
+	HubCommand = function(self)
+		if TW.rankSource ~= "hub" then return end
+		local root = self:GetParent()
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(root, list, status, myBest(list)) end, self)
+	end,
+	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
 }
 t[#t + 1] = Def.ActorFrame {
 	QV.t(M(19), true, function(self) self:align(0, 0.5):xy(X0, M(136)):settext("LEADERBOARD") end),
@@ -153,11 +168,13 @@ t[#t + 1] = Def.ActorFrame {
 	Def.Quad { Name = "SrcBg", InitCommand = function(self) self:align(0, 0.5):xy(X0 + M(333), M(136)):zoomto(M(94), M(24)):diffuse(TW.rgb(25, 25, 25)) end },
 	QV.t(M(13.5), true, function(self) self:align(0, 0.5):xy(X0 + M(343), M(136)):diffuse(TW.rgb(6, 202, 250)) end) .. {
 		OnCommand = function(self) self:playcommand("TWRankSource") end,
-		TWRankSourceMessageCommand = function(self) self:settext(TW.rankSource == "online" and "Global" or "Local") end,
+		TWRankSourceMessageCommand = function(self) self:settext(TW.rankSource == "online" and "Etterna" or (TW.rankSource == "hub" and "Global" or "Local")) end,
 	},
-	-- Quaver's ranking box: Local (your scores) or Global (EtternaOnline's leaderboard)
+	-- Quaver's ranking box: Local (your scores), Global (VSRG Hub's leaderboard) or Etterna
+	-- (EtternaOnline's)
 	TW.button(M(94), M(24), function()
-		if TW.setRankSource then TW.setRankSource(TW.rankSource == "online" and "local" or "online") end
+		local nextSrc = ({ ["local"] = "hub", hub = "online", online = "local" })[TW.rankSource] or "local"
+		if TW.setRankSource then TW.setRankSource(nextSrc) end
 	end, function(self, on)
 		self:GetParent():GetChild("SrcBg"):diffuse(on and TW.rgb(50, 50, 50) or TW.rgb(25, 25, 25))
 	end) .. { InitCommand = function(self) self:align(0, 0.5):xy(X0 + M(333), M(136)):zoomto(M(94), M(24)):diffusealpha(0) end },
@@ -230,5 +247,7 @@ t[#t + 1] = Def.ActorFrame {
 		scoreRow("PB", true),
 	}
 }
+-- (your older plays for VSRG Hub's ranking, when asked: 28 VSRG Hub online.lua)
+root[#root + 1] = TW.backfillActor and TW.backfillActor() or Def.Actor {}
 root[#root + 1] = TW.danOverlay("ScreenSelectMusic decorations/dan_overlay_bridge.lua")
 return root

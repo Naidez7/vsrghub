@@ -136,6 +136,50 @@ local function try(f, d)
 	if ok and v ~= nil then return v end
 	return d
 end
+-- a score as VSRG Hub's server takes it (its replay's offsets with it, so the server can check the
+-- accuracy: d is { dvt = offsets, totalTaps, holdsMissed, minesHit }, or nil without a replay)
+local function scoreJSON(hs, steps, song, d)
+	local keys = TW.keys(steps)
+	local rate = hs:GetMusicRate()
+	local wife = hs:GetWifeScore()
+	pcall(function() local n = hs:GetSSRNormPercent(); if n and n > 0 then wife = n end end)
+	local s = {
+		score_key = hs:GetScoreKey(), chart_key = hs:GetChartKey(), keys = keys, rate = rate, wife = wife * 100,
+		msd = try(function() return steps:GetMSD(rate, 1) end, 0), max_combo = try(function() return hs:GetMaxCombo() end, 0),
+		modifiers = try(function() return hs:GetModifiers() end, ""),
+		song_title = song and song:GetDisplayMainTitle() or "", song_artist = song and song:GetDisplayArtist() or "",
+		chart_name = TW.diffName and TW.diffName(steps) or "",
+		holds_ok = try(function() return hs:GetHoldNoteScore("HoldNoteScore_Held") end, 0),
+		holds_ng = try(function() return hs:GetHoldNoteScore("HoldNoteScore_LetGo") end, 0),
+		mines_hit = try(function() return hs:GetTapNoteScore("TapNoteScore_HitMine") end, 0),
+	}
+	local d8 = try(function() return hs:GetDate() end, "")
+	if d8 ~= "" then
+		-- (Etterna's date is the PC's local time: with its offset from UTC)
+		local off = 0
+		pcall(function() local now = os.time(); off = os.difftime(now, os.time(os.date("!*t", now))) end)
+		local sign = off < 0 and "-" or "+"
+		off = math.abs(off)
+		s.played_at = d8:gsub(" ", "T") .. string.format("%s%02d:%02d", sign, math.floor(off / 3600), math.floor(off % 3600 / 60))
+	end
+	for k, name in pairs(SSR) do s["ssr_" .. k] = try(function() return hs:GetSkillsetSSR(name) end, 0) end
+	for k, tns in pairs(JUDGE) do s[k] = try(function() return hs:GetTapNoteScore(tns) end, 0) end
+	local json = jsonObj(s)
+	if d and d.dvt and #d.dvt > 0 and (d.totalTaps or 0) > 0 then
+		local o = {}
+		for i, v in ipairs(d.dvt) do o[i] = string.format("%.2f", v) end
+		json = json:sub(1, -2) .. string.format(',"total_taps":%d,"holds_missed":%d,"offsets":[%s]}', d.totalTaps, d.holdsMissed or 0, table.concat(o, ","))
+	end
+	return json, s.score_key
+end
+-- (a score counts when Etterna counts it for its rating: valid, not failed, 4K or 7K)
+local function counts(hs, steps)
+	if not try(function() return hs:GetEtternaValid() end, true) or try(function() return hs:GetChordCohesion() end, false) then return false end
+	if try(function() return hs:GetWifeGrade() end, "") == "Grade_Failed" then return false end
+	local keys = TW.keys(steps)
+	return keys == 4 or keys == 7
+end
+
 function TW.exportScore()
 	pcall(function()
 		if TW.rateBeforeView then return end -- (a score looked at again from song select)
@@ -144,39 +188,140 @@ function TW.exportScore()
 		if pc == "PlayerController_Autoplay" or pc == "PlayerController_Cpu" then return end
 		local hs = TW.resultsScore and TW.resultsScore()
 		if not hs then return end
-		if not try(function() return hs:GetEtternaValid() end, true) or try(function() return hs:GetChordCohesion() end, false) then return end
-		if hs:GetWifeGrade() == "Grade_Failed" then return end
 		local steps = GAMESTATE:GetCurrentSteps()
 		if not steps or steps:GetChartKey() ~= hs:GetChartKey() then return end
-		local keys = TW.keys(steps)
-		if keys ~= 4 and keys ~= 7 then return end
-		local rate = hs:GetMusicRate()
-		local wife = hs:GetWifeScore()
-		pcall(function() local n = hs:GetSSRNormPercent(); if n and n > 0 then wife = n end end)
-		local song = GAMESTATE:GetCurrentSong()
-		local s = {
-			score_key = hs:GetScoreKey(), chart_key = hs:GetChartKey(), keys = keys, rate = rate, wife = wife * 100,
-			msd = try(function() return steps:GetMSD(rate, 1) end, 0), max_combo = try(function() return hs:GetMaxCombo() end, 0),
-			modifiers = try(function() return hs:GetModifiers() end, ""),
-			song_title = song and song:GetDisplayMainTitle() or "", song_artist = song and song:GetDisplayArtist() or "",
-			chart_name = TW.diffName and TW.diffName(steps) or "",
-			holds_ok = try(function() return hs:GetHoldNoteScore("HoldNoteScore_Held") end, 0),
-			holds_ng = try(function() return hs:GetHoldNoteScore("HoldNoteScore_LetGo") end, 0),
-			mines_hit = try(function() return hs:GetTapNoteScore("TapNoteScore_HitMine") end, 0),
-		}
-		local d = try(function() return hs:GetDate() end, "")
-		if d ~= "" then
-			-- (Etterna's date is the PC's local time: with its offset from UTC)
-			local off = 0
-			pcall(function() local now = os.time(); off = os.difftime(now, os.time(os.date("!*t", now))) end)
-			local sign = off < 0 and "-" or "+"
-			off = math.abs(off)
-			s.played_at = d:gsub(" ", "T") .. string.format("%s%02d:%02d", sign, math.floor(off / 3600), math.floor(off % 3600 / 60))
-		end
-		for k, name in pairs(SSR) do s["ssr_" .. k] = try(function() return hs:GetSkillsetSSR(name) end, 0) end
-		for k, tns in pairs(JUDGE) do s[k] = try(function() return hs:GetTapNoteScore(tns) end, 0) end
-		File.Write(ONLINE .. "outbox/" .. s.score_key .. ".json", jsonObj(s))
+		if not counts(hs, steps) then return end
+		local d = TW.accData and TW.accData() or nil
+		local json, key = scoreJSON(hs, steps, GAMESTATE:GetCurrentSong(), d)
+		File.Write(ONLINE .. "outbox/" .. key .. ".json", json)
+		TW.hubWaiting = key
 	end)
+end
+
+-- Your older plays, sent once (asked from the launcher's Online page: it writes backfill.txt with
+-- "want"): the best score at each rate on every 4K and 7K chart, with its replay when Etterna has
+-- one. Done a few charts a frame on song select, so the game doesn't stall.
+local function replayData(hs)
+	local d = nil
+	pcall(function()
+		local r = hs:GetReplay()
+		r:LoadAllData()
+		local offs, types = r:GetOffsetVector() or {}, r:GetTapNoteTypeVector() or {}
+		if #offs == 0 then return end
+		local dvt = {}
+		for i, o in ipairs(offs) do
+			local ty = types[i]
+			if ty == nil or ty == "TapNoteType_Tap" or ty == "TapNoteType_HoldHead" or ty == "TapNoteType_Lift" then dvt[#dvt + 1] = o end
+		end
+		local taps = 0
+		for _, tns in pairs(JUDGE) do taps = taps + try(function() return hs:GetTapNoteScore(tns) end, 0) end
+		d = { dvt = dvt, totalTaps = taps,
+			holdsMissed = try(function() return hs:GetHoldNoteScore("HoldNoteScore_LetGo") end, 0) + try(function() return hs:GetHoldNoteScore("HoldNoteScore_MissedHold") end, 0) }
+	end)
+	return d
+end
+function TW.backfillActor()
+	return Def.Actor {
+		OnCommand = function(self)
+			local ok, txt = pcall(function() return File.Read(ONLINE .. "backfill.txt") end)
+			if not ok or not txt or not txt:find("^want") then return end
+			self.songs = SONGMAN:GetAllSongs() or {}
+			self.i, self.sent = 0, 0
+			SCREENMAN:SystemMessage("Getting your older plays ready for VSRG Hub's ranking...")
+			self:queuecommand("Step")
+		end,
+		StepCommand = function(self)
+			local songs = self.songs
+			if not songs then return end
+			local last = math.min(#songs, self.i + 25)
+			for n = self.i + 1, last do
+				local song = songs[n]
+				pcall(function()
+					for _, steps in ipairs(song:GetAllSteps() or {}) do
+						local keys = TW.keys(steps)
+						if keys == 4 or keys == 7 then
+							local byRate = SCOREMAN:GetScoresByKey(steps:GetChartKey())
+							if byRate then
+								for _, sar in pairs(byRate) do
+									local best
+									for _, hs in ipairs(sar:GetScores() or {}) do
+										if counts(hs, steps) and (not best or hs:GetWifeScore() > best:GetWifeScore()) then best = hs end
+									end
+									if best then
+										local json, key = scoreJSON(best, steps, song, replayData(best))
+										File.Write(ONLINE .. "outbox/" .. key .. ".json", json)
+										self.sent = self.sent + 1
+									end
+								end
+							end
+						end
+					end
+				end)
+			end
+			self.i = last
+			if last >= #songs then
+				pcall(function() File.Write(ONLINE .. "backfill.txt", "done " .. self.sent .. "\n") end)
+				SCREENMAN:SystemMessage(string.format("%d older plays are on their way to VSRG Hub's ranking", self.sent))
+				self.songs = nil
+				return
+			end
+			self:sleep(0.02):queuecommand("Step")
+		end,
+	}
+end
+
+-- the results screen: what VSRG Hub's ranking made of this play (written by the program once sent:
+-- results/<score key>.txt, "ok<TAB>keys<TAB>old rating<TAB>new rating<TAB>old place<TAB>new place" or
+-- "refused<TAB>why"), shown in a line at the bottom
+function TW.hubResultLine(x, y, textFn)
+	return Def.ActorFrame {
+		InitCommand = function(self) self:xy(x, y):diffusealpha(0) end,
+		-- (a frame later: the screen's own OnCommand writes the play first)
+		OnCommand = function(self) self:queuecommand("Start") end,
+		StartCommand = function(self)
+			self.key = TW.hubWaiting
+			TW.hubWaiting = nil
+			if not self.key or not TW.hubMe() then return end
+			self.t0 = GetTimeSinceStart()
+			self:GetChild("T"):settext("Sending your play to VSRG Hub's ranking...")
+			self:linear(0.2):diffusealpha(1):queuecommand("Poll")
+		end,
+		PollCommand = function(self)
+			local ok, txt = pcall(function() return File.Read(ONLINE .. "results/" .. self.key .. ".txt") end)
+			local t = self:GetChild("T")
+			if ok and txt and txt ~= "" then
+				local f = {}
+				for v in (txt:gsub("[\r\n]+$", "") .. "\t"):gmatch("([^\t]*)\t") do f[#f + 1] = v end
+				if f[1] == "ok" then
+					local old, new, op, np = tonumber(f[3]) or 0, tonumber(f[4]) or 0, tonumber(f[5]) or 0, tonumber(f[6]) or 0
+					local d = new - old
+					local line = string.format("VSRG Hub %sK rating: %.2f", f[2] or "4", new)
+					if math.abs(d) >= 0.005 then line = line .. string.format(" (%s%.2f)", d > 0 and "+" or "", d) end
+					if np > 0 then
+						line = line .. "   #" .. np
+						if op > 0 and op ~= np then line = line .. string.format(" (%s%d)", op > np and "+" or "-", math.abs(op - np)) end
+					end
+					t:settext(line)
+				else
+					t:settext("VSRG Hub didn't take this play: " .. (f[2] or ""))
+				end
+				return
+			end
+			if GetTimeSinceStart() - self.t0 > 20 then t:settext("Your play will be sent to VSRG Hub's ranking later") return end
+			self:sleep(0.5):queuecommand("Poll")
+		end,
+		Def.Quad { Name = "Bg", InitCommand = function(self) self:zoomto(1, 1):diffuse({ 0, 0, 0, 0.6 }) end },
+		-- (textFn(init): the look's text actor, init run on it)
+		textFn(function(self) self:align(0.5, 0.5):shadowlength(1) end) .. { Name = "T" },
+		-- (the dark band behind fits the words)
+		Def.Actor { InitCommand = function(self)
+			self:SetUpdateFunction(function(a)
+				local p = a:GetParent()
+				local t = p:GetChild("T")
+				p:GetChild("Bg"):zoomto(t:GetZoomedWidth() + 28, t:GetZoomedHeight() + 12)
+			end)
+		end },
+	}
 end
 
 -- who's signed in to VSRG Hub (nil when nobody, or the game wasn't started from VSRG Hub)
@@ -185,7 +330,8 @@ function TW.hubMe()
 	if not ok or not txt or txt == "" then return nil end
 	local name, r4, r7 = txt:match("^([^\t\r\n]+)\t([%d%.]+)\t([%d%.]+)")
 	if not name then return nil end
-	return { name = name, r4 = tonumber(r4) or 0, r7 = tonumber(r7) or 0 }
+	local p4, p7 = txt:match("^[^\t]+\t[%d%.]+\t[%d%.]+\t(%d+)\t(%d+)")
+	return { name = name, r4 = tonumber(r4) or 0, r7 = tonumber(r7) or 0, p4 = tonumber(p4) or 0, p7 = tonumber(p7) or 0 }
 end
 
 -- a score from VSRG Hub's ranking, made to answer what the scoreboards ask a HighScore
