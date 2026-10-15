@@ -73,3 +73,6 @@ table.rk tr.clickable { cursor: pointer; } table.rk tr.clickable:hover td { back
 .cmp .bar .m i.a { right: 50%; background: var(--pink); } .cmp .bar .m i.b { left: 50%; background: var(--violet); }
 .cmp .lbl { text-align: center; color: var(--dim2); font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-top: 12px; }
 @media (max-width: 760px) { .pbody, .cmp { grid-template-columns: 1fr; } .ratings { grid-template-columns: 1fr; } }
+.play.best { border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.05); } .play.top { border-color: rgba(255,92,158,.45); background: rgba(255,92,158,.07); }
+.star { color: #ffd27a; font-size: 13px; } .star.top { color: #ff5c9e; text-shadow: 0 0 8px rgba(255,92,158,.6); }
+.pager { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; color: var(--dim); font-size: 13px; }

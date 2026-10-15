@@ -16,11 +16,15 @@
 	<p class="lead">Every 4K and 7K chart is ranked. Ratings are worked out as Etterna does, from each player's best plays.</p>
 	<div class="card">
 		<div class="row"><div class="seg" id="keys"><button data-k="4" class="on">4K</button><button data-k="7">7K</button></div>
-			<select id="skill"><option value="overall">Overall</option><option value="stream">Stream</option><option value="jumpstream">Jumpstream</option><option value="handstream">Handstream</option><option value="stamina">Stamina</option><option value="jackspeed">Jackspeed</option><option value="chordjack">Chordjack</option><option value="technical">Technical</option></select>
+			<select id="skill"><option value="overall">Overall</option><option value="month">This month</option><option value="stream">Stream</option><option value="jumpstream">Jumpstream</option><option value="handstream">Handstream</option><option value="stamina">Stamina</option><option value="jackspeed">Jackspeed</option><option value="chordjack">Chordjack</option><option value="technical">Technical</option></select>
 			<input class="in" id="find" placeholder="Find a player" style="margin-left:auto"></div>
 		<div id="body"><div class="empty">Loading...</div></div>
 	</div>
-	<div class="card" style="margin-top:16px"><div class="row"><h2 style="font-size:18px">Latest plays</h2></div><div id="feed"><div class="empty">Loading...</div></div></div>
+	<div class="card" style="margin-top:16px">
+		<div class="row"><div class="seg" id="feedseg"><button class="on" data-feed="latest">Latest plays</button><button data-feed="potd">Plays of the day</button><button data-feed="best">Best plays</button><button data-feed="daily">Daily challenge</button></div>
+			<div class="seg" id="feedkeys"><button class="on" data-k="0">All</button><button data-k="4">4K</button><button data-k="7">7K</button></div></div>
+		<div id="feed"><div class="empty">Loading...</div></div>
+		<div class="pager" id="pager" style="display:none"><button class="btn ghost" id="pg-prev">‹</button><span>Page <input class="in" id="pg-in" type="number" min="1" value="1" style="width:60px;text-align:center"> of <b id="pg-n">1</b></span><button class="btn ghost" id="pg-next">›</button></div></div>
 </main>
 <script src="hub.js"></script>
 <script>
@@ -36,18 +40,66 @@ function draw() {
 async function load() {
 	$("body").innerHTML = `<div class="empty">Loading...</div>`;
 	const tech = $("skill").querySelector('option[value="technical"]'); tech.disabled = k === 7; if (k === 7 && skill === "technical") { skill = "overall"; $("skill").value = "overall"; }
-	try { all = await HUB.rpc("rankings", { k, skill, max_rows: 200, skip: 0 }); draw(); }
+	try { all = skill === "month" ? await HUB.rpc("rankings_month", { k, max_rows: 200 }) : await HUB.rpc("rankings", { k, skill, max_rows: 200, skip: 0 }); draw(); }
 	catch (e) { $("body").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`; }
 }
 document.querySelectorAll("#keys button").forEach(b => { b.classList.toggle("on", +b.dataset.k === k); b.onclick = () => { k = +b.dataset.k; document.querySelectorAll("#keys button").forEach(x => x.classList.toggle("on", x === b)); load(); }; });
 $("skill").value = skill; $("skill").onchange = () => { skill = $("skill").value; load(); };
 $("find").oninput = draw;
 load();
-HUB.get("scores?select=id,user_id,source,chart_key,keys,rate,wife,ssr_overall,song_title,chart_name,played_at,profiles!scores_user_id_fkey!inner(username,banned)&valid=eq.true&profiles.banned=eq.false&played_at=not.is.null&order=played_at.desc&limit=20")
-	.then(rows => { $("feed").innerHTML = rows.map(s => `<a class="play" href="chart.html?key=${encodeURIComponent(s.chart_key)}&title=${encodeURIComponent((s.song_title || "?") + (s.chart_name ? " · " + s.chart_name : "") + " · " + s.keys + "K")}">
-		<span class="t">${HUB.dot(s.source)}<b>${HUB.esc(s.profiles.username)}</b> <small>${HUB.esc(s.song_title || "?")}${s.chart_name ? " · " + HUB.esc(s.chart_name) : ""} · ${s.keys}K · ${HUB.rate(s.rate)}</small></span>
-		<span class="s">${(+s.ssr_overall).toFixed(2)}</span><span class="d">${HUB.ago(s.played_at)}</span><span class="a">${(+s.wife).toFixed(2)}%</span></a>`).join("") || `<div class="empty">Nothing played yet.</div>`; })
-	.catch(e => $("feed").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`);
+// --- the plays: latest, each day's best, the best of all, the daily challenge; pages of ten ---
+let feedMode = "latest", feedKeys = 0, items = [], page = 1;
+const chartLink = s => `chart.html?key=${encodeURIComponent(s.chart_key)}&title=${encodeURIComponent((s.song_title || "?") + (s.chart_name ? " · " + s.chart_name : "") + " · " + s.keys + "K")}`;
+function row(s, mark, when, rank) {
+	const who = s.username || (s.profiles && s.profiles.username) || "?";
+	return `<a class="play ${mark || ""}" href="${chartLink(s)}"><span class="t">${rank ? `<span class="dim">${rank}</span> ` : ""}${HUB.dot(s.source)}<b>${HUB.esc(who)}</b> <small>${HUB.esc(s.song_title || "?")}${s.chart_name ? " · " + HUB.esc(s.chart_name) : ""} · ${s.keys}K · ${HUB.rate(s.rate)}</small></span>
+		<span class="s">${mark ? `<span class="star ${mark}">★</span> ` : ""}${(+s.ssr_overall).toFixed(2)}</span><span class="d">${when}</span><span class="a">${(+s.wife).toFixed(2)}%</span></a>`;
+}
+const dayOf = s => { const t = new Date(s.played_at || ""); return isNaN(t) ? "" : t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0"); };
+function dayName(d) { if (!d) return ""; const t = new Date(d + "T12:00:00"), today = new Date(); today.setHours(12, 0, 0, 0); const diff = Math.round((today - t) / 86400000); return diff === 0 ? "Today" : diff === 1 ? "Yesterday" : HUB.date(d); }
+function drawPage() {
+	const n = Math.max(1, Math.ceil(items.length / 10)); page = Math.max(1, Math.min(n, page));
+	let last = null, out = "";
+	for (const it of items.slice((page - 1) * 10, page * 10)) { if (it.head && it.head !== last) out += `<div class="dim" style="margin:${last === null ? 12 : 20}px 0 6px;font-weight:700;letter-spacing:.8px;font-size:11px;text-transform:uppercase">${it.head}</div>`; last = it.head; out += it.html; }
+	$("feed").innerHTML = out || `<div class="empty">Nothing here yet.</div>`;
+	$("pager").style.display = n > 1 ? "flex" : "none"; $("pg-in").value = page; $("pg-n").textContent = n;
+}
+$("pg-prev").onclick = () => { page--; drawPage(); }; $("pg-next").onclick = () => { page++; drawPage(); };
+$("pg-in").onchange = () => { page = parseInt($("pg-in").value, 10) || 1; drawPage(); };
+async function loadFeed() {
+	$("feed").innerHTML = `<div class="empty">Loading...</div>`; $("pager").style.display = "none"; page = 1;
+	const kf = feedKeys ? `&keys=eq.${feedKeys}` : "";
+	try {
+		if (feedMode === "latest") {
+			const rows = await HUB.get(`scores?select=id,user_id,source,chart_key,keys,rate,wife,ssr_overall,song_title,chart_name,played_at,profiles!scores_user_id_fkey!inner(username,banned)&valid=eq.true&profiles.banned=eq.false&played_at=not.is.null${kf}&order=played_at.desc&limit=200`);
+			const byDay = {}; rows.forEach(s => { const d = dayOf(s); if (!byDay[d] || s.ssr_overall > byDay[d].ssr_overall) byDay[d] = s; });
+			const list = rows.slice().sort((a, b) => { const da = dayOf(a), db = dayOf(b); if (da !== db) return da < db ? 1 : -1; if (byDay[da] === a) return -1; if (byDay[db] === b) return 1; return 0; });
+			items = list.map(s => { const d = dayOf(s), best = byDay[d] === s, name = dayName(d); return { head: best && name === "Today" ? "Play of the day" : name, html: row(s, best ? "best" : "", HUB.ago(s.played_at)) }; });
+		} else if (feedMode === "potd") {
+			const rows = await HUB.rpc("plays_of_the_day", { max_days: 5000, tz_minutes: -new Date().getTimezoneOffset(), k: feedKeys });
+			let top = null; rows.forEach(s => { if (!top || s.ssr_overall > top.ssr_overall) top = s; });
+			items = rows.map(s => ({ head: dayName(dayOf(s)), html: row(s, s === top ? "top" : "best", HUB.ago(s.played_at)) }));
+		} else if (feedMode === "best") {
+			const rows = await HUB.get(`scores?select=id,user_id,source,chart_key,keys,rate,wife,ssr_overall,song_title,chart_name,played_at,profiles!scores_user_id_fkey!inner(username,banned)&valid=eq.true&verified=eq.true&profiles.banned=eq.false${kf}&order=ssr_overall.desc&limit=400`);
+			const seen = new Set(), top = []; for (const s of rows) { const key = s.user_id + "|" + s.chart_key; if (seen.has(key)) continue; seen.add(key); top.push(s); if (top.length >= 50) break; }
+			items = top.map((s, i) => ({ head: "", html: row(s, i === 0 ? "top" : "", HUB.date(s.played_at), i + 1) }));
+		} else {
+			const K = feedKeys || 4, day = new Date().toISOString().slice(0, 10);
+			const [charts, board, hist] = await Promise.all([HUB.rpc("daily_chart", { day, k: K }), HUB.rpc("daily_board", { day, k: K }), HUB.rpc("daily_history", { days: 14, k: K })]);
+			const c = charts[0];
+			if (!c) { items = []; drawPage(); $("feed").innerHTML = `<div class="empty">No ${K}K daily yet.</div>`; return; }
+			const chart = { ...c, keys: K };
+			items = [{ head: `Today's ${K}K chart (UTC day)`, html: `<a class="play" href="${chartLink(chart)}"><span class="t"><b>${HUB.esc(c.song_title || "?")}</b> <small>${HUB.esc(c.song_artist || "")}${c.chart_name ? " · " + HUB.esc(c.chart_name) : ""} · ${K}K · MSD ${(+c.msd).toFixed(2)}</small></span><span class="s">${board.length} player${board.length === 1 ? "" : "s"}</span><span class="d">Play it in VSRG Hub: the launcher's Daily challenge tab jumps to it</span><span class="a"></span></a>` }];
+			items.push(...board.map(r => ({ head: "Today's board", html: `<a class="play" href="player.html?id=${r.user_id}"><span class="t"><span class="dim">${r.place}</span> ${HUB.dot(r.source)}<b>${HUB.esc(r.username)}</b> <small>${HUB.rate(r.rate)} · ${r.max_combo}x combo</small></span><span class="s">${(+r.ssr_overall).toFixed(2)}</span><span class="d">${HUB.ago(r.played_at)}</span><span class="a">${(+r.wife).toFixed(2)}%</span></a>` })));
+			if (!board.length) items.push({ head: "Today's board", html: `<div class="empty">Nobody has played it today.</div>` });
+			items.push(...hist.slice(1).map(h => ({ head: "The last days", html: `<div class="play"><span class="t"><b>${HUB.date(h.day)}</b> <small>${HUB.esc(h.song_title || "?")}${h.chart_name ? " · " + HUB.esc(h.chart_name) : ""} · MSD ${(+h.msd).toFixed(2)}</small></span><span class="s">${h.winner ? `<span class="star">★</span> ${HUB.esc(h.winner)}` : ""}</span><span class="d">${h.winner ? `${(+h.winner_ssr).toFixed(2)} · ${h.players} player${h.players === 1 ? "" : "s"}` : "nobody played it"}</span><span class="a"></span></div>` })));
+		}
+		drawPage();
+	} catch (e) { $("feed").innerHTML = `<div class="empty err">${HUB.esc(e.message)}</div>`; }
+}
+document.querySelectorAll("#feedseg button").forEach(b => b.onclick = () => { feedMode = b.dataset.feed; document.querySelectorAll("#feedseg button").forEach(x => x.classList.toggle("on", x === b)); loadFeed(); });
+document.querySelectorAll("#feedkeys button").forEach(b => b.onclick = () => { feedKeys = +b.dataset.k; document.querySelectorAll("#feedkeys button").forEach(x => x.classList.toggle("on", x === b)); loadFeed(); });
+loadFeed();
 </script>
 </body>
 </html>

@@ -15,6 +15,7 @@
 	<div id="body"><div class="empty">Loading...</div></div>
 </main>
 <script src="hub.js"></script>
+<script src="hubchart.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 let p = null, tab = "top4", src = "all";
@@ -26,7 +27,7 @@ function hist(points, k) {
 	const y = q => 8 + (H - 22) * (hi > lo ? 1 - (q.rating - lo) / (hi - lo) : 0.5);
 	const line = points.map((q, i) => `${i ? "L" : "M"}${x(q).toFixed(1)},${y(q).toFixed(1)}`).join("");
 	const last = points[points.length - 1];
-	return `<div class="hist"><div class="k">${k}K RATING OVER TIME</div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+	return `<div class="hist"><div class="k">${k}K RATING OVER TIME<button class="hexp" title="Expand" onclick="HUBCHART.open(p, ${k}, p.hist[${k}])">⤢</button></div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
 		<defs><linearGradient id="hg${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5c9e" stop-opacity=".35"/><stop offset="1" stop-color="#ff5c9e" stop-opacity="0"/></linearGradient></defs>
 		<path d="${line}L${x(last).toFixed(1)},${H - 14}L4,${H - 14}Z" fill="url(#hg${k})"/><path d="${line}" fill="none" stroke="#ff5c9e" stroke-width="2" vector-effect="non-scaling-stroke"/>
 		<text x="4" y="${H - 2}" fill="#8f86a8" font-size="9">${HUB.date(points[0].day)}</text><text x="${W - 4}" y="${H - 2}" fill="#8f86a8" font-size="9" text-anchor="end">${HUB.date(last.day)}</text></svg></div>`;
@@ -43,16 +44,19 @@ function aggregate(ssrs) {
 	return Math.min(100, Math.max(0, (rating + res * 2) * 1.05));
 }
 async function history(id, k) {
-	const plays = await HUB.get(`scores?select=chart_key,rate,ssr_overall,ssr_stream,ssr_jumpstream,ssr_handstream,ssr_stamina,ssr_jackspeed,ssr_chordjack,ssr_technical,played_at,submitted_at,verified&user_id=eq.${encodeURIComponent(id)}&keys=eq.${k}&valid=eq.true&limit=10000`);
+	const plays = await HUB.get(`scores?select=chart_key,rate,ssr_overall,ssr_stream,ssr_jumpstream,ssr_handstream,ssr_stamina,ssr_jackspeed,ssr_chordjack,ssr_technical,played_at,submitted_at,verified,song_title,chart_name,wife,source&user_id=eq.${encodeURIComponent(id)}&keys=eq.${k}&valid=eq.true&limit=10000`);
 	const day = q => (q.played_at || q.submitted_at || "").slice(0, 10);
 	const list = plays.filter(q => q.verified !== false && day(q)).sort((a, b) => day(a) < day(b) ? -1 : 1);
 	const best = new Map(), out = [], names = ["ssr_stream", "ssr_jumpstream", "ssr_handstream", "ssr_stamina", "ssr_jackspeed", "ssr_chordjack", "ssr_technical"];
 	const n = k === 7 ? 6 : 7;
 	for (let i = 0; i < list.length;) {
-		const d = day(list[i]);
-		for (; i < list.length && day(list[i]) === d; i++) { const q = list[i], key = q.chart_key + "@" + (+q.rate).toFixed(2); const b = best.get(key); if (!b || q.ssr_overall > b.ssr_overall) best.set(key, q); }
+		const d = day(list[i]), today = [];
+		for (; i < list.length && day(list[i]) === d; i++) { const q = list[i], key = q.chart_key + "@" + (+q.rate).toFixed(2); const b = best.get(key); if (!b || q.ssr_overall > b.ssr_overall) best.set(key, q); today.push(q); }
 		let total = 0; for (let j = 0; j < n; j++) total += aggregate([...best.values()].map(q => +q[names[j]] || 0));
-		out.push({ day: d, rating: Math.round(total / n * 100) / 100 });
+		// (the day's three best plays, one per chart, for the big chart's hover)
+		const seen = new Set(), top = [];
+		for (const q of today.slice().sort((a, b) => b.ssr_overall - a.ssr_overall)) { if (seen.has(q.chart_key)) continue; seen.add(q.chart_key); top.push(q); if (top.length === 3) break; }
+		out.push({ day: d, rating: Math.round(total / n * 100) / 100, n: today.length, plays: top });
 	}
 	return out;
 }

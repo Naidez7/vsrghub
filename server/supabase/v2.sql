@@ -193,6 +193,11 @@ begin
 		select * into known from public.charts where chart_key = s->>'chart_key';
 		if found and known.notes <> taps then ok := false; end if;
 	end if;
+	-- (the same play already here from another game: not twice)
+	if public.vh_is_duplicate(uid, s->>'chart_key', (s->>'rate')::real, (s->>'played_at')::timestamptz,
+			case when s->>'source' in ('osu', 'lazer', 'quaver') then s->>'source' else 'etterna' end) then
+		raise exception 'this play is on the rankings already (sent from another game)';
+	end if;
 	insert into public.scores (user_id, score_key, chart_key, keys, rate, wife,
 		ssr_overall, ssr_stream, ssr_jumpstream, ssr_handstream, ssr_stamina, ssr_jackspeed,
 		ssr_chordjack, ssr_technical, msd, marvelous, perfect, great, good, bad, miss, holds_ok,
@@ -360,7 +365,7 @@ grant execute on function public.lost_firsts(uuid, timestamptz) to anon, authent
 
 -- ---------------------------------------------------------------------------------------------
 -- the daily challenge: one chart a day (4K and 7K each), the same for everyone, picked from the
--- charts people have played at 1.0x (MSD 8 to 32, the ones two or more players know first), by a
+-- charts people have played at 1.0x (MSD 8 to 28, the ones more players know first), by a
 -- hash of the day; the day's board is everyone's best on it played that day (UTC)
 
 create or replace function public.daily_chart(day date, k smallint default 4)
@@ -370,9 +375,9 @@ language sql stable security definer set search_path = public as $$
 	from (select s.chart_key, max(s.song_title) as song_title, max(s.song_artist) as song_artist, max(s.chart_name) as chart_name,
 			max(s.msd) as msd, count(distinct s.user_id) as n
 		from public.scores s join public.profiles p on p.id = s.user_id
-		where s.valid and not p.banned and s.keys = k and abs(s.rate - 1) < 0.001 and s.msd between 8 and 32
+		where s.valid and not p.banned and s.keys = k and abs(s.rate - 1) < 0.001 and s.msd between 8 and 28
 		group by s.chart_key) c
-	order by (c.n >= 2) desc, md5(day::text || c.chart_key)
+	order by least(c.n, 3) desc, md5(day::text || c.chart_key)
 	limit 1
 $$;
 grant execute on function public.daily_chart(date, smallint) to anon, authenticated;
@@ -413,6 +418,78 @@ begin
 	end loop;
 end $$;
 grant execute on function public.daily_history(int, smallint) to anon, authenticated;
+
+-- ---------------------------------------------------------------------------------------------
+-- the month's ranking: ratings worked out as the all-time ones (vh_refresh_rating), but from the
+-- plays made in one month only (played_at, UTC), so every month starts from nothing
+create or replace function public.rankings_month(k smallint default 4, month date default null, max_rows int default 100)
+returns table (place bigint, username text, user_id uuid, avatar int, avatar_ext text, rating real, plays bigint)
+language sql stable security definer set search_path = public as $$
+	with m as (select date_trunc('month', coalesce(month, (now() at time zone 'UTC')::date))::date as m0),
+	best as (
+		select distinct on (s.user_id, s.chart_key, s.rate) s.user_id, s.ssr_stream, s.ssr_jumpstream, s.ssr_handstream,
+			s.ssr_stamina, s.ssr_jackspeed, s.ssr_chordjack, s.ssr_technical
+		from public.scores s, m
+		where s.keys = k and s.valid and s.verified and s.played_at >= m.m0::timestamptz and s.played_at < (m.m0 + interval '1 month')
+		order by s.user_id, s.chart_key, s.rate, s.ssr_overall desc),
+	agg as (
+		select b.user_id, count(*) as plays,
+			public.vh_aggregate(array_agg(b.ssr_stream)) as st, public.vh_aggregate(array_agg(b.ssr_jumpstream)) as js,
+			public.vh_aggregate(array_agg(b.ssr_handstream)) as hs, public.vh_aggregate(array_agg(b.ssr_stamina)) as sta,
+			public.vh_aggregate(array_agg(b.ssr_jackspeed)) as jk, public.vh_aggregate(array_agg(b.ssr_chordjack)) as cj,
+			public.vh_aggregate(array_agg(b.ssr_technical)) as te
+		from best b group by b.user_id),
+	rated as (
+		select a.user_id, a.plays,
+			(case when k = 7 then (a.st + a.js + a.hs + a.sta + a.jk + a.cj) / 6.0 else (a.st + a.js + a.hs + a.sta + a.jk + a.cj + a.te) / 7.0 end)::real as rating
+		from agg a)
+	select row_number() over (order by r.rating desc), p.username, r.user_id, p.avatar, p.avatar_ext, r.rating, r.plays
+	from rated r join public.profiles p on p.id = r.user_id
+	where not p.banned
+	order by r.rating desc
+	limit least(greatest(max_rows, 1), 200)
+$$;
+grant execute on function public.rankings_month(smallint, date, int) to anon, authenticated;
+
+-- ---------------------------------------------------------------------------------------------
+-- the same play sent twice (from Etterna and from an osu! / Quaver replay of it): same player,
+-- chart and rate, played within 3 seconds, from different games. New ones are refused on the way
+-- in (vh_insert_score below); the ones already there are found and cleaned up by an admin.
+create or replace function public.vh_is_duplicate(uid uuid, chart text, r real, at timestamptz, src text) returns boolean
+language sql stable security definer set search_path = public as $$
+	select exists (select 1 from public.scores o
+		where o.user_id = uid and o.chart_key = chart and abs(o.rate - r) < 0.001 and o.valid
+			and o.source <> src and at is not null and o.played_at is not null and abs(extract(epoch from o.played_at - at)) <= 3)
+$$;
+revoke all on function public.vh_is_duplicate(uuid, text, real, timestamptz, text) from public, anon, authenticated;
+
+create or replace function public.admin_duplicates(fix boolean default false)
+returns table (user_id uuid, username text, song_title text, chart_name text, keys smallint, rate real, kept_source text, dropped_source text, dropped_id bigint)
+language plpgsql security definer set search_path = public as $$
+declare
+	rec record;
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	for rec in
+		select a.user_id, p.username, a.song_title, a.chart_name, a.keys, a.rate, a.source as kept_source, b.source as dropped_source, b.id as dropped_id, b.keys as bk
+		from public.scores a join public.scores b on b.user_id = a.user_id and b.chart_key = a.chart_key and abs(b.rate - a.rate) < 0.001
+			and b.id <> a.id and b.source <> a.source and a.played_at is not null and b.played_at is not null
+			and abs(extract(epoch from a.played_at - b.played_at)) <= 3
+		join public.profiles p on p.id = a.user_id
+		where a.valid and b.valid
+			-- (the one kept: the verified one, then the Etterna one, then the older)
+			and (a.verified::int, (a.source = 'etterna')::int, -a.id) > (b.verified::int, (b.source = 'etterna')::int, -b.id)
+	loop
+		if fix then
+			update public.scores set valid = false, removed_by = auth.uid() where id = rec.dropped_id and valid;
+			perform public.vh_refresh_rating(rec.user_id, rec.bk);
+		end if;
+		user_id := rec.user_id; username := rec.username; song_title := rec.song_title; chart_name := rec.chart_name;
+		keys := rec.keys; rate := rec.rate; kept_source := rec.kept_source; dropped_source := rec.dropped_source; dropped_id := rec.dropped_id;
+		return next;
+	end loop;
+end $$;
+grant execute on function public.admin_duplicates(boolean) to authenticated;
 
 -- a player's place in 4K or 7K (0 when unranked)
 create or replace function public.player_place(player uuid, k smallint default 4) returns int
@@ -736,7 +813,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '15')
+insert into public.vh_meta (key, value) values ('schema_version', '16')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):
