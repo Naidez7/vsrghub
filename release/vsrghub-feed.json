@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.46",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.46.zip",
- "sha256": "320a048fad045d2842e279c8d18049d20c9be59077e5b5d45a5a6f58140b8c8a",
- "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it.",
+ "version": "1.8.0-beta.47",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.47.zip",
+ "sha256": "acdf9cddefd008b9e0bfdf4c170cbe2779079e7d734a00dbff1d72d40a8a0578",
+ "notes": "- **Your osu! plays count.** \"Send my osu! plays\" on the Online page reads your osu! stable replays (and osu!lazer's, for maps that are also in your osu! Songs folder), judges each as Etterna would on the same chart, and the game rates them with Etterna's calculator: every 4K and 7K map is ranked.\n- A dot by each play says where it was played: Etterna (violet), osu! (pink) or osu!lazer (pink with a gold ring).\n- Song select: the last song's picture stays while the list sits on a pack's name, so the next song's picture fades in over it instead of coming up from black.",
  "latest": {
-  "version": "1.8.0-beta.46",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.46.zip",
-  "sha256": "320a048fad045d2842e279c8d18049d20c9be59077e5b5d45a5a6f58140b8c8a",
-  "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it."
+  "version": "1.8.0-beta.47",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.47.zip",
+  "sha256": "acdf9cddefd008b9e0bfdf4c170cbe2779079e7d734a00dbff1d72d40a8a0578",
+  "notes": "- **Your osu! plays count.** \"Send my osu! plays\" on the Online page reads your osu! stable replays (and osu!lazer's, for maps that are also in your osu! Songs folder), judges each as Etterna would on the same chart, and the game rates them with Etterna's calculator: every 4K and 7K map is ranked.\n- A dot by each play says where it was played: Etterna (violet), osu! (pink) or osu!lazer (pink with a gold ring).\n- Song select: the last song's picture stays while the list sits on a pack's name, so the next song's picture fades in over it instead of coming up from black."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.47",
+   "date": "2026-10-15",
+   "notes": "- **Your osu! plays count.** \"Send my osu! plays\" on the Online page reads your osu! stable replays (and osu!lazer's, for maps that are also in your osu! Songs folder), judges each as Etterna would on the same chart, and the game rates them with Etterna's calculator: every 4K and 7K map is ranked.\n- A dot by each play says where it was played: Etterna (violet), osu! (pink) or osu!lazer (pink with a gold ring).\n- Song select: the last song's picture stays while the list sits on a pack's name, so the next song's picture fades in over it instead of coming up from black."
+  },
   {
    "version": "1.8.0-beta.46",
    "date": "2026-10-15",

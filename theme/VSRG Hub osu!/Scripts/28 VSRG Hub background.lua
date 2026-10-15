@@ -90,9 +90,14 @@ function TW.songBackground(o)
 		CurrentSongChangedMessageCommand = function(self)
 			-- (the osu! stable list scrolled past songs: the picked song's picture stays)
 			if TW.browsingSkip and TW.browsingSkip() then return end
-			self:stoptweening()
 			local s = GAMESTATE:GetCurrentSong()
-			want = s and s:GetBackgroundPath() or nil
+			-- (the list on a pack's name: the last song's picture stays, as osu!'s does, instead of
+			-- the screen going dark and the next song's picture coming up from black)
+			if not s then return end
+			self:stoptweening()
+			want = s:GetBackgroundPath() or nil
+			if want == "" then want = nil end
+			if not want then return end
 			self.changedAt = GetTimeSinceStart()
 			-- a full-size picture is only loaded once the list rests on the song: while it runs
 			-- past songs (a long spin of the mouse wheel), loading each one's picture made it stutter

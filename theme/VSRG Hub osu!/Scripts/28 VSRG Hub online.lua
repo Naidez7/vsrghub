@@ -123,6 +123,7 @@ local function jsonObj(t)
 	end
 	return "{" .. table.concat(parts, ",") .. "}"
 end
+TW.jsonObj = jsonObj
 
 -- the results screen's play, written to the outbox: only a real play of yours, saved by Etterna
 -- (not autoplay, practice, a replay of someone else's score or a score looked at again), valid for

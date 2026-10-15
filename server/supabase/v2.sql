@@ -93,6 +93,10 @@ begin
 	return p / (taps * 2.0) * 100.0;
 end $$;
 
+-- where a play came from: Etterna, or an osu! stable / osu!lazer replay VSRG Hub rated
+alter table public.scores add column if not exists source text not null default 'etterna'
+	check (source in ('etterna', 'osu', 'lazer'));
+
 -- ---------------------------------------------------------------------------------------------
 -- ratings and rankings: verified scores only
 
@@ -162,7 +166,7 @@ begin
 		ssr_overall, ssr_stream, ssr_jumpstream, ssr_handstream, ssr_stamina, ssr_jackspeed,
 		ssr_chordjack, ssr_technical, msd, marvelous, perfect, great, good, bad, miss, holds_ok,
 		holds_ng, mines_hit, max_combo, modifiers, song_title, song_artist, chart_name, played_at,
-		has_replay, verified, notes)
+		has_replay, verified, notes, source)
 	values (uid, s->>'score_key', s->>'chart_key', k, (s->>'rate')::real, wife,
 		coalesce((s->>'ssr_overall')::real, 0), coalesce((s->>'ssr_stream')::real, 0),
 		coalesce((s->>'ssr_jumpstream')::real, 0), coalesce((s->>'ssr_handstream')::real, 0),
@@ -176,7 +180,8 @@ begin
 		mines, coalesce((s->>'max_combo')::int, 0),
 		left(coalesce(s->>'modifiers', ''), 200), left(coalesce(s->>'song_title', ''), 200),
 		left(coalesce(s->>'song_artist', ''), 200), left(coalesce(s->>'chart_name', ''), 100),
-		(s->>'played_at')::timestamptz, offs is not null, ok, taps)
+		(s->>'played_at')::timestamptz, offs is not null, ok, taps,
+		case when s->>'source' in ('osu', 'lazer') then s->>'source' else 'etterna' end)
 	on conflict (user_id, score_key) do nothing
 	returning id into sid;
 	if sid is null then return null; end if;
@@ -248,11 +253,12 @@ begin
 end $$;
 grant execute on function public.submit_scores(jsonb) to authenticated;
 
-create or replace function public.chart_leaderboard(chart text, at_rate real default null,
+drop function if exists public.chart_leaderboard(text, real, int);
+create function public.chart_leaderboard(chart text, at_rate real default null,
 	max_rows int default 50)
 returns table (place bigint, username text, user_id uuid, wife real, rate real, ssr_overall real,
 	marvelous int, perfect int, great int, good int, bad int, miss int, max_combo int,
-	modifiers text, played_at timestamptz)
+	modifiers text, played_at timestamptz, source text)
 language sql stable security definer set search_path = public as $$
 	with best as (
 		select distinct on (s.user_id) s.*
@@ -263,7 +269,7 @@ language sql stable security definer set search_path = public as $$
 	)
 	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc),
 		p.username, b.user_id, b.wife, b.rate, b.ssr_overall, b.marvelous, b.perfect, b.great,
-		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at
+		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at, b.source
 	from best b join public.profiles p on p.id = b.user_id
 	order by 1
 	limit least(greatest(max_rows, 1), 200)
