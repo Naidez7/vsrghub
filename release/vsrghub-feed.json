@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.37",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.37.zip",
- "sha256": "069d8b778e3694ad873906b8b97b5349ebbe72dbc3a213a8ae32f553d60cae44",
- "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it.",
+ "version": "1.8.0-beta.38",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.38.zip",
+ "sha256": "e5a453076648fb6d8a78098725940f7329e699a24f0235222cc4e8401e2cdee1",
+ "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet.",
  "latest": {
-  "version": "1.8.0-beta.37",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.37.zip",
-  "sha256": "069d8b778e3694ad873906b8b97b5349ebbe72dbc3a213a8ae32f553d60cae44",
-  "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it."
+  "version": "1.8.0-beta.38",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.38.zip",
+  "sha256": "e5a453076648fb6d8a78098725940f7329e699a24f0235222cc4e8401e2cdee1",
+  "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.38",
+   "date": "2026-10-15",
+   "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet."
+  },
   {
    "version": "1.8.0-beta.37",
    "date": "2026-10-15",
