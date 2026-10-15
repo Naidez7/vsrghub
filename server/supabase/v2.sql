@@ -384,6 +384,125 @@ begin
 end $$;
 grant execute on function public.admin_ban(uuid, boolean) to authenticated;
 
+-- the admin tools (the launcher's Admin page): who's who, numbers, the message of the day
+create or replace function public.admin_players(q text default '', max_rows int default 50)
+returns table (id uuid, username text, created_at timestamptz, banned boolean, is_admin boolean, avatar int,
+	scores bigint, last_play timestamptz, rating4 real, rating7 real)
+language plpgsql stable security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	return query
+	select p.id, p.username, p.created_at, p.banned, p.is_admin, p.avatar,
+		(select count(*) from public.scores s where s.user_id = p.id and s.valid),
+		(select max(s.submitted_at) from public.scores s where s.user_id = p.id),
+		(select r.overall from public.player_ratings r where r.user_id = p.id and r.keys = 4),
+		(select r.overall from public.player_ratings r where r.user_id = p.id and r.keys = 7)
+	from public.profiles p
+	where q = '' or p.username ilike '%' || q || '%'
+	order by p.created_at desc
+	limit least(greatest(max_rows, 1), 200);
+end $$;
+grant execute on function public.admin_players(text, int) to authenticated;
+
+create or replace function public.admin_stats() returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	return jsonb_build_object(
+		'players', (select count(*) from public.profiles),
+		'banned', (select count(*) from public.profiles where banned),
+		'admins', (select count(*) from public.profiles where is_admin),
+		'new_players_7d', (select count(*) from public.profiles where created_at > now() - interval '7 days'),
+		'scores', (select count(*) from public.scores where valid),
+		'scores_removed', (select count(*) from public.scores where not valid),
+		'scores_unverified', (select count(*) from public.scores where valid and not verified),
+		'scores_today', (select count(*) from public.scores where submitted_at > now() - interval '1 day'),
+		'scores_7d', (select count(*) from public.scores where submitted_at > now() - interval '7 days'),
+		'players_7d', (select count(distinct user_id) from public.scores where submitted_at > now() - interval '7 days'),
+		'charts', (select count(distinct chart_key) from public.scores where valid),
+		'by_source', (select coalesce(jsonb_object_agg(source, n), '{}'::jsonb) from (select source, count(*) n from public.scores where valid group by source) x)
+	);
+end $$;
+grant execute on function public.admin_stats() to authenticated;
+
+create or replace function public.admin_set_admin(player uuid, make boolean default true) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	if player = auth.uid() then raise exception 'not yourself'; end if;
+	update public.profiles set is_admin = make where id = player;
+end $$;
+grant execute on function public.admin_set_admin(uuid, boolean) to authenticated;
+
+create or replace function public.admin_rename(player uuid, new_name text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	if exists (select 1 from public.profiles where lower(username) = lower(btrim(new_name)) and id <> player) then
+		raise exception 'that name is taken';
+	end if;
+	update public.profiles set username = btrim(new_name) where id = player;
+end $$;
+grant execute on function public.admin_rename(uuid, text) to authenticated;
+
+-- all of a player's scores off the rankings (kept, marked), or back on
+create or replace function public.admin_wipe_player(player uuid, remove boolean default true) returns int
+language plpgsql security definer set search_path = public as $$
+declare
+	n int;
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	update public.scores set valid = not remove, removed_by = case when remove then auth.uid() else null end
+	where user_id = player and valid = remove;
+	get diagnostics n = row_count;
+	perform public.vh_refresh_rating(player, 4::smallint);
+	perform public.vh_refresh_rating(player, 7::smallint);
+	return n;
+end $$;
+grant execute on function public.admin_wipe_player(uuid, boolean) to authenticated;
+
+-- every score on a chart off the rankings (a broken or duplicate chart), or back on
+create or replace function public.admin_remove_chart(chart text, remove boolean default true) returns int
+language plpgsql security definer set search_path = public as $$
+declare
+	n int;
+	r record;
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	update public.scores set valid = not remove, removed_by = case when remove then auth.uid() else null end
+	where chart_key = chart and valid = remove;
+	get diagnostics n = row_count;
+	for r in select distinct user_id, keys from public.scores where chart_key = chart loop
+		perform public.vh_refresh_rating(r.user_id, r.keys);
+	end loop;
+	return n;
+end $$;
+grant execute on function public.admin_remove_chart(text, boolean) to authenticated;
+
+create or replace function public.admin_recalc(player uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	perform public.vh_refresh_rating(player, 4::smallint);
+	perform public.vh_refresh_rating(player, 7::smallint);
+end $$;
+grant execute on function public.admin_recalc(uuid) to authenticated;
+
+-- the message of the day: shown on the launcher's Online page (empty: none)
+create or replace function public.admin_set_motd(text_ text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	insert into public.vh_meta (key, value) values ('motd', coalesce(text_, ''))
+	on conflict (key) do update set value = excluded.value;
+end $$;
+grant execute on function public.admin_set_motd(text) to authenticated;
+create or replace function public.motd() returns text
+language sql stable security definer set search_path = public as $$
+	select coalesce((select value from public.vh_meta where key = 'motd'), '')
+$$;
+grant execute on function public.motd() to anon, authenticated;
+
 -- scores worth a look: the newest unverified ones, and the newest very high accuracies
 create or replace function public.admin_suspicious(max_rows int default 50)
 returns table (id bigint, username text, user_id uuid, song_title text, chart_name text, keys smallint,
@@ -546,7 +665,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '12')
+insert into public.vh_meta (key, value) values ('schema_version', '13')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

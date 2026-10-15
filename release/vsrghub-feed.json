@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.71",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.71.zip",
- "sha256": "c1d71985bf0d75b20c7a2a877f8632c5a9ac5012f339057c22daab430e061395",
- "notes": "- **Fixed (lazer look):** switching the scope of the scores to VSRG Hub or EtternaOnline left the local list on screen: the tab's fade stopped the board's wait for the ranking. Also rows left half see-through when the mouse passed over them while they slid in.",
+ "version": "1.8.0-beta.72",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.72.zip",
+ "sha256": "333d17c0ae468bae8f10d45ffca940f7dd97df3b0c10f940d41278c1d39e2881",
+ "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before.",
  "latest": {
-  "version": "1.8.0-beta.71",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.71.zip",
-  "sha256": "c1d71985bf0d75b20c7a2a877f8632c5a9ac5012f339057c22daab430e061395",
-  "notes": "- **Fixed (lazer look):** switching the scope of the scores to VSRG Hub or EtternaOnline left the local list on screen: the tab's fade stopped the board's wait for the ranking. Also rows left half see-through when the mouse passed over them while they slid in."
+  "version": "1.8.0-beta.72",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.72.zip",
+  "sha256": "333d17c0ae468bae8f10d45ffca940f7dd97df3b0c10f940d41278c1d39e2881",
+  "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.72",
+   "date": "2026-10-15",
+   "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before."
+  },
   {
    "version": "1.8.0-beta.71",
    "date": "2026-10-15",
