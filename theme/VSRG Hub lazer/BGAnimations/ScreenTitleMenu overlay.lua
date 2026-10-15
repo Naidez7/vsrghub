@@ -138,8 +138,15 @@ local t = Def.ActorFrame {
 		TW.keepRedirect = true
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
 		refresh()
+		-- (Etterna locks the menu's input while the screen's longest opening animation runs: unlocked
+		-- on the next frame, after it has set that lock)
+		self:queuecommand("Unlock")
 		self:sleep(0.05):queuecommand("Theme")
 		TW.menuMusicStart()
+	end,
+	UnlockCommand = function(self)
+		local top = SCREENMAN:GetTopScreen()
+		if top and top.lockinput then top:lockinput(0) end
 	end,
 	ThemeCommand = function(self)
 		if not TW.enforceTheme() and TW.takeResume() then choose("GameStart") end

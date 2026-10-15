@@ -112,6 +112,10 @@ local t = Def.ActorFrame {
 		TW.keepRedirect = true
 		SCREENMAN:set_input_redirected(PLAYER_1, true)
 		refresh()
+		-- Etterna locks the menu's input for as long as the screen's longest animation started on
+		-- coming in (the song name's 3.6 s fade among them), so the cookie took no clicks for seconds:
+		-- unlocked on the next frame (after Etterna has set that lock)
+		self:queuecommand("Unlock")
 		self:sleep(0.05):queuecommand("Theme")
 		TW.menuMusicStart()
 		-- (back to the middle after a while with nothing pressed)
@@ -121,6 +125,10 @@ local t = Def.ActorFrame {
 				awake = false; sel = 0; refresh()
 			end
 		end)
+	end,
+	UnlockCommand = function(self)
+		local top = SCREENMAN:GetTopScreen()
+		if top and top.lockinput then top:lockinput(0) end
 	end,
 	ThemeCommand = function(self)
 		if not TW.enforceTheme() and TW.takeResume() then choose("GameStart") end

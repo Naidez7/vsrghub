@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.42",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.42.zip",
- "sha256": "af2e1f11adcfae1807ffaff111e31527b8dd8b0fab3dbaec54446878e9fa8864",
- "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results).",
+ "version": "1.8.0-beta.43",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.43.zip",
+ "sha256": "a7541f2104ce232c05a066c0075579dd64461a184ea40bd51f8356804c403952",
+ "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet.",
  "latest": {
-  "version": "1.8.0-beta.42",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.42.zip",
-  "sha256": "af2e1f11adcfae1807ffaff111e31527b8dd8b0fab3dbaec54446878e9fa8864",
-  "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results)."
+  "version": "1.8.0-beta.43",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.43.zip",
+  "sha256": "a7541f2104ce232c05a066c0075579dd64461a184ea40bd51f8356804c403952",
+  "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.43",
+   "date": "2026-10-15",
+   "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet."
+  },
   {
    "version": "1.8.0-beta.42",
    "date": "2026-10-15",
