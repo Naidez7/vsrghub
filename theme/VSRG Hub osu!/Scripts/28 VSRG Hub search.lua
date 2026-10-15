@@ -12,6 +12,7 @@ end
 local function run(text)
 	local w = wheel()
 	if not w then return end
+	TW.searchLastText = text
 	w:SongSearch(text)
 	MESSAGEMAN:Broadcast("TWSearchResults")
 end
@@ -56,3 +57,6 @@ function TW.searchSlideIn(self, drawIndex, middle)
 	TW.ianim(self, self, "alpha", 1, 0.2, "dec", 0.02 * off, 0)
 	TW.ianim(self, self, "x", 0, 0.2, "dec", 0.02 * off, TW.M(36))
 end
+
+-- the list filtered again with the same words (after a filter changed, e.g. the MSD range)
+function TW.searchAgain() run(TW.searchLastText or "") end

@@ -120,8 +120,8 @@ end
 -- dark text on light star pills, light text on dark ones (as lazer does)
 function LZ.starText(v) return (v or 0) < 30 and rgb(30, 25, 35) or LZ.yellow end
 
--- The chart's difficulty on a pill in lazer's star-rating colours: just Etterna's MSD (no star: it
--- isn't a star rating). Set with :playcommand("Msd", { v = 23.4 }); its width is then self.w.
+-- The chart's difficulty on a pill in lazer's star-rating colours, a star before it (it's Etterna's
+-- MSD, in lazer's dress). Set with :playcommand("Msd", { v = 23.4 }); its width is then self.w.
 function LZ.starPill(h, init)
 	return Def.ActorFrame {
 		InitCommand = function(self) if init then init(self) end end,
@@ -129,13 +129,15 @@ function LZ.starPill(h, init)
 			local v = p.v or 0
 			local c = self:GetChildren()
 			c.V:settextf("%.2f", v):diffuse(LZ.starText(v))
-			local w = h * 0.9 + c.V:GetZoomedWidth()
+			c.S:diffuse(LZ.starText(v))
+			local w = h * 1.4 + c.V:GetZoomedWidth()
 			TW.setBox(c.Bg, { w = w, col = LZ.starColour(v) })
-			c.V:x(w / 2)
+			c.V:x(h * 1.0)
 			self.w = w
 		end,
 		TW.box { w = h * 3, h = h, r = h / 2, ay = 0.5 } .. { Name = "Bg" },
-		LZ.text(h * 0.52, "bold", function(self) self:align(0.5, 0.5):y(-h * 0.02) end) .. { Name = "V" },
+		TW.icon("star", h * 0.5, function(self) self:xy(h * 0.6, -h * 0.02) end) .. { Name = "S" },
+		LZ.text(h * 0.52, "bold", function(self) self:align(0, 0.5):y(-h * 0.02) end) .. { Name = "V" },
 	}
 end
 

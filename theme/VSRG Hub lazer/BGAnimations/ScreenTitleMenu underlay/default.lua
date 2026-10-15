@@ -38,8 +38,8 @@ end
 
 local bg = Def.ActorFrame {
 	InitCommand = function(self) TW.frostTarget = self end,
-	-- lazer's dark wine-red backdrop
-	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(LZ.hsl(333, 0.25, 0.13)):diffusebottomedge(LZ.hsl(320, 0.2, 0.08)) end },
+	-- lazer's dark blue backdrop (its "triangles" background)
+	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(LZ.hsl(218, 0.32, 0.17)):diffusebottomedge(LZ.hsl(222, 0.34, 0.09)) end },
 }
 local pic = Def.Sprite {
 	Name = "Pic",
@@ -47,7 +47,7 @@ local pic = Def.Sprite {
 		local p = randomBackground()
 		if p then self:LoadBackground(p) end
 		self:scaletocover(-M(20), -M(20), SCREEN_WIDTH + M(20), SCREEN_HEIGHT + M(20))
-		self:diffusealpha(0):linear(0.8):diffusealpha(0.32)
+		self:diffusealpha(0):linear(0.8):diffusealpha(0.2)
 	end,
 	-- the menu's song changed: its picture
 	TWMenuMusicMessageCommand = function(self)
@@ -60,7 +60,7 @@ local pic = Def.Sprite {
 	SwapCommand = function(self)
 		local x, y = self:GetX(), self:GetY()
 		self:LoadBackground(self.shown):scaletocover(-M(20), -M(20), SCREEN_WIDTH + M(20), SCREEN_HEIGHT + M(20)):xy(x, y)
-		self:linear(0.6):diffusealpha(0.32)
+		self:linear(0.6):diffusealpha(0.2)
 	end,
 }
 bg[#bg + 1] = Def.ActorFrame { InitCommand = function(self) TW.parallax(self, M(10)) end, pic }

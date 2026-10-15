@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.65",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.65.zip",
- "sha256": "b7fbc39d7ca2c913c3b1441dd9d6e92e032e1c36b3dd92c2100f6d8428b544d7",
- "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before.",
+ "version": "1.8.0-beta.66",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.66.zip",
+ "sha256": "1795c1d0493f4aa489f3ba633979493640f7211db620cb47c9bbaa4588d730fa",
+ "notes": "- **The lazer look, closer to lazer (part 1):** the song list's cards as lazer's 2025 carousel (title, artist, RANKED, \"[4K] chart mapped by\", a star pill, your grade at the left, the picture on the right; the selected one lighter and further left; packs as blue headers with a count), the chart's wedge as lazer's (RANKED and key pills, a lighter title, the counts in a row, the difficulty in yellow with its mapper, the pattern ratings as stat boxes), Details / Ranking tabs with Scope and Rate pills, and a **rating range slider** under the search (drag either end: the list keeps the charts in that MSD range). The main menu's backdrop is lazer's blue.",
  "latest": {
-  "version": "1.8.0-beta.65",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.65.zip",
-  "sha256": "b7fbc39d7ca2c913c3b1441dd9d6e92e032e1c36b3dd92c2100f6d8428b544d7",
-  "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before."
+  "version": "1.8.0-beta.66",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.66.zip",
+  "sha256": "1795c1d0493f4aa489f3ba633979493640f7211db620cb47c9bbaa4588d730fa",
+  "notes": "- **The lazer look, closer to lazer (part 1):** the song list's cards as lazer's 2025 carousel (title, artist, RANKED, \"[4K] chart mapped by\", a star pill, your grade at the left, the picture on the right; the selected one lighter and further left; packs as blue headers with a count), the chart's wedge as lazer's (RANKED and key pills, a lighter title, the counts in a row, the difficulty in yellow with its mapper, the pattern ratings as stat boxes), Details / Ranking tabs with Scope and Rate pills, and a **rating range slider** under the search (drag either end: the list keeps the charts in that MSD range). The main menu's backdrop is lazer's blue."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.66",
+   "date": "2026-10-15",
+   "notes": "- **The lazer look, closer to lazer (part 1):** the song list's cards as lazer's 2025 carousel (title, artist, RANKED, \"[4K] chart mapped by\", a star pill, your grade at the left, the picture on the right; the selected one lighter and further left; packs as blue headers with a count), the chart's wedge as lazer's (RANKED and key pills, a lighter title, the counts in a row, the difficulty in yellow with its mapper, the pattern ratings as stat boxes), Details / Ranking tabs with Scope and Rate pills, and a **rating range slider** under the search (drag either end: the list keeps the charts in that MSD range). The main menu's backdrop is lazer's blue."
+  },
   {
    "version": "1.8.0-beta.65",
    "date": "2026-10-15",

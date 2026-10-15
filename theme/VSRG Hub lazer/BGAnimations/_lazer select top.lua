@@ -62,42 +62,40 @@ local wedge = Def.ActorFrame {
 		end,
 	},
 }
--- key count pill, rate pill, pack
+-- RANKED, the key count and the rate on pills (lazer's status pill row)
 wedge[#wedge + 1] = Def.ActorFrame {
-	InitCommand = function(self) self:xy(M(18), WY + M(18)) end,
+	InitCommand = function(self) self:xy(M(18), WY + M(16)) end,
 	InfoCommand = function(self)
 		local st = GAMESTATE:GetCurrentSteps()
-		local song = GAMESTATE:GetCurrentSong()
 		local c = self:GetChildren()
-		c.Keys:settext(st and (TW.keys(st) .. "K") or "")
+		local x = M(54)
+		c.Keys:visible(st ~= nil):x(x + M(8)):settext(st and (TW.keys(st) .. "K") or "")
+		c.KeysBg:visible(st ~= nil):x(x)
 		TW.setBox(c.KeysBg, { w = c.Keys:GetZoomedWidth() + M(16) })
-		local rx = c.Keys:GetZoomedWidth() + M(24)
+		x = x + c.Keys:GetZoomedWidth() + M(22)
 		local rate = getCurRateValue()
 		local showRate = math.abs(rate - 1) > 0.001
-		c.Rate:visible(showRate):x(rx + M(8)):settext(getCurRateDisplayString(true))
-		c.RateBg:visible(showRate):x(rx)
+		c.Rate:visible(showRate):x(x + M(8)):settext(getCurRateDisplayString(true))
+		c.RateBg:visible(showRate):x(x)
 		TW.setBox(c.RateBg, { w = c.Rate:GetZoomedWidth() + M(16) })
-		local px = rx + (showRate and (c.Rate:GetZoomedWidth() + M(24)) or 0)
-		c.Pack:x(px + M(8)):settext(song and song:GetGroupName() or ""):maxwidth(M(420) / c.Pack:GetZoom())
-		c.PackBg:x(px)
-		TW.setBox(c.PackBg, { w = math.min(M(420), c.Pack:GetZoomedWidth()) + M(16) })
 	end,
-	TW.box { w = M(30), h = M(17), r = M(8.5), ay = 0.5, col = LZ.pink } .. { Name = "KeysBg" },
-	LZ.text(M(9.5), "bold", function(self) self:align(0, 0.5):x(M(8)):diffuse(TW.rgb(40, 20, 30)) end) .. { Name = "Keys" },
-	TW.box { w = M(30), h = M(17), r = M(8.5), ay = 0.5, col = LZ.purpleDark } .. { Name = "RateBg" },
-	LZ.text(M(9.5), "bold", function(self) self:align(0, 0.5) end) .. { Name = "Rate" },
-	TW.box { w = M(30), h = M(17), r = M(8.5), ay = 0.5, col = { 0, 0, 0, 0.35 } } .. { Name = "PackBg" },
-	LZ.text(M(9.5), "bold", function(self) self:align(0, 0.5):diffuse(LZ.dim) end) .. { Name = "Pack" },
+	TW.box { w = M(48), h = M(15), r = M(5), ay = 0.5, col = TW.rgb(179, 255, 102) } .. { Name = "RankedBg" },
+	LZ.text(M(8.5), "bold", function(self) self:align(0.5, 0.5):x(M(24)):settext("RANKED"):diffuse(TW.rgb(30, 50, 10)) end),
+	TW.box { w = M(30), h = M(15), r = M(5), ay = 0.5, col = LZ.pink } .. { Name = "KeysBg" },
+	LZ.text(M(8.5), "bold", function(self) self:align(0, 0.5):diffuse(TW.rgb(40, 20, 30)) end) .. { Name = "Keys" },
+	TW.box { w = M(30), h = M(15), r = M(5), ay = 0.5, col = LZ.purpleDark } .. { Name = "RateBg" },
+	LZ.text(M(8.5), "bold", function(self) self:align(0, 0.5) end) .. { Name = "Rate" },
 }
--- title and artist
-wedge[#wedge + 1] = LZ.text(M(25), "bold", function(self) self:align(0, 0.5):xy(M(16), WY + M(50)):maxwidth(M(660) / self:GetZoom()) end) .. {
+-- title (big, light) and artist
+wedge[#wedge + 1] = LZ.text(M(27), "regular", function(self) self:align(0, 0.5):xy(M(16), WY + M(46)):maxwidth(M(660) / self:GetZoom()) end) .. {
 	InfoCommand = function(self) local s = GAMESTATE:GetCurrentSong(); self:settext(s and s:GetDisplayMainTitle() or "") end }
-wedge[#wedge + 1] = LZ.text(M(15), "regular", function(self) self:align(0, 0.5):xy(M(17), WY + M(76)):maxwidth(M(660) / self:GetZoom()) end) .. {
+wedge[#wedge + 1] = LZ.text(M(14), "regular", function(self) self:align(0, 0.5):xy(M(17), WY + M(72)):maxwidth(M(660) / self:GetZoom()) end) .. {
 	InfoCommand = function(self) local s = GAMESTATE:GetCurrentSong(); self:settext(s and s:GetDisplayArtist() or "") end }
--- the counts: length, BPM, notes, holds, mines (at the rate)
+-- the counts in a row with icons, a thin line between (lazer's plays / favourites / length / bpm row):
+-- length, BPM, notes, holds, mines (at the rate)
 local stats = { { "clock", "len" }, { "music", "bpm" }, { "circle-play", "notes" }, { "hourglass-half", "holds" }, { "bolt", "mines" } }
 local statRow = Def.ActorFrame {
-	InitCommand = function(self) self:xy(M(16), WY + M(104)) end,
+	InitCommand = function(self) self:xy(M(16), WY + M(98)) end,
 	InfoCommand = function(self)
 		local song, steps = GAMESTATE:GetCurrentSong(), GAMESTATE:GetCurrentSteps()
 		local rate = getCurRateValue()
@@ -121,10 +119,11 @@ local statRow = Def.ActorFrame {
 			if v then
 				local txt = c:GetChild("V")
 				txt:settext(v)
-				local w = txt:GetZoomedWidth() + M(36)
-				TW.setBox(c:GetChild("Bg"), { w = w })
 				c:x(x)
-				x = x + w + M(6)
+				c:GetChild("Sep"):visible(i < #stats)
+				local w = txt:GetZoomedWidth() + M(30)
+				c:GetChild("Sep"):x(w + M(2))
+				x = x + w + M(12)
 			end
 		end
 	end,
@@ -132,15 +131,15 @@ local statRow = Def.ActorFrame {
 for i, st in ipairs(stats) do
 	statRow[#statRow + 1] = Def.ActorFrame {
 		Name = "S" .. i,
-		TW.box { w = M(60), h = M(24), r = M(6), ay = 0.5, col = { 0, 0, 0, 0.3 } } .. { Name = "Bg" },
-		TW.icon(st[1], M(12), function(self) self:x(M(14)):diffuse(st[2] == "notes" and LZ.pinkLight or white) end),
-		LZ.text(M(12.5), "bold", function(self) self:align(0, 0.5):x(M(26)) end) .. { Name = "V" },
+		TW.icon(st[1], M(13), function(self) self:x(M(8)):diffuse(st[2] == "notes" and LZ.pinkLight or white) end),
+		LZ.text(M(14), "regular", function(self) self:align(0, 0.5):x(M(22)) end) .. { Name = "V" },
+		Def.Quad { Name = "Sep", InitCommand = function(self) self:zoomto(1, M(14)):diffuse({ 1, 1, 1, 0.25 }) end },
 	}
 end
 wedge[#wedge + 1] = statRow
--- the star pill (MSD), the difficulty and its mapper
+-- the star pill (MSD), the difficulty (in lazer's yellow) and its mapper
 wedge[#wedge + 1] = Def.ActorFrame {
-	InitCommand = function(self) self:xy(M(16), WY + M(136)) end,
+	InitCommand = function(self) self:xy(M(16), WY + M(126)) end,
 	InfoCommand = function(self)
 		local song, steps = GAMESTATE:GetCurrentSong(), GAMESTATE:GetCurrentSteps()
 		local c = self:GetChildren()
@@ -148,36 +147,32 @@ wedge[#wedge + 1] = Def.ActorFrame {
 		local x = (c.Star.w or M(60)) + M(10)
 		c.Diff:x(x):settext(steps and TW.diffName(steps) or "")
 		local by = song and TW.author(song) or ""
-		c.By:x(x + c.Diff:GetZoomedWidth() + M(8)):settext(by ~= "" and ("mapped by " .. by) or "")
+		c.By:x(x + c.Diff:GetZoomedWidth() + M(6)):settext(by ~= "" and ("mapped by " .. by) or "")
 		c.By:maxwidth(math.max(M(60), M(640) - x - c.Diff:GetZoomedWidth()) / c.By:GetZoom())
 	end,
-	LZ.starPill(M(20)) .. { Name = "Star" },
-	LZ.text(M(13), "bold", function(self) self:align(0, 0.5):diffuse(LZ.pinkLight) end) .. { Name = "Diff" },
-	LZ.text(M(12), "regular", function(self) self:align(0, 0.5):diffuse(LZ.dim) end) .. { Name = "By" },
+	LZ.starPill(M(18)) .. { Name = "Star" },
+	LZ.text(M(13), "bold", function(self) self:align(0, 0.5):diffuse(TW.rgb(255, 224, 120)) end) .. { Name = "Diff" },
+	LZ.text(M(12), "regular", function(self) self:align(0, 0.5):diffuse(LZ.a(white, 0.9)) end) .. { Name = "By" },
 }
--- Etterna's pattern ratings, as lazer's detail columns: name, value and a bar in the MSD's colour
+-- Etterna's pattern ratings as lazer's statistic boxes: a line of the rating's colour on top, the
+-- name under it, the value below
 local CW = M(80)
 local details = Def.ActorFrame {
-	InitCommand = function(self) self:xy(M(16), WY + M(160)) end,
+	InitCommand = function(self) self:xy(M(16), WY + M(150)) end,
 	InfoCommand = function(self)
 		local steps = GAMESTATE:GetCurrentSteps()
-		local top = 1
-		if steps then for i = 1, 8 do top = math.max(top, TW.msd(steps, i)) end end
 		for i = 1, 8 do
 			local v = steps and TW.msd(steps, i) or 0
-			local col = steps and LZ.starColour(v) or white
 			self:GetChild("V" .. i):settext(steps and string.format("%.2f", v) or "-")
-			TW.setBox(self:GetChild("B" .. i), { w = math.max(M(4), (CW - M(12)) * v / top), col = col })
+			TW.setBox(self:GetChild("B" .. i), { col = steps and LZ.starColour(v) or { 1, 1, 1, 0.3 } })
 		end
 	end,
-	Def.Quad { InitCommand = function(self) self:align(0, 0):xy(-M(16) - WX, -M(6)):zoomto(WW - M(40), 1):diffuse({ 1, 1, 1, 0.06 }):x(-M(2)) end },
 }
 for i, name in ipairs(skillLabel) do
 	local x = (i - 1) * (CW + M(4))
-	details[#details + 1] = LZ.text(M(9), "bold", function(self) self:align(0, 0):xy(x, 0):settext(name):diffuse(LZ.dim):maxwidth((CW - M(4)) / self:GetZoom()) end)
-	details[#details + 1] = LZ.text(M(12.5), "regular", function(self) self:align(0, 0):xy(x, M(14)) end) .. { Name = "V" .. i }
-	details[#details + 1] = TW.box { w = CW - M(12), h = M(3), r = M(1.5), col = { 1, 1, 1, 0.1 }, init = function(self) self:xy(x, M(34)) end }
-	details[#details + 1] = TW.box { w = M(4), h = M(3), r = M(1.5), col = white, init = function(self) self:xy(x, M(34)) end } .. { Name = "B" .. i }
+	details[#details + 1] = TW.box { w = CW - M(8), h = M(2), r = M(1), col = white, init = function(self) self:xy(x, 0) end } .. { Name = "B" .. i }
+	details[#details + 1] = LZ.text(M(9.5), "bold", function(self) self:align(0, 0):xy(x, M(6)):settext(name):diffuse(LZ.a(white, 0.85)):maxwidth((CW - M(8)) / self:GetZoom()) end)
+	details[#details + 1] = LZ.text(M(13.5), "regular", function(self) self:align(0, 0):xy(x, M(20)) end) .. { Name = "V" .. i }
 end
 wedge[#wedge + 1] = details
 -- the wedge's text slides in again for each new song, as lazer's does
@@ -196,25 +191,25 @@ t[#t + 1] = wedge
 -- Local / Global / Preview over the scores (lazer's Details / Ranking tabs and its scope), and the
 -- rate (left click faster, right click slower, as in Etterna)
 -- ------------------------------------------------------------------------------------------------
-local tabs = { { "Local", "local" }, { "Global", "hub" }, { "EtternaOnline", "online" }, { "Preview" } }
-local function tabOn(tb)
-	if tb[1] == "Preview" then return TW.osuLeft == "Preview" end
-	return TW.osuLeft ~= "Preview" and TW.rankSource == tb[2]
+-- Details (the preview) and Ranking, then the scope of the scores (Local / VSRG Hub / EtternaOnline)
+-- on a pill and the rate on another, as lazer's Scope / Sort / Selected Mods row
+local scopes = { { "Local", "local" }, { "VSRG Hub", "hub" }, { "EtternaOnline", "online" } }
+local function scopeIndex()
+	for i, sc in ipairs(scopes) do if TW.rankSource == sc[2] then return i end end
+	return 1
 end
-local function pickTab(tb)
-	if tb[1] == "Preview" then TW.osuLeft = "Preview"
-	else
-		TW.osuLeft = "Ranking"
-		if TW.rankSource ~= tb[2] and TW.setRankSource then TW.setRankSource(tb[2]) end
-	end
+local function setScope(i)
+	TW.osuLeft = "Ranking"
+	if TW.setRankSource then TW.setRankSource(scopes[i][2]) end
 	MESSAGEMAN:Broadcast("TWOsuLeft")
 end
 -- (the osu! look's ranking box steps through these; kept for the keybind and right clicks)
 function TW.osuLeftStep(d)
-	local cur = 1
-	if TW.osuLeft == "Preview" then cur = 4 elseif TW.rankSource == "hub" then cur = 2 elseif TW.rankSource == "online" then cur = 3 end
-	pickTab(tabs[(cur - 1 + d) % #tabs + 1])
+	if TW.osuLeft == "Preview" then TW.osuLeft = "Ranking"; MESSAGEMAN:Broadcast("TWOsuLeft") return end
+	setScope((scopeIndex() - 1 + d) % #scopes + 1)
 end
+local tabs = { { "Details", function() return TW.osuLeft == "Preview" end, function() TW.osuLeft = "Preview"; MESSAGEMAN:Broadcast("TWOsuLeft") end },
+	{ "Ranking", function() return TW.osuLeft ~= "Preview" end, function() TW.osuLeft = "Ranking"; MESSAGEMAN:Broadcast("TWOsuLeft") end } }
 local tabRow = Def.ActorFrame { InitCommand = function(self) self:xy(M(18), M(274)) end }
 local tabPos = {}
 local tx = 0
@@ -225,53 +220,62 @@ for i, tb in ipairs(tabs) do
 		InitCommand = function(self) self:x(x) end,
 		OnCommand = function(self) self:playcommand("Tab") end,
 		TWOsuLeftMessageCommand = function(self) self:playcommand("Tab") end,
-		TWRankSourceMessageCommand = function(self) self:playcommand("Tab") end,
 		TabCommand = function(self)
-			local on = tabOn(tb)
-			self:GetChild("L"):stoptweening():linear(0.12):diffuse(on and white or LZ.dim)
+			self:GetChild("L"):stoptweening():linear(0.12):diffuse(tb[2]() and white or LZ.a(white, 0.6))
 		end,
-		LZ.text(M(14), "bold", function(self) self:align(0, 0.5):settext(tb[1]) end) .. { Name = "L" },
-		TW.button(w, M(30), function() pickTab(tb) end) .. { InitCommand = function(self) self:align(0, 0.5):zoomto(w, M(30)):diffusealpha(0) end },
+		LZ.text(M(13.5), "regular", function(self) self:align(0, 0.5):settext(tb[1]) end) .. { Name = "L" },
+		TW.button(w, M(30), function() tb[3]() end) .. { InitCommand = function(self) self:align(0, 0.5):zoomto(w, M(30)):diffusealpha(0) end },
 	}
 	tabPos[i] = { x, w - M(16) }
 	tx = tx + w + M(8)
 end
 -- one line under the picked tab, sliding to the next one picked
 tabRow[#tabRow + 1] = Def.Quad {
-	InitCommand = function(self) self:align(0, 0.5):y(M(14)):zoomto(M(30), M(3)):diffuse(LZ.pink) end,
+	InitCommand = function(self) self:align(0, 0.5):y(M(13)):zoomto(M(30), M(2)):diffuse(LZ.blue) end,
 	OnCommand = function(self) self:playcommand("Move", { now = true }) end,
 	TWOsuLeftMessageCommand = function(self) self:playcommand("Move") end,
-	TWRankSourceMessageCommand = function(self) self:playcommand("Move") end,
 	MoveCommand = function(self, p)
 		for i, tb in ipairs(tabs) do
-			if tabOn(tb) then
+			if tb[2]() then
 				self:stoptweening()
 				if not (p and p.now) then self:decelerate(0.25) end
-				self:x(tabPos[i][1]):zoomto(tabPos[i][2], M(3))
+				self:x(tabPos[i][1]):zoomto(tabPos[i][2], M(2))
 			end
 		end
 	end,
 }
--- the rate pill (lazer's "selected mods" toggle spot)
-tabRow[#tabRow + 1] = Def.ActorFrame {
-	InitCommand = function(self) self:x(M(540)) end,
-	TW.shadow { w = M(100), h = M(26), ay = 0.5, spread = M(6), alpha = 0.35 },
-	LZ.panel { w = M(100), h = M(26), r = M(6), ay = 0.5, col = TW.mix(LZ.purpleDark, { 1, 1, 1, 1 }, 0.1), col2 = LZ.purpleDark } .. { Name = "Bg" },
-	LZ.text(M(12.5), "bold", function(self) self:align(0.5, 0.5):x(M(50)) end) .. {
-		OnCommand = function(self) self:playcommand("Rate") end,
-		CurrentRateChangedMessageCommand = function(self) self:playcommand("Rate") end,
-		RateCommand = function(self) self:settext("Rate " .. getCurRateDisplayString(true)) end,
-	},
-	UIElements.QuadButton(1, 1) .. {
-		InitCommand = function(self) self:align(0, 0.5):zoomto(M(100), M(26)):diffusealpha(0) end,
-		MouseOverCommand = function(self) self:GetParent():GetChild("Bg"):diffusealpha(0.8) end,
-		MouseOutCommand = function(self) self:GetParent():GetChild("Bg"):diffusealpha(1) end,
-		MouseDownCommand = function(self, params)
-			if params.event == "DeviceButton_left mouse button" then ChangeMusicRate(nil, { Name = "PrevRate" })
-			elseif params.event == "DeviceButton_right mouse button" then ChangeMusicRate(nil, { Name = "NextRate" }) end
-		end,
-	},
-}
+-- a pill with a darker part for its name and a value (lazer's Scope / Sort pills)
+local function valuePill(x, w, label, value, onLeft, onRight)
+	local LW = M(14) + #label * M(7.2)
+	return Def.ActorFrame {
+		InitCommand = function(self) self:x(x) end,
+		TW.shadow { w = w, h = M(26), ay = 0.5, spread = M(6), alpha = 0.35 },
+		LZ.panel { w = w, h = M(26), r = M(7), ay = 0.5, col = LZ.a(LZ.bg4, 0.96) } .. { Name = "Bg" },
+		LZ.panel { w = LW, h = M(26), r = M(7), ay = 0.5, col = LZ.a(LZ.bg2, 0.98) },
+		LZ.text(M(11.5), "bold", function(self) self:align(0.5, 0.5):x(LW / 2 + M(1)):settext(label) end),
+		LZ.text(M(11.5), "regular", function(self) self:align(0, 0.5):x(LW + M(9)) end) .. {
+			OnCommand = function(self) self:playcommand("Val") end,
+			TWOsuLeftMessageCommand = function(self) self:playcommand("Val") end,
+			TWRankSourceMessageCommand = function(self) self:playcommand("Val") end,
+			CurrentRateChangedMessageCommand = function(self) self:playcommand("Val") end,
+			ValCommand = function(self) self:settext(value()):maxwidth((w - LW - M(30)) / self:GetZoom()) end,
+		},
+		TW.icon("chevron-down", M(9), function(self) self:x(w - M(13)):diffusealpha(0.8) end),
+		UIElements.QuadButton(1, 1) .. {
+			InitCommand = function(self) self:align(0, 0.5):zoomto(w, M(26)):diffusealpha(0) end,
+			MouseOverCommand = function(self) self:GetParent():GetChild("Bg"):diffusealpha(0.8) end,
+			MouseOutCommand = function(self) self:GetParent():GetChild("Bg"):diffusealpha(1) end,
+			MouseDownCommand = function(self, params)
+				if params.event == "DeviceButton_left mouse button" then onLeft()
+				elseif params.event == "DeviceButton_right mouse button" and onRight then onRight() end
+			end,
+		},
+	}
+end
+tabRow[#tabRow + 1] = valuePill(M(190), M(190), "Scope", function() return scopes[scopeIndex()][1] end,
+	function() setScope(scopeIndex() % #scopes + 1) end, function() setScope((scopeIndex() - 2) % #scopes + 1) end)
+tabRow[#tabRow + 1] = valuePill(M(392), M(150), "Rate", function() return getCurRateDisplayString(true) end,
+	function() ChangeMusicRate(nil, { Name = "PrevRate" }) end, function() ChangeMusicRate(nil, { Name = "NextRate" }) end)
 t[#t + 1] = tabRow
 
 -- ------------------------------------------------------------------------------------------------
@@ -338,9 +342,104 @@ t[#t + 1] = Def.ActorFrame {
 	TW.button(SW, M(46), function() MESSAGEMAN:Broadcast("TWStartSearch") end) .. { InitCommand = function(self) self:align(0, 0):zoomto(SW, M(46)):diffusealpha(0) end },
 }
 
+-- lazer's star rating slider, for Etterna's MSD: the overall rating the list is cut to, from the
+-- low end to the high one (the right end: no limit), on a band of lazer's star colours. Drag an end.
+local MSD_MAX = 40
+local function msdLo() local v = 0; pcall(function() v = FILTERMAN:GetSSFilter(1, 0) end); return v or 0 end
+local function msdHi() local v = 0; pcall(function() v = FILTERMAN:GetSSFilter(1, 1) end); return (v or 0) > 0 and v or MSD_MAX end
+local function setMsd(lo, hi)
+	lo = math.max(0, math.min(MSD_MAX - 0.5, lo))
+	hi = math.max(lo + 0.5, math.min(MSD_MAX, hi))
+	pcall(function()
+		FILTERMAN:SetSSFilter(lo, 1, 0)
+		FILTERMAN:SetSSFilter(hi >= MSD_MAX and 0 or hi, 1, 1)
+	end)
+	TW.searchAgain()
+	MESSAGEMAN:Broadcast("TWMsdRange")
+end
+local SLY = M(108)
+local LBL = M(84)
+local TRX, TRW = LBL + M(10), SW - LBL - M(10)
+t[#t + 1] = Def.ActorFrame {
+	InitCommand = function(self) self:xy(SX, SLY) end,
+	OnCommand = function(self) self:addx(M(80)):diffusealpha(0):decelerate(0.35):addx(-M(80)):diffusealpha(1); self:playcommand("Range") end,
+	TWMsdRangeMessageCommand = function(self) self:playcommand("Range") end,
+	TW.shadow { w = SW, h = M(26), ay = 0.5, spread = M(6), alpha = 0.35 },
+	LZ.panel { w = SW, h = M(26), r = M(7), ay = 0.5, col = LZ.a(LZ.bg4, 0.94) },
+	LZ.panel { w = LBL, h = M(26), r = M(7), ay = 0.5, col = LZ.a(LZ.bg2, 0.98) },
+	LZ.text(M(11.5), "bold", function(self) self:align(0.5, 0.5):x(LBL / 2 + M(1)):settext("Rating") end),
+	-- the band of star colours
+	Def.ActorFrame {
+		InitCommand = function(self)
+			self:x(TRX)
+		end,
+		Def.ActorMultiVertex {
+			InitCommand = function(self)
+				local verts = {}
+				local n = 16
+				local h = M(10)
+				for i = 0, n do
+					local v = i / n * MSD_MAX
+					local c = LZ.starColour(v)
+					local x = i / n * TRW
+					verts[#verts + 1] = { { x, -h / 2, 0 }, c }
+					verts[#verts + 1] = { { x, h / 2, 0 }, c }
+				end
+				self:SetDrawState { Mode = "DrawMode_QuadStrip" }:SetVertices(verts)
+			end,
+		},
+		-- the parts outside the range, darkened
+		Def.Quad { Name = "DimL", InitCommand = function(self) self:align(0, 0.5):zoomto(0, M(10)):diffuse({ 0, 0, 0, 0.7 }) end },
+		Def.Quad { Name = "DimR", InitCommand = function(self) self:align(1, 0.5):x(TRW):zoomto(0, M(10)):diffuse({ 0, 0, 0, 0.7 }) end },
+		-- the two ends: a knob each with its value
+		Def.ActorFrame { Name = "Lo",
+			TW.box { w = M(44), h = M(18), r = M(9), ax = 0.5, ay = 0.5, col = LZ.a(LZ.bg5, 0.98) },
+			TW.box { w = M(44), h = M(18), r = M(9), ax = 0.5, ay = 0.5, tex = "ring", col = { 1, 1, 1, 0.5 } },
+			LZ.text(M(10), "bold", function(self) self:align(0.5, 0.5) end) .. { Name = "V" } },
+		Def.ActorFrame { Name = "Hi",
+			TW.box { w = M(44), h = M(18), r = M(9), ax = 0.5, ay = 0.5, col = LZ.a(LZ.bg5, 0.98) },
+			TW.box { w = M(44), h = M(18), r = M(9), ax = 0.5, ay = 0.5, tex = "ring", col = { 1, 1, 1, 0.5 } },
+			LZ.text(M(10), "bold", function(self) self:align(0.5, 0.5) end) .. { Name = "V" } },
+		RangeCommand = function(self)
+			local lo, hi = msdLo(), msdHi()
+			local c = self:GetChildren()
+			local xl, xh = lo / MSD_MAX * TRW, hi / MSD_MAX * TRW
+			c.Lo:x(xl); c.Hi:x(xh)
+			c.Lo:GetChild("V"):settextf("%.1f", lo)
+			c.Hi:GetChild("V"):settext(hi >= MSD_MAX and "∞" or string.format("%.1f", hi))
+			c.DimL:zoomto(xl, M(10))
+			c.DimR:zoomto(TRW - xh, M(10))
+		end,
+		-- a press on the band takes the nearer end there and drags it along
+		TW.button(TRW + M(44), M(26), function(self)
+			local band = self:GetParent()
+			local mx = INPUTFILTER:GetMouseX() - (self:GetTrueX() + M(22))
+			local v = mx / TRW * MSD_MAX
+			local lo, hi = msdLo(), msdHi()
+			band.drag = math.abs(v - lo) <= math.abs(v - hi) and "lo" or "hi"
+			band.left = self:GetTrueX() + M(22)
+			if band.drag == "lo" then setMsd(v, hi) else setMsd(lo, v) end
+		end) .. {
+			InitCommand = function(self)
+				self:align(0, 0.5):x(-M(22)):zoomto(TRW + M(44), M(26)):diffusealpha(0)
+				local band = self:GetParent()
+				TW.everyFrame(band)
+				band:SetUpdateFunction(function(b)
+					if not b.drag then return end
+					if not INPUTFILTER:IsBeingPressed("left mouse button", "Mouse") then b.drag = nil return end
+					local v = math.floor((INPUTFILTER:GetMouseX() - b.left) / TRW * MSD_MAX * 2 + 0.5) / 2
+					local lo, hi = msdLo(), msdHi()
+					if b.drag == "lo" and math.abs(v - lo) > 0.01 then setMsd(v, hi)
+					elseif b.drag == "hi" and math.abs(v - hi) > 0.01 then setMsd(lo, v) end
+				end)
+			end,
+		},
+	},
+}
+
 -- lazer's filter row: Sort, Group, Collection; each a dark pill with its name in a darker part
 TW.dropOpen = nil
-local FY = M(120)
+local FY = M(146)
 local function filterPill(name, label, x, w, onClick, value)
 	local LW = M(22) + #label * M(7.4) -- (the darker part with the filter's name)
 	return Def.ActorFrame {
