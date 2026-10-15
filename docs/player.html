@@ -65,7 +65,7 @@ function draw() {
 	if (topTab && src !== "all") {
 		p.bySrc = p.bySrc || {};
 		const key = tk + ":" + src;
-		if (!p.bySrc[key]) { p.bySrc[key] = []; HUB.get(`scores?select=id,source,chart_key,keys,rate,wife,ssr_overall,msd,song_title,song_artist,chart_name,marvelous,perfect,great,good,bad,miss,max_combo,played_at&user_id=eq.${p.id}&keys=eq.${tk}&valid=eq.true&verified=eq.true&source=eq.${src}&order=ssr_overall.desc&limit=25`).then(rows => { p.bySrc[key] = rows; draw(); }).catch(() => {}); }
+		if (!p.bySrc[key]) { p.bySrc[key] = []; HUB.get(`scores?select=id,source,chart_key,keys,rate,wife,ssr_overall,msd,song_title,song_artist,chart_name,marvelous,perfect,great,good,bad,miss,max_combo,played_at&user_id=eq.${p.id}&keys=eq.${tk}&valid=eq.true&verified=eq.true&${src === "osu" ? "source=in.(osu,lazer)" : "source=eq." + src}&order=ssr_overall.desc&limit=25`).then(rows => { p.bySrc[key] = rows; draw(); }).catch(() => {}); }
 		list = p.bySrc[key];
 	}
 	const ranks = [p.place[4] ? `#${p.place[4]} in 4K` : "", p.place[7] ? `#${p.place[7]} in 7K` : ""].filter(Boolean).map(t => `<span>${t}</span>`).join("");
@@ -73,11 +73,10 @@ function draw() {
 		<a class="btn ghost" style="margin-left:auto" href="compare.html?a=${p.id}">Compare with...</a></div>
 		<div class="pbody"><div><div class="ratings">${has4 || !has7 ? HUB.ratingBox(r[4], 4) : ""}${has7 ? HUB.ratingBox(r[7], 7) : ""}</div><div id="hist"></div></div>
 		<div><div class="seg" id="tabs">${has4 || !has7 ? `<button data-t="top4">Best 4K</button>` : ""}${has7 ? `<button data-t="top7">Best 7K</button>` : ""}<button data-t="recent">Latest</button>${hasPins ? `<button data-t="pinned">Pinned</button>` : ""}</div>
-		${topTab ? `<div class="seg" id="src" style="margin-left:8px">${[["all", "All"], ["etterna", "Etterna"], ["osu", "osu!"], ["lazer", "lazer"], ["quaver", "Quaver"]].map(([v, n]) => `<button data-s="${v}" class="${src === v ? "on" : ""}">${n}</button>`).join("")}</div>` : ""}
 		<div style="margin-top:10px">${(list || []).map(s => HUB.play(s, { when: tab !== "top4" && tab !== "top7" })).join("") || `<div class="empty">No plays here yet.</div>`}</div>
-		<div class="srclegend"><span><span class="src"></span>Etterna</span><span><span class="src osu"></span>osu!</span><span><span class="src lazer"></span>osu!lazer</span><span><span class="src quaver"></span>Quaver</span></div></div></div>`;
+		${topTab ? `<div class="srclegend"><span class="hint">${src !== "all" ? "Best plays in" : "Best plays per game:"}</span>${[["etterna", "Etterna"], ["osu", "osu!"], ["quaver", "Quaver"]].map(([v, n]) => `<button data-src="${v}" class="${src === v ? "on" : ""}"><span class="src ${v}"></span>${n}</button>`).join("")}</div>` : `<div class="srclegend"><span class="hint">Played in:</span><span><span class="src"></span>Etterna</span> <span><span class="src osu"></span>osu!</span> <span><span class="src quaver"></span>Quaver</span></div>`}</div></div>`;
 	document.querySelectorAll("#tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === tab); b.onclick = () => { tab = b.dataset.t; draw(); }; });
-	document.querySelectorAll("#src button").forEach(b => b.onclick = () => { src = b.dataset.s; draw(); });
+	document.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { src = src === b.dataset.src ? "all" : b.dataset.src; draw(); });
 	const hk = tab === "top7" ? 7 : 4;
 	if (hk === 7 ? has7 : has4) { if (p.hist && p.hist[hk]) $("hist").innerHTML = hist(p.hist[hk], hk); else history(p.id, hk).then(pts => { p.hist = p.hist || {}; p.hist[hk] = pts; if ((tab === "top7" ? 7 : 4) === hk) $("hist").innerHTML = hist(pts, hk); }).catch(() => {}); }
 }

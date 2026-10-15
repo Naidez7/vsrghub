@@ -35,8 +35,12 @@ table.rk tr.clickable { cursor: pointer; } table.rk tr.clickable:hover td { back
 .av.lg { width: 72px; height: 72px; border-radius: 20px; font-size: 30px; }
 .rkname { display: flex; align-items: center; gap: 9px; }
 .src { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--violet); }
-.src.osu { background: #ff66aa; } .src.lazer { background: #ffd27a; } .src.quaver { background: #2fd0f5; }
-.srclegend { display: flex; gap: 14px; margin-top: 10px; color: var(--dim2); font-size: 11.5px; }
+.src.osu, .src.lazer { background: #ff66aa; } .src.quaver { background: #2fd0f5; }
+.srclegend { display: flex; gap: 6px; margin-top: 10px; color: var(--dim2); font-size: 11.5px; align-items: center; }
+.srclegend .hint { margin-right: 4px; }
+.srclegend button { font: inherit; font-size: 11.5px; font-weight: 600; color: var(--dim2); background: none; border: 1px solid transparent; border-radius: 8px; padding: 3px 8px; cursor: pointer; }
+.srclegend button:hover { background: rgba(255,255,255,.06); color: var(--text); border-color: var(--edge); }
+.srclegend button.on { background: rgba(255,92,158,.14); color: var(--text); border-color: rgba(255,92,158,.4); }
 .ratings { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .rat { padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid var(--edge); }
 .rat .big { font: 800 24px/1.1 "Segoe UI", sans-serif; }
