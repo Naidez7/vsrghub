@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.58",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.58.zip",
- "sha256": "14cdd8f69258050dd37cd5b7f6fe85ca8aa48f4b9a388ac4f187554b713bc33a",
- "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon.",
+ "version": "1.8.0-beta.59",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.59.zip",
+ "sha256": "7daf1f24d0e0c23425fce8eacc5f5db3362ba82c3eee56d204119e5bde4c4c95",
+ "notes": "- **Plays of the day:** Latest plays has two buttons now: the latest plays (as before), and every day's best play, newest first, each with its star. The star and the best play's frame are pink.\n- Needs `v2.sql` run again (server version 10): it adds the plays-of-the-day query.",
  "latest": {
-  "version": "1.8.0-beta.58",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.58.zip",
-  "sha256": "14cdd8f69258050dd37cd5b7f6fe85ca8aa48f4b9a388ac4f187554b713bc33a",
-  "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon."
+  "version": "1.8.0-beta.59",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.59.zip",
+  "sha256": "7daf1f24d0e0c23425fce8eacc5f5db3362ba82c3eee56d204119e5bde4c4c95",
+  "notes": "- **Plays of the day:** Latest plays has two buttons now: the latest plays (as before), and every day's best play, newest first, each with its star. The star and the best play's frame are pink.\n- Needs `v2.sql` run again (server version 10): it adds the plays-of-the-day query."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.59",
+   "date": "2026-10-15",
+   "notes": "- **Plays of the day:** Latest plays has two buttons now: the latest plays (as before), and every day's best play, newest first, each with its star. The star and the best play's frame are pink.\n- Needs `v2.sql` run again (server version 10): it adds the plays-of-the-day query."
+  },
   {
    "version": "1.8.0-beta.58",
    "date": "2026-10-15",
