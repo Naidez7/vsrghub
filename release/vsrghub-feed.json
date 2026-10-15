@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.72",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.72.zip",
- "sha256": "333d17c0ae468bae8f10d45ffca940f7dd97df3b0c10f940d41278c1d39e2881",
- "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before.",
+ "version": "1.8.0-beta.73",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.73.zip",
+ "sha256": "891a5dc93315b3199a19564f48004a8fb40466a1dbb492ca0a0d6a56195b68e7",
+ "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through).",
  "latest": {
-  "version": "1.8.0-beta.72",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.72.zip",
-  "sha256": "333d17c0ae468bae8f10d45ffca940f7dd97df3b0c10f940d41278c1d39e2881",
-  "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before."
+  "version": "1.8.0-beta.73",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.73.zip",
+  "sha256": "891a5dc93315b3199a19564f48004a8fb40466a1dbb492ca0a0d6a56195b68e7",
+  "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.73",
+   "date": "2026-10-15",
+   "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through)."
+  },
   {
    "version": "1.8.0-beta.72",
    "date": "2026-10-15",

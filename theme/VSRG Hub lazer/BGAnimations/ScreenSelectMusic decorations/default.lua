@@ -64,7 +64,9 @@ local board = Def.ActorFrame {
 		local sig = ck .. "|" .. tostring(TW.rankSource) .. "|" .. tostring(getCurRateValue())
 		if sig == self.boardSig and ck ~= "" then return end
 		self.boardSig = sig
-		self:stoptweening()
+		-- (stopping the tweens drops an earlier wait for a ranking; it also cuts the tab's fade-in
+		-- short, so the board is made whole here or it stayed see-through)
+		self:stoptweening():diffusealpha(1)
 		if TW.rankSource == "hub" and TW.hubRanking then
 			fillBoard(self, {}, "loading", allScores()[1], nil)
 			self:sleep(0.35):queuecommand("Hub")
