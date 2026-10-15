@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.79",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.79.zip",
- "sha256": "f775b5a8a7fbd13d1ce8fab788cbc13a84f8594dbf0d15184ff92030bb2a9265",
- "notes": "- **This month's ranking:** \"This month\" in the rankings' dropdown (launcher and web) ranks players by their plays made this month only, worked out as the all-time rating is, so every month starts from nothing.\n- **Duplicates:** the same play sent from two games (Etterna and an osu! / Quaver replay of it: same chart and rate, played within 3 seconds) is refused on the way in now; the admin tools' Duplicates tab finds the ones already there and cleans them up (the verified one, then the Etterna one, stays).\n- **Web:** the profile's rating graph expands to the big one (zoom, pan, a day's best plays), and the rankings page has Latest plays / Plays of the day / Best plays / Daily challenge with All / 4K / 7K and pages, as the launcher.\n- The daily challenge picks from MSD 8 to 28 and prefers charts more players know. Needs `v2.sql` run again (server version 16).",
+ "version": "1.8.0-beta.80",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.80.zip",
+ "sha256": "9eecebfac41ad245c22074fe231d0c52e71b13436ba0bc18c9e21afabe4d4384",
+ "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed.",
  "latest": {
-  "version": "1.8.0-beta.79",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.79.zip",
-  "sha256": "f775b5a8a7fbd13d1ce8fab788cbc13a84f8594dbf0d15184ff92030bb2a9265",
-  "notes": "- **This month's ranking:** \"This month\" in the rankings' dropdown (launcher and web) ranks players by their plays made this month only, worked out as the all-time rating is, so every month starts from nothing.\n- **Duplicates:** the same play sent from two games (Etterna and an osu! / Quaver replay of it: same chart and rate, played within 3 seconds) is refused on the way in now; the admin tools' Duplicates tab finds the ones already there and cleans them up (the verified one, then the Etterna one, stays).\n- **Web:** the profile's rating graph expands to the big one (zoom, pan, a day's best plays), and the rankings page has Latest plays / Plays of the day / Best plays / Daily challenge with All / 4K / 7K and pages, as the launcher.\n- The daily challenge picks from MSD 8 to 28 and prefers charts more players know. Needs `v2.sql` run again (server version 16)."
+  "version": "1.8.0-beta.80",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.80.zip",
+  "sha256": "9eecebfac41ad245c22074fe231d0c52e71b13436ba0bc18c9e21afabe4d4384",
+  "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.80",
+   "date": "2026-10-15",
+   "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed."
+  },
   {
    "version": "1.8.0-beta.79",
    "date": "2026-10-15",

@@ -1,0 +1,40 @@
+# Builds VSRG Hub's launcher (vsrghub.exe) and the full zip from the source, so anyone can check that
+# a release matches its code, and so a signing service (SignPath) can sign the build.
+name: build
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Version
+        id: v
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then echo "v=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          else echo "v=$(ls tools/changelog | sed 's/\.md$//' | sort -V | tail -1)-ci" >> "$GITHUB_OUTPUT"; fi
+      - name: Check the sheets
+        run: python3 tools/preflight.py
+      - name: Build
+        env:
+          GOOS: windows
+          GOARCH: amd64
+        run: |
+          V="${{ steps.v.outputs.v }}"
+          mkdir -p dist/VSRGHub/Root/Themes
+          go build -trimpath -ldflags "-s -w -H windowsgui -X main.version=$V" -o dist/VSRGHub/vsrghub.exe ./cmd/triwheel
+          cp -r theme/. dist/VSRGHub/Root/Themes/
+          cp README.md LICENSE THIRD_PARTY_LICENSES.txt media/webview2/WebView2Loader.dll dist/VSRGHub/
+          echo "$V" > dist/VSRGHub/version.txt
+          (cd dist/VSRGHub && find . -type f ! -name files.txt | sed 's#^\./##' | sort > files.txt && echo files.txt >> files.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsrghub-${{ steps.v.outputs.v }}
+          path: dist/VSRGHub
