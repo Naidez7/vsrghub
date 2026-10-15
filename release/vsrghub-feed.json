@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.40",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.40.zip",
- "sha256": "8ffbbc0cf09b808f995a3afb2b858f194fd15106a22561c173f5947429fed45c",
- "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait.",
+ "version": "1.8.0-beta.41",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.41.zip",
+ "sha256": "b346829c817ed284da34c17dfb4e595f52c89cb6104e6501ef252ccbfd844b67",
+ "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away.",
  "latest": {
-  "version": "1.8.0-beta.40",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.40.zip",
-  "sha256": "8ffbbc0cf09b808f995a3afb2b858f194fd15106a22561c173f5947429fed45c",
-  "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait."
+  "version": "1.8.0-beta.41",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.41.zip",
+  "sha256": "b346829c817ed284da34c17dfb4e595f52c89cb6104e6501ef252ccbfd844b67",
+  "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.41",
+   "date": "2026-10-15",
+   "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away."
+  },
   {
    "version": "1.8.0-beta.40",
    "date": "2026-10-15",
