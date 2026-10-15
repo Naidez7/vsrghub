@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.52",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.52.zip",
- "sha256": "577a35287777bc91dee132d93b1a4807a24f35d5fd33ad3677638f5fb328bbf0",
- "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time).",
+ "version": "1.8.0-beta.53",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.53.zip",
+ "sha256": "a249affc9f24c719a5fc85ce531b4d02ef7935e95f41c60ce77e361817d24851",
+ "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one).",
  "latest": {
-  "version": "1.8.0-beta.52",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.52.zip",
-  "sha256": "577a35287777bc91dee132d93b1a4807a24f35d5fd33ad3677638f5fb328bbf0",
-  "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time)."
+  "version": "1.8.0-beta.53",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.53.zip",
+  "sha256": "a249affc9f24c719a5fc85ce531b4d02ef7935e95f41c60ce77e361817d24851",
+  "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.53",
+   "date": "2026-10-15",
+   "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one)."
+  },
   {
    "version": "1.8.0-beta.52",
    "date": "2026-10-15",
