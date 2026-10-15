@@ -185,7 +185,8 @@ local function scoreRow(name, y, isPB)
 		LZ.panel { w = M(44), h = RH, r = M(8), init = function(self) self:x(GX) end } .. { Name = "Grade" },
 		LZ.text(M(15), "bold", function(self) self:align(0.5, 0.5):xy(GX + M(22), RH / 2) end) .. { Name = "GradeL" },
 		TW.button(PANEL_W, RH, function() openScore(shown) end, function(self, on)
-			self:GetParent():stoptweening():decelerate(0.1):x(X0 + ((on and shown) and M(8) or 0))
+			-- (a row still sliding in is brought in whole: stopping its tween left it half see-through)
+			self:GetParent():stoptweening():diffusealpha(1):decelerate(0.1):x(X0 + ((on and shown) and M(8) or 0))
 		end, function() if shown then openScore(shown, true) end end) .. { InitCommand = function(self) self:align(0, 0):zoomto(PANEL_W, RH):diffusealpha(0) end },
 	}
 end
@@ -194,7 +195,9 @@ board[#board + 1] = scoreRow("PB", M(652), true)
 board.InitCommand = function(self) self:visible(TW.osuLeft ~= "Preview") end
 board.TWOsuLeftMessageCommand = function(self)
 	self:visible(TW.osuLeft ~= "Preview")
-	if TW.osuLeft ~= "Preview" then self:stoptweening():diffusealpha(0):linear(0.15):diffusealpha(1) end
+	-- (no stoptweening here: the board's wait for VSRG Hub's or EtternaOnline's ranking is a queued
+	-- command on it, which stopping would drop, and the list would stay as it was)
+	if TW.osuLeft ~= "Preview" then self:diffusealpha(0):linear(0.15):diffusealpha(1) end
 end
 t[#t + 1] = board
 
