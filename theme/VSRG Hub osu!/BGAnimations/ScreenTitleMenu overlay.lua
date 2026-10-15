@@ -246,7 +246,9 @@ t[#t + 1] = Def.ActorFrame {
 	InitCommand = function(self) cookie = self; self:xy(SCREEN_CENTER_X, M(410)) end,
 	OnCommand = function(self) self:zoom(0.85):diffusealpha(0):decelerate(0.5):zoom(1):diffusealpha(1) end,
 	TWTitleMenuMessageCommand = function(self)
-		self:stoptweening():decelerate(0.45)
+		-- (also ends the fade-in it may have cut short: a click while it was still coming in left
+		-- the cookie see-through, or gone)
+		self:stoptweening():decelerate(0.45):zoom(1):diffusealpha(1)
 		if awake then self:xy(CX, CY) else self:xy(SCREEN_CENTER_X, M(410)) end
 	end,
 	-- under the mouse the cookie grows a little, as osu!'s does

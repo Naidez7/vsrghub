@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.43",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.43.zip",
- "sha256": "a7541f2104ce232c05a066c0075579dd64461a184ea40bd51f8356804c403952",
- "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet.",
+ "version": "1.8.0-beta.44",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.44.zip",
+ "sha256": "944e6ec9bfed69da51a1ada5664dd4e44c229ec67e063d206472b198b53c5f10",
+ "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in.",
  "latest": {
-  "version": "1.8.0-beta.43",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.43.zip",
-  "sha256": "a7541f2104ce232c05a066c0075579dd64461a184ea40bd51f8356804c403952",
-  "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet."
+  "version": "1.8.0-beta.44",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.44.zip",
+  "sha256": "944e6ec9bfed69da51a1ada5664dd4e44c229ec67e063d206472b198b53c5f10",
+  "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.44",
+   "date": "2026-10-15",
+   "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in."
+  },
   {
    "version": "1.8.0-beta.43",
    "date": "2026-10-15",

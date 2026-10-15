@@ -1117,8 +1117,14 @@ function TW.userCard(x, y, h, bare)
 				end
 			},
 			-- (VSRG Hub writes your ratings a moment after the game starts, and after each play)
-			Def.Actor { OnCommand = function(self) self:sleep(3):queuecommand("Again") end,
-				AgainCommand = function(self) self:GetParent():playcommand("Set"); self:sleep(10):queuecommand("Again") end },
+			-- (a clock, not a sleep loop: Etterna waits out a screen's longest running animation before
+			-- leaving it, so a 10 s sleep held song select on "Press Enter again for options" for seconds)
+			Def.ActorFrame { InitCommand = function(self)
+				local next = GetTimeSinceStart() + 3
+				self:SetUpdateFunction(function(s)
+					if GetTimeSinceStart() >= next then next = GetTimeSinceStart() + 10; s:GetParent():playcommand("Set") end
+				end):SetUpdateFunctionInterval(0.5)
+			end },
 			TW.text(9.1 * s, false, line(9.1, 45.9)) .. {
 				SetCommand = function(self) self:settextf("Accuracy:%.2f%%", TW.profileAccuracy()) end
 			},

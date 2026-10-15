@@ -268,7 +268,8 @@ t[#t + 1] = Def.ActorFrame {
 	InitCommand = function(self) logo = self; self:xy(SCREEN_CENTER_X, SCREEN_CENTER_Y + M(10)) end,
 	OnCommand = function(self) self:zoom(0.85):diffusealpha(0):decelerate(0.5):zoom(1):diffusealpha(1) end,
 	TWTitleMenuMessageCommand = function(self)
-		self:stoptweening():decelerate(0.4)
+		-- (diffusealpha: ends the fade-in it may have cut short, which left the logo see-through)
+		self:stoptweening():decelerate(0.4):diffusealpha(1)
 		if awake then self:xy(LX, BY):zoom(AWAKE_ZOOM) else self:xy(SCREEN_CENTER_X, SCREEN_CENTER_Y + M(10)):zoom(1) end
 	end,
 	TW.cookieShadow(R0),
