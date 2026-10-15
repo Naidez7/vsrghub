@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.73",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.73.zip",
- "sha256": "891a5dc93315b3199a19564f48004a8fb40466a1dbb492ca0a0d6a56195b68e7",
- "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through).",
+ "version": "1.8.0-beta.74",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.74.zip",
+ "sha256": "d9ed238faa17ade47332f35fee448eff5376b0241be6dcb41c90e5dcb55eb6bc",
+ "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too).",
  "latest": {
-  "version": "1.8.0-beta.73",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.73.zip",
-  "sha256": "891a5dc93315b3199a19564f48004a8fb40466a1dbb492ca0a0d6a56195b68e7",
-  "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through)."
+  "version": "1.8.0-beta.74",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.74.zip",
+  "sha256": "d9ed238faa17ade47332f35fee448eff5376b0241be6dcb41c90e5dcb55eb6bc",
+  "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.74",
+   "date": "2026-10-15",
+   "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too)."
+  },
   {
    "version": "1.8.0-beta.73",
    "date": "2026-10-15",

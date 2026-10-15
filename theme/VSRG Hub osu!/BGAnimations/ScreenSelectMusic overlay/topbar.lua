@@ -373,14 +373,10 @@ t[#t + 1] = Def.ActorFrame {
 		TW.button(RW, RH, function() TW.osuLeftStep(1) end, function(self, on)
 			self:GetParent():GetChild("Hover"):stoptweening():linear(0.1):diffusealpha(on and 0.08 or 0)
 		end, function() TW.osuLeftStep(-1) end) .. { InitCommand = function(self) self:align(0, 0.5):zoomto(RW, RH):diffusealpha(0) end },
-		-- the rate, on osu!'s round button right of the box. Skins with their own top bar art draw
-		-- that button into it (a heart, a ring...): then the rate isn't drawn over it, the button
-		-- still changes it, and the rate shows under it for a moment while it changes or while the
-		-- mouse is over it (it is always in the info lines above too)
+		-- the rate, on a pill right of the box (where osu! has its round button; a skin's own art
+		-- there stays under it): left click -0.05x, right click +0.05x, as in Etterna
 		Def.ActorFrame {
 			InitCommand = function(self) self:x(RW + M(6)) end,
-			OnCommand = function(self) self:playcommand("TWTopArt") end,
-			TWTopArtMessageCommand = function(self) self:GetChild("Pill"):visible(not TW.stableOwnTopArt) end,
 			Def.ActorFrame {
 				Name = "Pill",
 				TW.box { w = M(56), h = RH, r = RH / 2, ay = 0.5, col = { 0, 0, 0, 0.55 } } .. { Name = "Bg" },
@@ -402,7 +398,7 @@ t[#t + 1] = Def.ActorFrame {
 					RateCommand = function(self) self:settext(getCurRateDisplayString(true)) end
 				},
 				ShowCommand = function(self)
-					if not TW.stableOwnTopArt then return end
+					if true then return end -- (the pill is always drawn now: no tag needed)
 					self:stoptweening():linear(0.1):diffusealpha(1)
 					if not self.hover then self:sleep(1.2):linear(0.3):diffusealpha(0) end
 				end,

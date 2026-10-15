@@ -716,6 +716,23 @@ else
 		TW.text(M(30.3), false, function(self) self:align(0.5, 0.5):xy(SCREEN_CENTER_X, M(137.3)):shadowlength(0) end) .. {
 			RefreshCommand = function(self) self:settext("Music Rate: " .. getCurRateDisplayString(true)) end
 		},
+		-- < and > beside it: 0.05x down and up (the mouse wheel over the line does the same)
+		TW.text(M(34), true, function(self) self:align(0.5, 0.5):xy(SCREEN_CENTER_X - M(190), M(137.3)):settext("<"):shadowlength(0):diffuse(TW.rgb(255, 204, 34)) end),
+		TW.text(M(34), true, function(self) self:align(0.5, 0.5):xy(SCREEN_CENTER_X + M(190), M(137.3)):settext(">"):shadowlength(0):diffuse(TW.rgb(255, 204, 34)) end),
+		-- (Etterna's names run the other way: "PrevRate" is 0.05x up, "NextRate" 0.05x down)
+		TW.button(M(44), M(44), function() ChangeMusicRate(nil, { Name = "NextRate" }); MESSAGEMAN:Broadcast("CurrentRateChanged") end) ..
+			{ InitCommand = function(self) self:xy(SCREEN_CENTER_X - M(190), M(137.3)):zoomto(M(44), M(44)):diffusealpha(0) end },
+		TW.button(M(44), M(44), function() ChangeMusicRate(nil, { Name = "PrevRate" }); MESSAGEMAN:Broadcast("CurrentRateChanged") end) ..
+			{ InitCommand = function(self) self:xy(SCREEN_CENTER_X + M(190), M(137.3)):zoomto(M(44), M(44)):diffusealpha(0) end },
+		UIElements.QuadButton(1, 1) .. {
+			InitCommand = function(self) self:xy(SCREEN_CENTER_X, M(137.3)):zoomto(M(300), M(44)):diffusealpha(0) end,
+			MouseDownCommand = function(self, params)
+				if params.event == "DeviceButton_mousewheel up" or params.event == "DeviceButton_left mouse button" then ChangeMusicRate(nil, { Name = "PrevRate" })
+				elseif params.event == "DeviceButton_mousewheel down" or params.event == "DeviceButton_right mouse button" then ChangeMusicRate(nil, { Name = "NextRate" })
+				else return end
+				MESSAGEMAN:Broadcast("CurrentRateChanged")
+			end,
+		},
 	}
 	-- (osu!'s own mod icons, for mods the skin has none for: the tile's colours by kind, and a symbol)
 	local TILE = {
