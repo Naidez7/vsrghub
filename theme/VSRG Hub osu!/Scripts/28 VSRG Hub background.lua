@@ -241,3 +241,20 @@ function TW.songBackground(o)
 	root[#root + 1] = bg
 	return root
 end
+
+-- The song's small picture for the list: the launcher makes one per converted song (thumbs.go),
+-- since a background of 4K in a panel's corner is slow to read and looks wrong shrunk that far.
+-- The full background when there's none (a song not converted, or one not made yet).
+local thumbs = {}
+function TW.thumbPath(song)
+	if not song then return nil end
+	local dir = song:GetSongDir()
+	local t = dir and thumbs[dir]
+	if t then return t end
+	if dir and FILEMAN:DoesFileExist(dir .. "vsrghub-thumb-mipmaps.jpg") then
+		thumbs[dir] = dir .. "vsrghub-thumb-mipmaps.jpg"
+		return thumbs[dir]
+	end
+	local bg = song:GetBackgroundPath()
+	return (bg and bg ~= "") and bg or nil
+end

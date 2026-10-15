@@ -151,8 +151,7 @@ local t = Def.ActorFrame {
 				local f = self:GetParent():GetParent()
 				local p = a.p
 				self.box = a
-				local want = (TW.stableGeom().thumbs and p.Song) and p.Song:GetBackgroundPath() or nil
-				if want == "" then want = nil end
+				local want = (TW.stableGeom().thumbs and p.Song) and TW.thumbPath(p.Song) or nil
 				if want and want == self.shown then
 					TW.ilater(f, "thumb", 0, nil)
 					self:x(a.x):scaletoclipped(a.w + M(3), a.h):visible(true)
@@ -202,14 +201,14 @@ local t = Def.ActorFrame {
 				local root = self:GetParent():GetParent()
 				if dist == 0 and TW.browsing then
 					-- (the list's middle while you browse: picked where it is)
-					if root.song then TW.pickHere(root.song) else TW.browsing = false; top:SelectCurrent() end
+					if root.song then TW.pickHere(root.song) else top:SelectCurrent(); TW.packToggled() end
 				elseif dist == 0 and we:IsSettled() then
 					top:SelectCurrent()
 				else
 					TW.browsing = false
 					local itemtype = we:MoveAndCheckType(dist)
 					we:Move(0)
-					if itemtype == "WheelItemDataType_Section" then top:SelectCurrent() end
+					if itemtype == "WheelItemDataType_Section" then top:SelectCurrent(); TW.packToggled() end
 				end
 			end
 		}

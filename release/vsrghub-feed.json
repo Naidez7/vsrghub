@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.57",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.57.zip",
- "sha256": "023d81d099bd63db0220aadc358caa5e0bdf40a47eadb32957b6de8812dd0fc9",
- "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent.",
+ "version": "1.8.0-beta.58",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.58.zip",
+ "sha256": "14cdd8f69258050dd37cd5b7f6fe85ca8aa48f4b9a388ac4f187554b713bc33a",
+ "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon.",
  "latest": {
-  "version": "1.8.0-beta.57",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.57.zip",
-  "sha256": "023d81d099bd63db0220aadc358caa5e0bdf40a47eadb32957b6de8812dd0fc9",
-  "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent."
+  "version": "1.8.0-beta.58",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.58.zip",
+  "sha256": "14cdd8f69258050dd37cd5b7f6fe85ca8aa48f4b9a388ac4f187554b713bc33a",
+  "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.58",
+   "date": "2026-10-15",
+   "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon."
+  },
   {
    "version": "1.8.0-beta.57",
    "date": "2026-10-15",

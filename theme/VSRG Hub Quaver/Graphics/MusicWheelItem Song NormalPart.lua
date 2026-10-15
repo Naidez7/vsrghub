@@ -147,7 +147,8 @@ local t = Def.ActorFrame {
 			self.song = p.song
 			self:visible(false)
 			local b = p.song:GetBannerPath()
-			if not b or b == "" then b = p.song:GetBackgroundPath() end
+			-- (the banner is the background for most songs: its small copy then, see TW.thumbPath)
+			if not b or b == "" or b == p.song:GetBackgroundPath() then b = TW.thumbPath(p.song) end
 			self.want = (b and b ~= "") and b or nil
 			-- (waits without a tween: a tween inside the wheel stops it placing its panels, see TW.ianim)
 			TW.ilater(self:GetParent(), "banner", TW.pictureDelay(p.index, middle), self.want and function() self:playcommand("Show") end or nil)
@@ -201,14 +202,14 @@ local t = Def.ActorFrame {
 			if dist == 0 and TW.browsing then
 				-- (the list's middle while you browse: picked where it is)
 				local song = root.p and root.p.Song
-				if song then TW.pickHere(song) else TW.browsing = false; top:SelectCurrent() end
+				if song then TW.pickHere(song) else top:SelectCurrent(); TW.packToggled() end
 			elseif dist == 0 and we:IsSettled() then
 				top:SelectCurrent()
 			else
 				TW.browsing = false
 				local itemtype = we:MoveAndCheckType(dist)
 				we:Move(0)
-				if itemtype == "WheelItemDataType_Section" then top:SelectCurrent() end
+				if itemtype == "WheelItemDataType_Section" then top:SelectCurrent(); TW.packToggled() end
 			end
 		end
 	}

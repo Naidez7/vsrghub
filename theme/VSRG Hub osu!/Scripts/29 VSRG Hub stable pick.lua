@@ -30,7 +30,14 @@ end
 function TW.browse(dir)
 	local w = wheel()
 	if not w then return end
-	if not TW.pick.song then TW.pick = { song = GAMESTATE:GetCurrentSong(), steps = GAMESTATE:GetCurrentSteps() } end
+	if not TW.pick.song then
+		-- (on a pack's name nothing is picked, whatever Etterna's current song is: a pack opened or
+		-- closed from its name leaves it as it was)
+		local kind
+		pcall(function() kind = w:GetSelectedType() end)
+		if kind == "WheelItemDataType_Section" then TW.pick = {}
+		else TW.pick = { song = GAMESTATE:GetCurrentSong(), steps = GAMESTATE:GetCurrentSteps() } end
+	end
 	TW.browsing = TW.pick.song ~= nil
 	w:Move(dir)
 end
@@ -95,6 +102,14 @@ function TW.syncStep()
 		if i then TW.pickDiff(i) end
 	end
 	if s.fn then s.fn() end
+end
+
+-- a pack opened or closed from its name (a click on it): Etterna leaves its current song as it was,
+-- but the list is on the pack's name now, so nothing is picked
+function TW.packToggled()
+	TW.browsing = false
+	TW.pick = {}
+	if GAMESTATE:GetCurrentSong() then GAMESTATE:SetCurrentSong(nil) end
 end
 
 -- the panel in the list's middle picked, without moving the list (a click on it while browsing)

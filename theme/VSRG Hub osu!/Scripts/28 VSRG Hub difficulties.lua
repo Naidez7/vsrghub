@@ -498,6 +498,17 @@ function TW.diffRows(spec)
 					if w and w:IsSettled() then
 						s.restAt = s.restAt or GetTimeSinceStart()
 						if TW.browsing and GetTimeSinceStart() - s.restAt > 0.2 then TW.restorePick() end
+						-- (a pack opened or closed from its name leaves Etterna's current song as it
+						-- was, which while browsing was the picked one: the list is on a pack's name
+						-- now, so nothing is picked and no song's rows show over the packs)
+						if not TW.browsing and not TW.syncPending and GAMESTATE:GetCurrentSong() then
+							local kind
+							pcall(function() kind = w:GetSelectedType() end)
+							if kind == "WheelItemDataType_Section" then
+								TW.pick = {}
+								GAMESTATE:SetCurrentSong(nil)
+							end
+						end
 					else
 						s.restAt = nil
 					end

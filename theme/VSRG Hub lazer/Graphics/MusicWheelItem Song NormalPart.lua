@@ -81,7 +81,7 @@ local t = Def.ActorFrame {
 		LoadCommand = function(self, p)
 			local f = self:GetParent()
 			self.focus = p.HasFocus
-			local want = p.Song and p.Song:GetBackgroundPath() or nil
+			local want = p.Song and TW.thumbPath(p.Song) or nil
 			if want and want == self.shown then
 				TW.ilater(f, "thumb", 0, nil)
 				self:visible(true)
