@@ -359,7 +359,7 @@ local function setMsd(lo, hi)
 end
 local SLY = M(108)
 local LBL = M(84)
-local TRX, TRW = LBL + M(10), SW - LBL - M(10)
+local TRX, TRW = LBL + M(28), SW - LBL - M(56)
 t[#t + 1] = Def.ActorFrame {
 	InitCommand = function(self) self:xy(SX, SLY) end,
 	OnCommand = function(self) self:addx(M(80)):diffusealpha(0):decelerate(0.35):addx(-M(80)):diffusealpha(1); self:playcommand("Range") end,

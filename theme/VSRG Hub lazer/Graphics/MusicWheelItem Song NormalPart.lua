@@ -167,13 +167,13 @@ local t = Def.ActorFrame {
 			TW.box { w = M(34), h = M(20), r = M(7), ax = 0.5, ay = 0.5 } .. { Name = "Bg" },
 			LZ.text(M(12), "bold", function(self) self:align(0.5, 0.5) end) .. { Name = "L" },
 		},
-		LZ.text(M(15), "bold", function(self) self:align(0, 0.5) end) .. {
+		LZ.text(M(15), "bold", function(self) self:align(0, 0.5); self.z0 = self:GetZoom() end) .. {
 			Name = "Title",
 			SetCommand = function(self, p)
 				if p.Song then
-					self:zoom(M(15) / 15):settext(p.Song:GetDisplayMainTitle()):xy(TX, -H / 2 + M(13)):maxwidth(TEXT_W / self:GetZoom())
+					self:zoom(self.z0):settext(p.Song:GetDisplayMainTitle()):xy(TX, -H / 2 + M(13)):maxwidth(TEXT_W / self:GetZoom())
 				else
-					self:settext(p.Text or ""):xy(M(52), 0):zoom(M(18) / 15):maxwidth((TEXT_W - M(60)) / self:GetZoom())
+					self:settext(p.Text or ""):xy(M(52), 0):zoom(self.z0 * 18 / 15):maxwidth((TEXT_W - M(60)) / self:GetZoom())
 				end
 				self:diffuse(white)
 			end,

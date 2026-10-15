@@ -23,8 +23,10 @@ local function backdrop()
 	for _ = 1, 46 do
 		local s = M(90) + rnd() * M(260)
 		local x, y = rnd() * SCREEN_WIDTH, rnd() * (SCREEN_HEIGHT + s) - s / 2
-		local a = 0.05 + rnd() * 0.16
-		local c = { 0, 0, 0, a }
+		-- (some lighter than the backdrop, some darker, as lazer's)
+		local lighter = rnd() < 0.45
+		local a = lighter and (0.03 + rnd() * 0.06) or (0.08 + rnd() * 0.18)
+		local c = lighter and { 1, 1, 1, a } or { 0, 0, 0, a }
 		local up = rnd() < 0.7
 		local h = s * 0.866
 		if up then
@@ -47,7 +49,7 @@ local pic = Def.Sprite {
 		local p = randomBackground()
 		if p then self:LoadBackground(p) end
 		self:scaletocover(-M(20), -M(20), SCREEN_WIDTH + M(20), SCREEN_HEIGHT + M(20))
-		self:diffusealpha(0):linear(0.8):diffusealpha(0.2)
+		self:diffusealpha(0):linear(0.8):diffusealpha(0.08)
 	end,
 	-- the menu's song changed: its picture
 	TWMenuMusicMessageCommand = function(self)
@@ -60,7 +62,7 @@ local pic = Def.Sprite {
 	SwapCommand = function(self)
 		local x, y = self:GetX(), self:GetY()
 		self:LoadBackground(self.shown):scaletocover(-M(20), -M(20), SCREEN_WIDTH + M(20), SCREEN_HEIGHT + M(20)):xy(x, y)
-		self:linear(0.6):diffusealpha(0.2)
+		self:linear(0.6):diffusealpha(0.08)
 	end,
 }
 bg[#bg + 1] = Def.ActorFrame { InitCommand = function(self) TW.parallax(self, M(10)) end, pic }
