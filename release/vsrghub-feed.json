@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.60",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.60.zip",
- "sha256": "6ead93139d9fc91828db8227436b2674d28c8ff8035daea4e378f0b93ad1e77a",
- "notes": "- **Latest plays, three ways:** Latest plays, Plays of the day (every day's best, newest first, each with a gold star; the best of them all in pink) and Best plays (the top plays of everyone, one per player and chart, numbered). All / 4K / 7K beside them filters all three.\n- **Pages of ten** with arrows and a page box (\"Page 1 of 12\") instead of one long list.\n- Days are counted by your PC's clock now (the plays of the day too), so \"Today\" and the day headings agree with \"2 d ago\".\n- Needs `v2.sql` run again (server version 11): the plays-of-the-day query takes your time zone and the key count.",
+ "version": "1.8.0-beta.61",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.61.zip",
+ "sha256": "01439fa38d48ac19ee5df9acb70d1f1276e126a740894eceb925d01502720bbe",
+ "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart).",
  "latest": {
-  "version": "1.8.0-beta.60",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.60.zip",
-  "sha256": "6ead93139d9fc91828db8227436b2674d28c8ff8035daea4e378f0b93ad1e77a",
-  "notes": "- **Latest plays, three ways:** Latest plays, Plays of the day (every day's best, newest first, each with a gold star; the best of them all in pink) and Best plays (the top plays of everyone, one per player and chart, numbered). All / 4K / 7K beside them filters all three.\n- **Pages of ten** with arrows and a page box (\"Page 1 of 12\") instead of one long list.\n- Days are counted by your PC's clock now (the plays of the day too), so \"Today\" and the day headings agree with \"2 d ago\".\n- Needs `v2.sql` run again (server version 11): the plays-of-the-day query takes your time zone and the key count."
+  "version": "1.8.0-beta.61",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.61.zip",
+  "sha256": "01439fa38d48ac19ee5df9acb70d1f1276e126a740894eceb925d01502720bbe",
+  "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.61",
+   "date": "2026-10-15",
+   "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart)."
+  },
   {
    "version": "1.8.0-beta.60",
    "date": "2026-10-15",
