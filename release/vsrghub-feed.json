@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.51",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.51.zip",
- "sha256": "5bb30f07a8c6d4cae8536049a29c4d8d15acb4d6e10667e5db2e99e4cab2b0dc",
- "notes": "- Quaver replays are found and read now (they're in Quaver's Data\\r, and their file layout differs between Quaver versions: tried against real ones).\n- The Play page's stage stays yours once you've pressed a key, until you come back to the page: handing it back to itself mid-play left notes stuck under the receptors.",
+ "version": "1.8.0-beta.52",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.52.zip",
+ "sha256": "577a35287777bc91dee132d93b1a4807a24f35d5fd33ad3677638f5fb328bbf0",
+ "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time).",
  "latest": {
-  "version": "1.8.0-beta.51",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.51.zip",
-  "sha256": "5bb30f07a8c6d4cae8536049a29c4d8d15acb4d6e10667e5db2e99e4cab2b0dc",
-  "notes": "- Quaver replays are found and read now (they're in Quaver's Data\\r, and their file layout differs between Quaver versions: tried against real ones).\n- The Play page's stage stays yours once you've pressed a key, until you come back to the page: handing it back to itself mid-play left notes stuck under the receptors."
+  "version": "1.8.0-beta.52",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.52.zip",
+  "sha256": "577a35287777bc91dee132d93b1a4807a24f35d5fd33ad3677638f5fb328bbf0",
+  "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.52",
+   "date": "2026-10-15",
+   "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time)."
+  },
   {
    "version": "1.8.0-beta.51",
    "date": "2026-10-15",
