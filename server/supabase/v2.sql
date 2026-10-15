@@ -446,12 +446,26 @@ end $$;
 revoke all on function public.pin_score(bigint, boolean) from public, anon;
 grant execute on function public.pin_score(bigint, boolean) to authenticated;
 
+-- the order the player gave them (dragged in the launcher): ord, newest first until then
+alter table public.pins add column if not exists ord int not null default 0;
+
 create or replace function public.pinned_scores(player uuid) returns setof public.scores
 language sql stable security definer set search_path = public as $$
 	select s.* from public.pins p join public.scores s on s.id = p.score_id
 	where p.user_id = player and s.valid
-	order by p.pinned_at desc
+	order by p.ord, p.pinned_at desc
 $$;
+
+create or replace function public.reorder_pins(ids bigint[]) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if auth.uid() is null then raise exception 'not signed in'; end if;
+	update public.pins p set ord = x.i
+	from unnest(ids) with ordinality as x(score_id, i)
+	where p.user_id = auth.uid() and p.score_id = x.score_id;
+end $$;
+revoke all on function public.reorder_pins(bigint[]) from public, anon;
+grant execute on function public.reorder_pins(bigint[]) to authenticated;
 grant execute on function public.pinned_scores(uuid) to anon, authenticated;
 
 -- the 7K ratings already there, with the overall as the mean of six
