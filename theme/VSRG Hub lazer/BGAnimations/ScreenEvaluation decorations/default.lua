@@ -50,7 +50,7 @@ local t = Def.ActorFrame {}
 -- ------------------------------------------------------------------------------------------------
 -- the score card
 -- ------------------------------------------------------------------------------------------------
-local CX, CW = M(240), M(400)
+local CX, CW = SCREEN_CENTER_X, M(400) -- (the card in the middle, as lazer's)
 local CT, CB = M(108), M(746) -- the card's top and bottom (the picture sits over its top edge)
 local card = Def.ActorFrame {
 	InitCommand = function(self) self:x(CX) end,
@@ -254,9 +254,9 @@ end)
 t[#t + 1] = card
 
 -- ------------------------------------------------------------------------------------------------
--- the statistics, right of the card
+-- the statistics, in a column right of the card: the life graph, Til' Death's facts, the hit offsets
 -- ------------------------------------------------------------------------------------------------
-local RX = M(470)
+local RX = CX + CW / 2 + M(14)
 local RW = SCREEN_WIDTH - RX - M(16)
 local function statPanel(x, y, w, h, title)
 	return Def.ActorFrame {
@@ -268,7 +268,7 @@ local function statPanel(x, y, w, h, title)
 	}
 end
 -- the life graph
-local GW, GH = M(440), M(186)
+local GW, GH = RW, M(150)
 local life = statPanel(RX, M(56), GW, GH, "Life")
 life[#life + 1] = Def.ActorMultiVertex {
 	OnCommand = function(self)
@@ -309,15 +309,16 @@ life[#life + 1] = Def.ActorMultiVertex {
 }
 t[#t + 1] = life
 -- Til' Death's facts
-local FX = RX + GW + M(14)
-t[#t + 1] = statPanel(FX, M(56), SCREEN_WIDTH - FX - M(16), GH, "Details")
+local DY = M(56) + GH + M(12)
+local DH = M(150)
+t[#t + 1] = statPanel(RX, DY, RW, DH, "Details")
 t[#t + 1] = TW.evalPanel {
-	x = FX + M(4), y = M(56) + M(30), w = SCREEN_WIDTH - FX - M(24), h = GH - M(34), cols = 2, px = M(12), pad = M(10),
+	x = RX + M(4), y = DY + M(30), w = RW - M(8), h = DH - M(34), cols = 2, px = M(11), pad = M(8),
 	text = function(px, bold, init) return LZ.text(px, bold and "bold" or "regular", init) end, accent = LZ.pinkLight,
 	bg = { 0, 0, 0, 0 }, label = LZ.dim,
 }
 -- the hit offsets
-local OY = M(56) + GH + M(14)
+local OY = DY + DH + M(12)
 t[#t + 1] = statPanel(RX, OY, RW, M(746) - OY, nil)
 t[#t + 1] = TW.offsetPlot {
 	x = RX + M(6), y = OY + M(4), w = RW - M(12), h = M(746) - OY - M(8),
@@ -325,6 +326,92 @@ t[#t + 1] = TW.offsetPlot {
 	bg = { 0, 0, 0, 0 },
 	colour = function(i) return judges[i] and judges[i][3] or white end,
 }
+
+-- ------------------------------------------------------------------------------------------------
+-- left of the card: the chart's ranking on VSRG Hub as lazer's score cards, the scores just above
+-- yours (the ones to beat), or the top ones when yours isn't there yet
+-- ------------------------------------------------------------------------------------------------
+local SCW, SCH = M(150), M(500)
+local SCY = M(150)
+local function scoreCard(i)
+	local x = CX - CW / 2 - M(24) - i * (SCW + M(12))
+	local rows = { { "TapNoteScore_W1", "Perfect" }, { "TapNoteScore_W2", "Great" }, { "TapNoteScore_W3", "Good" },
+		{ "TapNoteScore_W4", "OK" }, { "TapNoteScore_W5", "Meh" }, { "TapNoteScore_Miss", "Miss" } }
+	local f = Def.ActorFrame {
+		InitCommand = function(self) self:xy(x, SCY):visible(false) end,
+		FillCommand = function(self, p)
+			local hs = p.hs
+			self:visible(hs ~= nil)
+			if not hs then return end
+			local c = self:GetChildren()
+			c.Place:settext("#" .. tostring(hs.place or "?"))
+			c.Name:settext(hs:GetDisplayName()):maxwidth((SCW - M(16)) / c.Name:GetZoom())
+			c.Initial:settext((hs:GetDisplayName():sub(1, 1) or "?"):upper())
+			for k, r in ipairs(rows) do self:GetChild("N" .. k):settext(commas(hs:GetTapNoteScore(r[1]))) end
+			c.Combo:settextf("x%s", commas(hs:GetMaxCombo()))
+			c.Acc:settextf("%.2f%%", hs:GetWifeScore() * 100)
+			c.Score:settext(commas(hs:GetWifeScore() * 1000000))
+			local rate = hs:GetMusicRate()
+			c.Rate:visible(math.abs(rate - 1) > 0.001):settextf("%.2fx", rate)
+			c.RateBg:visible(math.abs(rate - 1) > 0.001)
+			local r = TW.accRank and TW.accRank(hs:GetWifeScore() * 100) or (TW.GradeToRank[hs:GetWifeGrade()] or "D")
+			TW.setBox(c.GradeBg, { col = LZ.rankColour(r) })
+			c.Grade:settext(TW.RankLetter[r] or r):diffuse(LZ.rankText(r))
+			TW.setBox(c.Avatar, { col = LZ.a(LZ.rankColour(r), 0.5) })
+			self:diffusealpha(0):addy(M(30)):sleep(0.1 * i):decelerate(0.35):diffusealpha(1):addy(-M(30))
+		end,
+		TW.shadow { w = SCW, h = SCH, spread = M(12), alpha = 0.5, drop = M(3) },
+		TW.box { w = SCW, h = SCH, r = M(12), col = LZ.a(LZ.bg4, 0.96), col2 = LZ.a(LZ.bg5, 0.96) },
+		-- the place on a darker top
+		TW.box { w = SCW, h = M(34), r = M(12), col = LZ.a(LZ.bg5, 0.98) },
+		LZ.text(M(13), "bold", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(17)) end) .. { Name = "Place" },
+		-- the lighter part: the player (a circle with their initial: the ranking carries no pictures) and the counts
+		TW.box { w = SCW - M(16), h = M(300), r = M(10), col = LZ.a(LZ.bg2, 0.95), init = function(self) self:xy(M(8), M(42)) end },
+		TW.box { w = M(90), h = M(90), r = M(18), ax = 0.5, col = LZ.a(LZ.bg1, 1), init = function(self) self:xy(SCW / 2, M(52)) end } .. { Name = "Avatar" },
+		TW.bigText(M(34), "bold", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(97)):diffusealpha(0.9) end) .. { Name = "Initial" },
+		LZ.text(M(12), "bold", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(158)) end) .. { Name = "Name" },
+		LZ.text(M(9.5), "regular", function(self) self:align(0, 0.5):xy(M(16), M(300)):settext("Max Combo") end),
+		LZ.text(M(9.5), "bold", function(self) self:align(1, 0.5):xy(SCW - M(16), M(300)):diffuse(LZ.yellow) end) .. { Name = "Combo" },
+		LZ.text(M(9.5), "regular", function(self) self:align(0, 0.5):xy(M(16), M(318)):settext("Accuracy") end),
+		LZ.text(M(9.5), "bold", function(self) self:align(1, 0.5):xy(SCW - M(16), M(318)):diffuse(LZ.yellow) end) .. { Name = "Acc" },
+		TW.box { w = M(50), h = M(16), r = M(8), ax = 0.5, ay = 0.5, col = LZ.purpleDark, init = function(self) self:xy(SCW / 2, M(360)) end } .. { Name = "RateBg" },
+		LZ.text(M(9), "bold", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(360)) end) .. { Name = "Rate" },
+		-- the score and the grade at the bottom
+		LZ.text(M(16), "light", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(420)) end) .. { Name = "Score" },
+		TW.box { w = M(40), h = M(16), r = M(8), ax = 0.5, ay = 0.5, init = function(self) self:xy(SCW / 2, M(448)) end } .. { Name = "GradeBg" },
+		LZ.text(M(9.5), "bold", function(self) self:align(0.5, 0.5):xy(SCW / 2, M(448)) end) .. { Name = "Grade" },
+	}
+	for k, r in ipairs(rows) do
+		local y = M(180) + (k - 1) * M(18)
+		f[#f + 1] = LZ.text(M(9.5), "regular", function(self) self:align(0, 0.5):xy(M(16), y):settext(r[2]) end)
+		f[#f + 1] = LZ.text(M(9.5), "bold", function(self) self:align(1, 0.5):xy(SCW - M(16), y):diffuse(LZ.yellow) end) .. { Name = "N" .. k }
+	end
+	return f
+end
+local cards = Def.ActorFrame {
+	-- (asked twice: once the play has been sent the ranking may have it)
+	OnCommand = function(self) if TW.hubRanking and TW.hubMe and TW.hubMe() then self:sleep(0.8):queuecommand("Ask") end end,
+	AskCommand = function(self)
+		self.asks = (self.asks or 0) + 1
+		TW.hubRanking(steps, function(list, status)
+			if status ~= "ok" or #list == 0 then return end
+			local me = TW.hubMe()
+			local mine = nil
+			for i, hs in ipairs(list) do if me and hs.name == me.name then mine = i break end end
+			local pick = {}
+			if mine and mine > 1 then
+				for i = mine - 1, math.max(1, mine - 3), -1 do pick[#pick + 1] = list[i] end
+			else
+				for i = 1, math.min(3, #list) do pick[#pick + 1] = list[i] end
+			end
+			for i = 1, 3 do self:GetChild("C" .. i):playcommand("Fill", { hs = pick[i] }) end
+		end, self)
+		if self.asks < 2 then self:sleep(6):queuecommand("Ask") end
+	end,
+	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
+}
+for i = 1, 3 do cards[#cards + 1] = scoreCard(i) .. { Name = "C" .. i } end
+t[#t + 1] = cards
 
 -- hovering the accuracy: what it is on the other judges and ODs
 if TW.accTooltip then

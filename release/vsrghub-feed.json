@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.68",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.68.zip",
- "sha256": "e928ebd86619dae5f461a9b19afc77d0368491b14b6d870415526e05f2ded646",
- "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks.",
+ "version": "1.8.0-beta.69",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.69.zip",
+ "sha256": "d32ab8ce41b6c00c49d62a97d1acb62034e8c1ab4914161209190194005da959",
+ "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet.",
  "latest": {
-  "version": "1.8.0-beta.68",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.68.zip",
-  "sha256": "e928ebd86619dae5f461a9b19afc77d0368491b14b6d870415526e05f2ded646",
-  "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks."
+  "version": "1.8.0-beta.69",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.69.zip",
+  "sha256": "d32ab8ce41b6c00c49d62a97d1acb62034e8c1ab4914161209190194005da959",
+  "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.69",
+   "date": "2026-10-15",
+   "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet."
+  },
   {
    "version": "1.8.0-beta.68",
    "date": "2026-10-15",
