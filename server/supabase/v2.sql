@@ -336,5 +336,62 @@ begin
 end $$;
 grant execute on function public.admin_suspicious(int) to authenticated;
 
+-- ---------------------------------------------------------------------------------------------
+-- profile pictures: avatars/<user id>.png in Storage (public), uploaded by the launcher at 128x128;
+-- profiles.avatar counts the changes (0: none), so the picture's address changes with it
+alter table public.profiles add column if not exists avatar int not null default 0;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avatars', 'avatars', true, 262144, array['image/png'])
+on conflict (id) do update set public = true, file_size_limit = 262144, allowed_mime_types = array['image/png'];
+
+drop policy if exists "vh avatars read" on storage.objects;
+create policy "vh avatars read" on storage.objects for select using (bucket_id = 'avatars');
+drop policy if exists "vh avatar insert" on storage.objects;
+create policy "vh avatar insert" on storage.objects for insert to authenticated
+	with check (bucket_id = 'avatars' and name = auth.uid()::text || '.png');
+drop policy if exists "vh avatar update" on storage.objects;
+create policy "vh avatar update" on storage.objects for update to authenticated
+	using (bucket_id = 'avatars' and name = auth.uid()::text || '.png')
+	with check (bucket_id = 'avatars' and name = auth.uid()::text || '.png');
+
+create or replace function public.set_avatar(remove boolean default false) returns int
+language sql security definer set search_path = public as $$
+	update public.profiles set avatar = case when remove then 0 else avatar + 1 end
+	where id = auth.uid() returning avatar
+$$;
+revoke all on function public.set_avatar(boolean) from public, anon;
+grant execute on function public.set_avatar(boolean) to authenticated;
+
+create or replace function public.admin_clear_avatar(player uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if not public.vh_is_admin() then raise exception 'admins only'; end if;
+	update public.profiles set avatar = 0 where id = player;
+end $$;
+grant execute on function public.admin_clear_avatar(uuid) to authenticated;
+
+-- the rankings, with each player's picture
+drop function if exists public.rankings(smallint, text, int, int);
+create function public.rankings(k smallint default 4, skill text default 'overall',
+	max_rows int default 100, skip int default 0)
+returns table (place bigint, username text, user_id uuid, rating real, overall real, stream real,
+	jumpstream real, handstream real, stamina real, jackspeed real, chordjack real, technical real,
+	plays int, avatar int)
+language plpgsql stable security definer set search_path = public as $$
+begin
+	if skill not in ('overall', 'stream', 'jumpstream', 'handstream', 'stamina', 'jackspeed', 'chordjack', 'technical') then
+		raise exception 'unknown skillset %', skill;
+	end if;
+	return query execute format(
+		'select row_number() over (order by r.%1$I desc), p.username, r.user_id, r.%1$I, r.overall,
+			r.stream, r.jumpstream, r.handstream, r.stamina, r.jackspeed, r.chordjack, r.technical, r.plays, p.avatar
+		from public.player_ratings r join public.profiles p on p.id = r.user_id
+		where r.keys = $1 and not p.banned and r.plays > 0
+		order by r.%1$I desc limit $2 offset $3', skill)
+	using k, least(greatest(max_rows, 1), 200), greatest(skip, 0);
+end $$;
+grant execute on function public.rankings(smallint, text, int, int) to anon, authenticated;
+
 -- To make yourself an admin, run once (with your player name):
 --   update public.profiles set is_admin = true where username = 'YourName';

@@ -125,8 +125,8 @@ local function myBest(list)
 end
 -- (the layer's root frame doesn't get the song messages, so a child does the work)
 t[#t + 1] = Def.Actor {
-	CurrentStepsChangedMessageCommand = function(self) self:queuecommand("Board") end,
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Board") end,
+	CurrentStepsChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Board") end end,
+	CurrentSongChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Board") end end,
 	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" or TW.rankSource == "hub" then self:queuecommand("Board") end end,
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self:queuecommand("Board") end,
@@ -196,8 +196,8 @@ t[#t + 1] = board
 local skills = { "Overall", "Stream", "Jumpstream", "Handstream", "Stamina", "JackSpeed", "Chordjack", "Technical" }
 local msd = Def.ActorFrame {
 	InitCommand = function(self) self:xy(X0, M(496)) end,
-	CurrentStepsChangedMessageCommand = function(self) self:queuecommand("Fill") end,
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Fill") end,
+	CurrentStepsChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Fill") end end,
+	CurrentSongChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Fill") end end,
 	CurrentRateChangedMessageCommand = function(self) self:queuecommand("Fill") end,
 	OnCommand = function(self) self:queuecommand("Fill") end,
 	FillCommand = function(self)

@@ -45,7 +45,7 @@ local levels = {
 		left = { { label = "back", icon = "arrow-left", col = TW.rgb(51, 58, 94), act = function() return "main" end } },
 		right = {
 			{ label = "solo", icon = "user", col = TW.rgb(102, 68, 204), act = function() choose("GameStart") end, key = "S" },
-			{ label = "multi", icon = "users", col = TW.rgb(94, 63, 186), act = function() choose("Multi") end, key = "M" },
+			{ label = "multi", icon = "users", col = TW.rgb(94, 63, 186), act = function() TW.startMulti(function() choose("Multi") end) end, key = "M" },
 		},
 	},
 }
@@ -312,6 +312,8 @@ t[#t + 1] = Def.ActorFrame {
 }
 
 t[#t + 1] = TW.optionsPanel()
+t[#t + 1] = TW.multiStatus()
+t[#t + 1] = TW.updateNotice()
 t[#t + 1] = TW.listPanel()
 t[#t + 1] = TW.dialogPanel()
 return t

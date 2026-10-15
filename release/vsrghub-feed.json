@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.45",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.45.zip",
- "sha256": "b5f18bfb7da461b22d0067b3792680d4fbded586b642b00a1beb9df00d11fdcd",
- "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first).",
+ "version": "1.8.0-beta.46",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.46.zip",
+ "sha256": "320a048fad045d2842e279c8d18049d20c9be59077e5b5d45a5a6f58140b8c8a",
+ "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it.",
  "latest": {
-  "version": "1.8.0-beta.45",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.45.zip",
-  "sha256": "b5f18bfb7da461b22d0067b3792680d4fbded586b642b00a1beb9df00d11fdcd",
-  "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first)."
+  "version": "1.8.0-beta.46",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.46.zip",
+  "sha256": "320a048fad045d2842e279c8d18049d20c9be59077e5b5d45a5a6f58140b8c8a",
+  "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.46",
+   "date": "2026-10-15",
+   "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it."
+  },
   {
    "version": "1.8.0-beta.45",
    "date": "2026-10-15",

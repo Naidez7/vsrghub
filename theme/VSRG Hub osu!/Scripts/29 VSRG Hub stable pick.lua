@@ -43,7 +43,12 @@ end
 function TW.keepPick()
 	if TW.browsing then return end
 	local song = GAMESTATE:GetCurrentSong()
-	if song then TW.pick = { song = song, steps = GAMESTATE:GetCurrentSteps() } end
+	if song then TW.pick = { song = song, steps = GAMESTATE:GetCurrentSteps() }
+	else
+		-- (the list on a pack's name, e.g. the pack just closed: nothing is picked, so browsing from
+		-- here doesn't bring the old song's difficulties back over the packs)
+		TW.pick = {}
+	end
 end
 local restoring = false
 function TW.restorePick()

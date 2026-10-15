@@ -41,7 +41,7 @@ function TW.openList(spec)
 	MESSAGEMAN:Broadcast("TWList", { open = true })
 end
 function TW.openInput(spec)
-	TW.openList { title = spec.title, items = {}, input = true, hint = spec.hint, initial = spec.value or "",
+	TW.openList { title = spec.title, items = {}, input = true, secret = spec.secret, hint = spec.hint, initial = spec.value or "",
 		onPick = function(text) if spec.onDone then spec.onDone(text) end end }
 	state.filter = spec.value or ""
 	refilter()
@@ -134,7 +134,8 @@ function TW.listPanel(opts)
 			TWListRefreshMessageCommand = function(self)
 				if not TW.list then return end
 				if TW.list.input then
-					self:settextf("%s_", state.filter):diffuse(TW.yellow)
+					-- (a password shows as dots)
+					self:settextf("%s_", TW.list.secret and string.rep("*", #state.filter) or state.filter):diffuse(TW.yellow)
 					return
 				end
 				self:settextf("Search: %s_     %d of %d", state.filter, #state.shown, #TW.list.items)

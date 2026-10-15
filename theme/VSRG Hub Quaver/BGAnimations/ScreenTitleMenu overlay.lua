@@ -16,7 +16,7 @@ local function choose(name)
 end
 local actions = {
 	[0] = function() choose("GameStart") end,
-	[1] = function() choose("Multi") end,
+	[1] = function() TW.startMulti(function() choose("Multi") end) end,
 	[2] = function() TW.openOptions() end,
 	[3] = function() MESSAGEMAN:Broadcast("QVAskQuit") end,
 }
@@ -88,6 +88,8 @@ local t = Def.ActorFrame {
 	QV.optionsPanel(),
 	QV.windowsDialog(),
 	TW.listPanel(),
+	TW.multiStatus(),
+	TW.updateNotice(),
 }
 do
 	local M = TW.M

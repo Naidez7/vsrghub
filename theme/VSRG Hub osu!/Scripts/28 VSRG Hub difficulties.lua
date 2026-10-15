@@ -483,9 +483,28 @@ function TW.diffRows(spec)
 			TW.wheelFade = spec.fade
 			TW.wheelCentre = spec.centre()
 			TW.everyFrame(self)
+			-- (spec.browse: the list scrolls without picking, as osu! stable's and Quaver's: 29 VSRG
+			-- Hub stable pick.lua; the rows stay closed while you browse)
+			if spec.browse then
+				TW.browsing, TW.pickY = false, 0
+				TW.pick = { song = GAMESTATE:GetCurrentSong(), steps = GAMESTATE:GetCurrentSteps() }
+				TW.pickMusicReset()
+			end
 			self:SetUpdateFunction(function(s, dt)
+				if spec.browse then
+					TW.syncStep()
+					TW.pickMusicStep()
+					local w = onSelect() and onSelect():GetMusicWheel()
+					if w and w:IsSettled() then
+						s.restAt = s.restAt or GetTimeSinceStart()
+						if TW.browsing and GetTimeSinceStart() - s.restAt > 0.2 then TW.restorePick() end
+					else
+						s.restAt = nil
+					end
+				end
 				-- what to show: rebuilt when the song, the chart, the rate or your scores change
 				local song, list, cur = current()
+				if spec.browse and TW.browsing then song = nil end
 				local key = ""
 				if song then
 					local n = 0
@@ -532,7 +551,13 @@ function TW.diffRows(spec)
 				end
 			end)
 		end,
-		OffCommand = function() TW.diffGap, TW.diffLift, TW.wheelFade = 0, 0, nil end,
+		OffCommand = function() TW.diffGap, TW.diffLift, TW.wheelFade = 0, 0, nil; if spec.browse then TW.browsing, TW.pickY = false, 0 end end,
+		-- (browsing: the list moved, the picked song stays picked)
+		CurrentSongChangedMessageCommand = function() if spec.browse then TW.keepPick() end end,
+		CurrentStepsChangedMessageCommand = function() if spec.browse then TW.keepPick() end end,
+		PlayingSampleMusicMessageCommand = function() if spec.browse then TW.pickMusicPlaying() end end,
+		FilterResultsMessageCommand = function() if spec.browse then TW.browsing = false end end,
+		TWSortChangedMessageCommand = function() if spec.browse then TW.browsing = false end end,
 	}
 	local f = Def.ActorFrame { Name = "Rows" }
 	for i = 1, ACTORS do f[#f + 1] = rowActor(i) end

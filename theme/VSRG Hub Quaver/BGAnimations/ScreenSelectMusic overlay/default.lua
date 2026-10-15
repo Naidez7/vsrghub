@@ -16,11 +16,20 @@ local function setPanel(name)
 	SCREENMAN:set_input_redirected(PLAYER_1, name ~= nil or TW.keepRedirect == true)
 	MESSAGEMAN:Broadcast("TWPanel", { name = name })
 end
-local function startSong() local s = top(); if s and s.SelectCurrent then s:SelectCurrent() end end
+local function startSong()
+	-- (scrolled away from the picked map: back to it first)
+	if TW.browsing and TW.syncToPick then
+		TW.syncToPick(function() local s = top(); if s and s.SelectCurrent then s:SelectCurrent() end end)
+		return
+	end
+	local s = top()
+	if s and s.SelectCurrent then s:SelectCurrent() end
+end
 local function randomSong()
 	local w = wheel()
 	if not w then return end
 	local songs = w:GetSongs()
+	TW.browsing = false
 	if songs and #songs > 0 then w:SelectSong(songs[math.random(1, #songs)]) end
 end
 
@@ -110,13 +119,11 @@ local function input(event)
 	if (b == "DeviceButton_mousewheel up" or b == "DeviceButton_mousewheel down") and not TW.altHeld() then
 		local w = wheel()
 		if not w or TW.optionsOpen or TW.list or (panel and panel ~= "Search") then return false end
-		-- (over a song's difficulties, when it has more than fit, the wheel scrolls them instead)
-		if event.type == "InputEventType_FirstPress" and TW.diffWheel and TW.diffWheel(b == "DeviceButton_mousewheel up" and -1 or 1) then
-			return true
-		end
+		-- (as Quaver's list: the wheel scrolls it, the picked map staying picked until you click
+		-- another: 29 VSRG Hub stable pick.lua)
 		if event.type == "InputEventType_FirstPress" then
 			wheelMoving = true
-			w:Move(b == "DeviceButton_mousewheel up" and -1 or 1)
+			TW.browse(b == "DeviceButton_mousewheel up" and -1 or 1)
 		elseif wheelMoving then
 			wheelMoving = false
 			w:Move(0)
@@ -131,7 +138,11 @@ local function input(event)
 		local w = wheel()
 		if w then
 			if event.type == "InputEventType_Release" then w:Move(0)
-			elseif event.type == "InputEventType_FirstPress" then w:Move(arrows[b]) end
+			elseif event.type == "InputEventType_FirstPress" then
+				-- (scrolled away with the mouse wheel: the keys go on from the picked map)
+				if TW.browsing then TW.syncToPick(function() w:Move(arrows[b]); w:Move(0) end) return true end
+				w:Move(arrows[b])
+			end
 			return true
 		end
 	end
@@ -183,7 +194,7 @@ local function input(event)
 	-- Enter plays the selected map, as in Quaver (Etterna does that itself unless VSRG Hub holds the
 	-- keyboard, e.g. after a click on the song list or a menu)
 	if not panel and not TW.dropOpen and not TW.optionsOpen and (b == "DeviceButton_enter" or b == "DeviceButton_KP enter")
-		and SCREENMAN:get_input_redirected(PLAYER_1) then
+		and (SCREENMAN:get_input_redirected(PLAYER_1) or TW.browsing) then
 		startSong()
 		return true
 	end
@@ -214,6 +225,16 @@ local function gate(event)
 	if TW.list or TW.optionsOpen then return false end
 	if not panel and not QV.openDropdown and TW.rateInput(event) then return true end
 	if QV.openDropdown and not TW.altHeld() then input(event) return true end
+	-- (scrolled away from the picked map with the mouse wheel: Enter plays the picked one, and
+	-- up / down go on from it, before Etterna's list takes them from its middle)
+	if TW.browsing and not panel and not mouse and event.type == "InputEventType_FirstPress" then
+		if b == "DeviceButton_enter" or b == "DeviceButton_KP enter" then startSong() return true end
+		if b == "DeviceButton_up" or b == "DeviceButton_down" then
+			local d = b == "DeviceButton_up" and -1 or 1
+			TW.syncToPick(function() local w = wheel(); if w then w:Move(d); w:Move(0) end end)
+			return true
+		end
+	end
 	-- left / right go through the selected map set's difficulties, as in Quaver (28 VSRG Hub difficulties.lua)
 	if (not panel or panel == "Search") and TW.diffKey(event, "horizontal") then return true end
 	if mouse or event.type ~= "InputEventType_FirstPress" then return false end
@@ -285,8 +306,8 @@ t[#t + 1] = QV.navbar()
 -- the map info strip
 local strip = Def.ActorFrame {
 	InitCommand = function(self) self:y(M(42)) end,
-	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Info") end,
-	CurrentStepsChangedMessageCommand = function(self) self:queuecommand("Info") end,
+	CurrentSongChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Info") end end,
+	CurrentStepsChangedMessageCommand = function(self) if not TW.browsingSkip() then self:queuecommand("Info") end end,
 	CurrentRateChangedMessageCommand = function(self) self:queuecommand("Info") end,
 	TWModsChangedMessageCommand = function(self) self:queuecommand("Info") end,
 	OnCommand = function(self) self:queuecommand("Info") end,
@@ -415,7 +436,7 @@ t[#t + 1] = strip
 t[#t + 1] = TW.searchRunner()
 -- the selected map set's difficulties, opened up under its row as in Quaver
 t[#t + 1] = TW.diffRows {
-	look = "quaver", x = function() return TW.R(556) - M(38) end, y = function() return M(441) + M(32) end,
+	look = "quaver", browse = true, x = function() return TW.R(556) - M(38) end, y = function() return M(441) + M(32) end,
 	centre = function() return M(441) end,
 	unit = M(73.6), indent = M(24), rowH = M(46), step = M(50), maxActors = 20, fs = 0.85,
 	-- (under the top bar and over the bottom bar the rows fade out)

@@ -35,7 +35,15 @@ local t = Def.ActorFrame {
 	-- under the selected song, its difficulties open up: the panels below move down to make room
 	InitCommand = function(self)
 		local unit = M(73.6)
-		self:SetUpdateFunction(function(s) if s.mine ~= false then TW.wheelShift(s, unit) end end)
+		self:SetUpdateFunction(function(s)
+			if s.mine == false then return end
+			TW.wheelShift(s, unit)
+			-- (browsing: the picked map's row keeps the selected look, the list's middle doesn't)
+			if s.p then
+				local focus = TW.browsing and (s.p.Song ~= nil and s.p.Song == TW.pick.song) or (not TW.browsing and s.p.HasFocus)
+				if focus ~= s.focus then s:playcommand("Set", s.p) end
+			end
+		end)
 	end,
 	-- new search results slide in (28 VSRG Hub search.lua)
 	TWSearchResultsMessageCommand = function(self) TW.searchSlideIn(self, self.drawIndex, middle) end,
@@ -56,7 +64,9 @@ local t = Def.ActorFrame {
 		-- (the wheel can show a song twice when it holds only a few; only the middle row is "selected")
 		p.HasFocus = p.HasFocus and (p.DrawIndex == nil or p.DrawIndex == middle)
 		self.p = p
-		local focus = p.HasFocus
+		local focus = TW.browsing and (p.Song ~= nil and p.Song == TW.pick.song) or (not TW.browsing and p.HasFocus)
+		self.focus = focus
+		p.Focus = focus
 		local c = self:GetChildren()
 		local w = W + (focus and M(38) or 0)
 		c.Bg:zoomto(w, H):diffuse(focus and TW.rgb(16, 11, 34) or color("#000000")):diffusealpha(focus and 0.9 or 0.6)
@@ -67,7 +77,7 @@ local t = Def.ActorFrame {
 		self:playcommand("Fill")
 	end,
 	CurrentRateChangedMessageCommand = function(self) if self.p then self:playcommand("Fill") end end,
-	CurrentStepsChangedMessageCommand = function(self) if self.p and self.p.HasFocus then self:playcommand("Fill") end end,
+	CurrentStepsChangedMessageCommand = function(self) if self.p and self.p.Focus then self:playcommand("Fill") end end,
 	FillCommand = function(self)
 		local p = self.p
 		local c = self:GetChildren()
@@ -107,9 +117,9 @@ local t = Def.ActorFrame {
 			c.Grade:settext("")
 		end
 		local maxw = M(396) - x0 - M(30)
-		c.Title:zoom(M(14) / 24):x(x0):y(-M(10)):diffuse(p.HasFocus and white or TW.rgb(225, 225, 225))
+		c.Title:zoom(M(14) / 24):x(x0):y(-M(10)):diffuse(p.Focus and white or TW.rgb(225, 225, 225))
 		QV.fit(c.Title, song:GetDisplayArtist() .. " - " .. song:GetDisplayMainTitle(), maxw)
-		local st, m = chartFor(song, p.HasFocus)
+		local st, m = chartFor(song, p.Focus)
 		c.Msd:diffuse(QV.diffColour(m)):x(x0)
 		QV.fit(c.Msd, string.format("%.2f - %s", m, st and TW.diffName(st) or "?"), maxw * 0.62)
 		local x = x0 + c.Msd:GetZoomedWidth() + M(5)
@@ -171,6 +181,7 @@ local t = Def.ActorFrame {
 				local we = top and top:GetMusicWheel()
 				if not we or not self.index then return end
 				local dist = self.index - middle
+				TW.browsing = false
 				if dist ~= 0 then
 					if we:MoveAndCheckType(dist) == "WheelItemDataType_Section" then we:Move(0) return end
 					we:Move(0)
@@ -186,9 +197,15 @@ local t = Def.ActorFrame {
 			local we = top and top:GetMusicWheel()
 			if not we or not self.index then return end
 			local dist = self.index - middle
-			if dist == 0 and we:IsSettled() then
+			local root = self:GetParent()
+			if dist == 0 and TW.browsing then
+				-- (the list's middle while you browse: picked where it is)
+				local song = root.p and root.p.Song
+				if song then TW.pickHere(song) else TW.browsing = false; top:SelectCurrent() end
+			elseif dist == 0 and we:IsSettled() then
 				top:SelectCurrent()
 			else
+				TW.browsing = false
 				local itemtype = we:MoveAndCheckType(dist)
 				we:Move(0)
 				if itemtype == "WheelItemDataType_Section" then top:SelectCurrent() end
