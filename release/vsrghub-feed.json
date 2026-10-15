@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.63",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.63.zip",
- "sha256": "abf3a134b497459143b458bdd32bce211ccdba613fdd514efff229c078691ef3",
- "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application.",
+ "version": "1.8.0-beta.64",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.64.zip",
+ "sha256": "f204b00a851ceac7fdb6ea788730d97286103924f982d4050f303517836ab4d7",
+ "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not.",
  "latest": {
-  "version": "1.8.0-beta.63",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.63.zip",
-  "sha256": "abf3a134b497459143b458bdd32bce211ccdba613fdd514efff229c078691ef3",
-  "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application."
+  "version": "1.8.0-beta.64",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.64.zip",
+  "sha256": "f204b00a851ceac7fdb6ea788730d97286103924f982d4050f303517836ab4d7",
+  "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.64",
+   "date": "2026-10-15",
+   "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not."
+  },
   {
    "version": "1.8.0-beta.63",
    "date": "2026-10-15",
