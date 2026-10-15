@@ -59,7 +59,11 @@ else
 	}
 end
 return Def.ActorFrame { TW.mouse(), f, replay,
-	OnCommand = function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end,
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
+		-- (your play, for VSRG Hub's online ranking: 28 VSRG Hub online.lua)
+		if TW.exportScore then TW.exportScore() end
+	end,
 	OffCommand = function(self) TW.closeOptions() end,
 	TW.optionsPanel(), TW.listPanel(),
 	TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua") }

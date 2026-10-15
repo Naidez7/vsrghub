@@ -31,7 +31,12 @@ local function fillBoard(self, list, status, pb)
 	local msg = ({
 		loading = "Loading the online ranking...", login = "Log in to EtternaOnline to see the online ranking (click)",
 		unranked = "This chart isn't ranked online", empty = "No online scores on this chart yet",
+		offline = "VSRG Hub's ranking can't be reached right now",
+		nohub = "VSRG Hub's ranking needs the game started from VSRG Hub",
+		hublogin = "Sign in on VSRG Hub's Online page to send your scores",
 	})[status] or ""
+	if TW.rankSource == "hub" and status == "loading" then msg = "Loading VSRG Hub's ranking..." end
+	if TW.rankSource == "hub" and status == "empty" then msg = "Nobody has a score on this chart yet: be the first!" end
 	self:GetChild("Status"):settext(msg)
 	self:GetChild("StatusBtn"):visible(status == "login")
 end
@@ -42,13 +47,18 @@ end
 local board = Def.ActorFrame {
 	CurrentStepsChangedMessageCommand = function(self) if not TW.browsingSkip() then self:stoptweening():queuecommand("Board") end end,
 	CurrentSongChangedMessageCommand = function(self) if not TW.browsingSkip() then self:stoptweening():queuecommand("Board") end end,
-	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" then self:stoptweening():queuecommand("Board") end end,
+	CurrentRateChangedMessageCommand = function(self) if TW.rankSource == "online" or TW.rankSource == "hub" then self:stoptweening():queuecommand("Board") end end,
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self:queuecommand("Board") end,
 	LogOutMessageCommand = function(self) self:queuecommand("Board") end,
 	OnCommand = function(self) self:queuecommand("Board") end,
 	BoardCommand = function(self)
 		self:stoptweening()
+		if TW.rankSource == "hub" and TW.hubRanking then
+			fillBoard(self, {}, "loading", allScores()[1])
+			self:sleep(0.35):queuecommand("Hub")
+			return
+		end
 		if TW.rankSource == "online" and TW.onlineRanking then
 			-- (asked a moment after the chart settles, not for every chart scrolled past)
 			fillBoard(self, {}, TW.loggedIn() and "loading" or "login", allScores()[1])
@@ -58,6 +68,16 @@ local board = Def.ActorFrame {
 		local list = allScores()
 		fillBoard(self, list, "ok", list[1])
 	end,
+	HubCommand = function(self)
+		if TW.rankSource ~= "hub" then return end
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status)
+			-- (your best on it from VSRG Hub's ranking, else your local best)
+			local pb
+			for _, hs in ipairs(list) do if TW.isMyScore(hs) then pb = hs break end end
+			fillBoard(self, list, status, pb or allScores()[1])
+		end, self)
+	end,
+	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
 	OnlineCommand = function(self)
 		if TW.rankSource ~= "online" then return end
 		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(self, list, status, myBest(list)) end)
@@ -72,6 +92,10 @@ local board = Def.ActorFrame {
 }
 -- clicking a score opens its results (Etterna's results for that play, from its replay)
 local function openScore(hs, watch)
+	if hs and TW.isHubScore and TW.isHubScore(hs) then
+		SCREENMAN:SystemMessage(string.format("%s: %.2f%% at %.2fx", hs:GetDisplayName(), hs:GetWifeScore() * 100, hs:GetMusicRate()))
+		return
+	end
 	if hs and TW.isOnlineScore and TW.isOnlineScore(hs) and TW.openOnlineScore then return TW.openOnlineScore(hs, watch) end
 	if watch then if hs then TW.playReplay(hs) end return end
 	local top = SCREENMAN:GetTopScreen()

@@ -333,10 +333,10 @@ for i, sk in ipairs(skillShort) do
 end
 t[#t + 1] = skills
 
-local leftModes = { { "Ranking", "local" }, { "Ranking", "online" }, { "Preview" } }
+local leftModes = { { "Ranking", "local" }, { "Ranking", "hub" }, { "Ranking", "online" }, { "Preview" } }
 function TW.osuLeftStep(d)
 	local cur = 1
-	if TW.osuLeft == "Preview" then cur = 3 elseif TW.rankSource == "online" then cur = 2 end
+	if TW.osuLeft == "Preview" then cur = 4 elseif TW.rankSource == "hub" then cur = 2 elseif TW.rankSource == "online" then cur = 3 end
 	local m = leftModes[(cur - 1 + d) % #leftModes + 1]
 	TW.osuLeft = m[1]
 	if m[2] and m[2] ~= TW.rankSource and TW.setRankSource then TW.setRankSource(m[2]) end
@@ -363,12 +363,13 @@ t[#t + 1] = Def.ActorFrame {
 		TW.text(M(13.3), false, function(self) self:align(0, 0.5):x(M(5)):shadowlength(0) end) .. {
 			OnCommand = function(self) self:playcommand("TWOsuLeft") end,
 			TWOsuLeftMessageCommand = function(self)
-				self:settext(TW.osuLeft == "Preview" and "Map Preview" or (TW.rankSource == "online" and "Global Ranking" or "Local Ranking"))
+				self:settext(TW.osuLeft == "Preview" and "Map Preview" or (TW.rankSource == "online" and "EtternaOnline Ranking"
+				or (TW.rankSource == "hub" and "Global Ranking (VSRG Hub)" or "Local Ranking")))
 			end,
 			TWRankSourceMessageCommand = function(self) self:playcommand("TWOsuLeft") end,
 		},
 		TW.icon("chevron-down", M(14), function(self) self:x(RW - M(20)) end),
-		-- click: Local Ranking > Global Ranking (EtternaOnline) > Map Preview; right click goes back
+		-- click: Local Ranking > Global Ranking (VSRG Hub's) > EtternaOnline's > Map Preview; right click goes back
 		TW.button(RW, RH, function() TW.osuLeftStep(1) end, function(self, on)
 			self:GetParent():GetChild("Hover"):stoptweening():linear(0.1):diffusealpha(on and 0.08 or 0)
 		end, function() TW.osuLeftStep(-1) end) .. { InitCommand = function(self) self:align(0, 0.5):zoomto(RW, RH):diffusealpha(0) end },

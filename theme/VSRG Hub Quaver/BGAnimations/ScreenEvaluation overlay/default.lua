@@ -15,7 +15,11 @@ local function input(event)
 end
 return Def.ActorFrame {
 	TW.mouse(),
-	OnCommand = function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end,
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
+		-- (your play, for VSRG Hub's online ranking: 28 VSRG Hub online.lua)
+		if TW.exportScore then TW.exportScore() end
+	end,
 	OffCommand = function(self) TW.closeOptions() end,
 	QV.navbar(),
 	QV.bottombar({ { "< BACK", leave, nil, 95 }, { "OPTIONS", function() TW.toggleOptions() end, nil, 120 } },

@@ -18,7 +18,11 @@ local function input(event)
 end
 local t = Def.ActorFrame {
 	TW.mouse(),
-	OnCommand = function(self) SCREENMAN:GetTopScreen():AddInputCallback(input) end,
+	OnCommand = function(self)
+		SCREENMAN:GetTopScreen():AddInputCallback(input)
+		-- (your play, for VSRG Hub's online ranking: 28 VSRG Hub online.lua)
+		if TW.exportScore then TW.exportScore() end
+	end,
 	OffCommand = function(self) TW.closeOptions() end,
 	-- the footer's shade
 	Def.Quad { InitCommand = function(self)

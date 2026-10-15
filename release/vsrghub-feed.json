@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.38",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.38.zip",
- "sha256": "e5a453076648fb6d8a78098725940f7329e699a24f0235222cc4e8401e2cdee1",
- "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet.",
+ "version": "1.8.0-beta.39",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.39.zip",
+ "sha256": "735e07d17c360b5c2aafaeed232097adb95f52ac3e20b2eefc39d0f43d9e8fe5",
+ "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview.",
  "latest": {
-  "version": "1.8.0-beta.38",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.38.zip",
-  "sha256": "e5a453076648fb6d8a78098725940f7329e699a24f0235222cc4e8401e2cdee1",
-  "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet."
+  "version": "1.8.0-beta.39",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.39.zip",
+  "sha256": "735e07d17c360b5c2aafaeed232097adb95f52ac3e20b2eefc39d0f43d9e8fe5",
+  "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.39",
+   "date": "2026-10-15",
+   "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview."
+  },
   {
    "version": "1.8.0-beta.38",
    "date": "2026-10-15",
