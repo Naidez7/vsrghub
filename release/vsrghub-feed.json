@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.77",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.77.zip",
- "sha256": "6d784ef99e4fcb3fe618ff6df3f38881c2bad9049ef4fbba475c5b25508e7c6d",
- "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now.",
+ "version": "1.8.0-beta.78",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.78.zip",
+ "sha256": "c93dbae607c1f3f3be0e3d94fdb86c86e713fca740ceb14c0d39c138285b7c89",
+ "notes": "- The daily challenge is a tab beside Latest plays / Plays of the day / Best plays now, instead of a card of its own (All shows the 4K one; pick 4K or 7K beside the tabs).",
  "latest": {
-  "version": "1.8.0-beta.77",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.77.zip",
-  "sha256": "6d784ef99e4fcb3fe618ff6df3f38881c2bad9049ef4fbba475c5b25508e7c6d",
-  "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now."
+  "version": "1.8.0-beta.78",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.78.zip",
+  "sha256": "c93dbae607c1f3f3be0e3d94fdb86c86e713fca740ceb14c0d39c138285b7c89",
+  "notes": "- The daily challenge is a tab beside Latest plays / Plays of the day / Best plays now, instead of a card of its own (All shows the 4K one; pick 4K or 7K beside the tabs)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.78",
+   "date": "2026-10-15",
+   "notes": "- The daily challenge is a tab beside Latest plays / Plays of the day / Best plays now, instead of a card of its own (All shows the 4K one; pick 4K or 7K beside the tabs)."
+  },
   {
    "version": "1.8.0-beta.77",
    "date": "2026-10-15",
