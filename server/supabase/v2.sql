@@ -323,20 +323,25 @@ language sql stable security definer set search_path = public as $$
 	limit least(greatest(max_rows, 1), 100)
 $$;
 
--- the best play (by SSR) of each day, newest day first: the launcher's "Plays of the day"
-create or replace function public.plays_of_the_day(max_days int default 90)
+-- the best play (by SSR) of each day, newest day first: the launcher's "Plays of the day". Days
+-- are the player's own (tz_minutes: their clock's offset from UTC); k: 4 or 7 for one key count, 0 for all.
+drop function if exists public.plays_of_the_day(int);
+drop function if exists public.plays_of_the_day(int, int);
+drop function if exists public.plays_of_the_day(int, int, smallint);
+create function public.plays_of_the_day(max_days int default 90, tz_minutes int default 0, k smallint default 0)
 returns table(day date, id bigint, user_id uuid, username text, avatar int, avatar_ext text, chart_key text, keys smallint,
 	rate real, wife real, ssr_overall real, song_title text, chart_name text, played_at timestamptz, source text)
 language sql stable security definer set search_path = public as $$
-	select distinct on ((s.played_at at time zone 'UTC')::date) (s.played_at at time zone 'UTC')::date as day,
+	select distinct on (((s.played_at at time zone 'UTC') + make_interval(mins => tz_minutes))::date)
+		((s.played_at at time zone 'UTC') + make_interval(mins => tz_minutes))::date as day,
 		s.id, s.user_id, p.username, p.avatar, p.avatar_ext, s.chart_key, s.keys, s.rate, s.wife, s.ssr_overall,
 		s.song_title, s.chart_name, s.played_at, s.source
 	from public.scores s join public.profiles p on p.id = s.user_id
-	where s.valid and not p.banned and s.played_at is not null
-	order by (s.played_at at time zone 'UTC')::date desc, s.ssr_overall desc, s.id
+	where s.valid and not p.banned and s.played_at is not null and (k = 0 or s.keys = k)
+	order by ((s.played_at at time zone 'UTC') + make_interval(mins => tz_minutes))::date desc, s.ssr_overall desc, s.id
 	limit least(greatest(max_days, 1), 365)
 $$;
-grant execute on function public.plays_of_the_day(int) to anon, authenticated;
+grant execute on function public.plays_of_the_day(int, int, smallint) to anon, authenticated;
 
 -- a player's place in 4K or 7K (0 when unranked)
 create or replace function public.player_place(player uuid, k smallint default 4) returns int
@@ -541,7 +546,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '10')
+insert into public.vh_meta (key, value) values ('schema_version', '11')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):
