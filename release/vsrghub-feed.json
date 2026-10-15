@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.39",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.39.zip",
- "sha256": "735e07d17c360b5c2aafaeed232097adb95f52ac3e20b2eefc39d0f43d9e8fe5",
- "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview.",
+ "version": "1.8.0-beta.40",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.40.zip",
+ "sha256": "8ffbbc0cf09b808f995a3afb2b858f194fd15106a22561c173f5947429fed45c",
+ "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait.",
  "latest": {
-  "version": "1.8.0-beta.39",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.39.zip",
-  "sha256": "735e07d17c360b5c2aafaeed232097adb95f52ac3e20b2eefc39d0f43d9e8fe5",
-  "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview."
+  "version": "1.8.0-beta.40",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.40.zip",
+  "sha256": "8ffbbc0cf09b808f995a3afb2b858f194fd15106a22561c173f5947429fed45c",
+  "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.40",
+   "date": "2026-10-15",
+   "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait."
+  },
   {
    "version": "1.8.0-beta.39",
    "date": "2026-10-15",
