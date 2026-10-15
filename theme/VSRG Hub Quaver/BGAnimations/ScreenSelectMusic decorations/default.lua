@@ -159,13 +159,13 @@ t[#t + 1] = Def.Actor {
 	OnlineCommand = function(self)
 		if TW.rankSource ~= "online" then return end
 		local root = self:GetParent()
-		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(root, list, status, myBest(list)) end)
+		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "online" then return end fillBoard(root, list, status, myBest(list)) end)
 	end,
 	-- VSRG Hub's own leaderboard (28 VSRG Hub online.lua)
 	HubCommand = function(self)
 		if TW.rankSource ~= "hub" then return end
 		local root = self:GetParent()
-		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(root, list, status, myBest(list)) end, self)
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "hub" then return end fillBoard(root, list, status, myBest(list)) end, self)
 	end,
 	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
 }

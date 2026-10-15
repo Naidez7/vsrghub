@@ -80,7 +80,7 @@ local board = Def.ActorFrame {
 	end,
 	OnlineCommand = function(self)
 		if TW.rankSource ~= "online" then return end
-		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status)
+		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "online" then return end
 			local pb, place = myBest(list)
 			fillBoard(self, list, status, pb, place)
 		end)
@@ -88,7 +88,7 @@ local board = Def.ActorFrame {
 	-- VSRG Hub's own ranking (28 VSRG Hub online.lua)
 	HubCommand = function(self)
 		if TW.rankSource ~= "hub" then return end
-		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status)
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "hub" then return end
 			local pb, place
 			for i, hs in ipairs(list) do if TW.isMyScore(hs) then pb, place = hs, i break end end
 			if not pb then pb = allScores()[1] end
@@ -199,7 +199,7 @@ end
 t[#t + 1] = board
 
 -- the chart preview in place of the scores (the Preview tab)
-local PX, PY, PW, PH = X0, Y0, M(620), M(400)
+local PX, PY, PW, PH = X0, Y0, M(430), M(430) -- (tall, as the chart is: a wide box squeezed the field)
 local preview = Def.ActorFrame {
 	InitCommand = function(self) self:visible(TW.osuLeft == "Preview") end,
 	OnCommand = function(self) if TW.osuLeft == "Preview" then MESSAGEMAN:Broadcast("TWOsuPreview") end end,

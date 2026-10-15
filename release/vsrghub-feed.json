@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.69",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.69.zip",
- "sha256": "d32ab8ce41b6c00c49d62a97d1acb62034e8c1ab4914161209190194005da959",
- "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet.",
+ "version": "1.8.0-beta.70",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.70.zip",
+ "sha256": "53cb806e0d616f8c521f5da4027111e3c4f75a084fd66596c3f9abed6f541222",
+ "notes": "- **Fixed:** the scores on song select showing another source's ranking (a late answer from VSRG Hub's or EtternaOnline's ranking landed on the board after you had switched the scope); in all three looks.\n- lazer look: the chart preview in a tall box, as the chart is (the wide one squeezed it).",
  "latest": {
-  "version": "1.8.0-beta.69",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.69.zip",
-  "sha256": "d32ab8ce41b6c00c49d62a97d1acb62034e8c1ab4914161209190194005da959",
-  "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet."
+  "version": "1.8.0-beta.70",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.70.zip",
+  "sha256": "53cb806e0d616f8c521f5da4027111e3c4f75a084fd66596c3f9abed6f541222",
+  "notes": "- **Fixed:** the scores on song select showing another source's ranking (a late answer from VSRG Hub's or EtternaOnline's ranking landed on the board after you had switched the scope); in all three looks.\n- lazer look: the chart preview in a tall box, as the chart is (the wide one squeezed it)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.70",
+   "date": "2026-10-15",
+   "notes": "- **Fixed:** the scores on song select showing another source's ranking (a late answer from VSRG Hub's or EtternaOnline's ranking landed on the board after you had switched the scope); in all three looks.\n- lazer look: the chart preview in a tall box, as the chart is (the wide one squeezed it)."
+  },
   {
    "version": "1.8.0-beta.69",
    "date": "2026-10-15",

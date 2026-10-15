@@ -77,7 +77,7 @@ local board = Def.ActorFrame {
 	end,
 	HubCommand = function(self)
 		if TW.rankSource ~= "hub" then return end
-		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status)
+		TW.hubRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "hub" then return end
 			-- (your best on it from VSRG Hub's ranking, else your local best)
 			local pb
 			for _, hs in ipairs(list) do if TW.isMyScore(hs) then pb = hs break end end
@@ -87,7 +87,7 @@ local board = Def.ActorFrame {
 	HubPollCommand = function(self) if self.hubPoll then self.hubPoll() end end,
 	OnlineCommand = function(self)
 		if TW.rankSource ~= "online" then return end
-		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) fillBoard(self, list, status, myBest(list)) end)
+		TW.onlineRanking(GAMESTATE:GetCurrentSteps(), function(list, status) if TW.rankSource ~= "online" then return end fillBoard(self, list, status, myBest(list)) end)
 	end,
 	TW.text(M(13), false, function(self) self:align(0.5, 0.5):xy(M(210), M(200)):maxwidth(M(390) / self:GetZoom()):diffuse(color("0.85,0.85,0.85,1")) end) .. { Name = "Status" },
 	-- (when logged out, clicking the message opens the log-in box)
