@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.74",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.74.zip",
- "sha256": "d9ed238faa17ade47332f35fee448eff5376b0241be6dcb41c90e5dcb55eb6bc",
- "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too).",
+ "version": "1.8.0-beta.75",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.75.zip",
+ "sha256": "319c7ff1c440a7176caa73361f3a339b16aaf20fa593f8f34a89c9b06cff03e0",
+ "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72).",
  "latest": {
-  "version": "1.8.0-beta.74",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.74.zip",
-  "sha256": "d9ed238faa17ade47332f35fee448eff5376b0241be6dcb41c90e5dcb55eb6bc",
-  "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too)."
+  "version": "1.8.0-beta.75",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.75.zip",
+  "sha256": "319c7ff1c440a7176caa73361f3a339b16aaf20fa593f8f34a89c9b06cff03e0",
+  "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.75",
+   "date": "2026-10-15",
+   "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72)."
+  },
   {
    "version": "1.8.0-beta.74",
    "date": "2026-10-15",

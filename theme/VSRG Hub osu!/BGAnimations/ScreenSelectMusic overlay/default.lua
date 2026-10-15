@@ -258,6 +258,7 @@ local t = Def.ActorFrame {
 	TW.mouse(),
 	TW.pauseCatcher(),
 	TW.lnModWatcher(),
+	OpenCollectionsCommand = function() if TW.openCollections then TW.openCollections() end end,
 	OnCommand = function(self)
 		TW.restoreLnModSong(wheel())
 		-- the title menu keeps the keyboard to itself; song select gives it back to Etterna
@@ -266,6 +267,11 @@ local t = Def.ActorFrame {
 		TW.endTabPractice()
 		top():AddInputCallback(input)
 		TWSystemInput = gate
+		-- (the menu's "playlists": the collections, once the screen is up)
+		if TW.openCollectionsOnSelect then
+			TW.openCollectionsOnSelect = nil
+			self:sleep(0.4):queuecommand("OpenCollections")
+		end
 		TW.syncNoteskin()
 		if TW.collection and TW.applyCollection then self:sleep(0.05):queuecommand("Collection") end
 		-- after a theme switch: the chart that was selected in the other look

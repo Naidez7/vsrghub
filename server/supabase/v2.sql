@@ -343,6 +343,21 @@ language sql stable security definer set search_path = public as $$
 $$;
 grant execute on function public.plays_of_the_day(int, int, smallint) to anon, authenticated;
 
+-- the charts where someone took #1 from a player since a moment: the launcher's "X took #1 on Y"
+create or replace function public.lost_firsts(player uuid, since timestamptz)
+returns table(chart_key text, song_title text, chart_name text, keys smallint, by_name text, their_ssr real, my_ssr real)
+language sql stable security definer set search_path = public as $$
+	select distinct on (s.chart_key) s.chart_key, s.song_title, s.chart_name, s.keys, p.username, s.ssr_overall, m.ssr
+	from public.scores s
+	join public.profiles p on p.id = s.user_id
+	join (select chart_key, max(ssr_overall) as ssr from public.scores where user_id = player and valid group by chart_key) m on m.chart_key = s.chart_key
+	where s.valid and not p.banned and s.user_id <> player and s.submitted_at > since and s.ssr_overall > m.ssr
+		and not exists (select 1 from public.scores o join public.profiles q on q.id = o.user_id
+			where o.chart_key = s.chart_key and o.valid and not q.banned and o.user_id <> player and o.submitted_at <= since and o.ssr_overall > m.ssr)
+	order by s.chart_key, s.ssr_overall desc
+$$;
+grant execute on function public.lost_firsts(uuid, timestamptz) to anon, authenticated;
+
 -- a player's place in 4K or 7K (0 when unranked)
 create or replace function public.player_place(player uuid, k smallint default 4) returns int
 language sql stable security definer set search_path = public as $$
@@ -665,7 +680,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '13')
+insert into public.vh_meta (key, value) values ('schema_version', '14')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

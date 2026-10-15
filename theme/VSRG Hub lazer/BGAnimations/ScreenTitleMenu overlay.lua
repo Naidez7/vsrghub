@@ -46,6 +46,8 @@ local levels = {
 		right = {
 			{ label = "solo", icon = "user", col = TW.rgb(102, 68, 204), act = function() choose("GameStart") end, key = "S" },
 			{ label = "multi", icon = "users", col = TW.rgb(94, 63, 186), act = function() TW.startMulti(function() choose("Multi") end) end, key = "M" },
+			-- (lazer's playlists: your collections, opened as song select comes up)
+			{ label = "playlists", icon = "layer-group", col = TW.rgb(86, 58, 170), act = function() TW.openCollectionsOnSelect = true; choose("GameStart") end, key = "L" },
 		},
 	},
 }
