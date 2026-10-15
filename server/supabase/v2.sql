@@ -94,8 +94,14 @@ begin
 end $$;
 
 -- where a play came from: Etterna, or an osu! stable / osu!lazer replay VSRG Hub rated
-alter table public.scores add column if not exists source text not null default 'etterna'
-	check (source in ('etterna', 'osu', 'lazer'));
+alter table public.scores add column if not exists source text not null default 'etterna';
+alter table public.scores drop constraint if exists scores_source_check;
+alter table public.scores add constraint scores_source_check check (source in ('etterna', 'osu', 'lazer', 'quaver'));
+
+-- (osu! plays sent before this column was there: told by their modifiers, "osu! ..." / "osu!lazer ...")
+update public.scores set source = 'lazer' where source = 'etterna' and modifiers like 'osu!lazer%';
+update public.scores set source = 'osu' where source = 'etterna' and modifiers like 'osu!%' and modifiers not like 'osu!lazer%';
+update public.scores set source = 'quaver' where source = 'etterna' and modifiers like 'Quaver%';
 
 -- ---------------------------------------------------------------------------------------------
 -- ratings and rankings: verified scores only
@@ -117,7 +123,13 @@ begin
 		public.vh_aggregate(array_agg(ssr_jackspeed)), public.vh_aggregate(array_agg(ssr_chordjack)),
 		public.vh_aggregate(array_agg(ssr_technical)), count(*), now()
 	into r from best;
-	r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack + r.technical) / 7.0;
+	-- (Etterna's calculator doesn't rate Technical for 7K: it gives every 7K chart the same 0.18, so
+	-- the 7K overall is the mean of the six skillsets it does rate)
+	if k = 7 then
+		r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack) / 6.0;
+	else
+		r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack + r.technical) / 7.0;
+	end if;
 	insert into public.player_ratings values (r.*)
 	on conflict (user_id, keys) do update set
 		overall = excluded.overall, stream = excluded.stream, jumpstream = excluded.jumpstream,
@@ -181,7 +193,7 @@ begin
 		left(coalesce(s->>'modifiers', ''), 200), left(coalesce(s->>'song_title', ''), 200),
 		left(coalesce(s->>'song_artist', ''), 200), left(coalesce(s->>'chart_name', ''), 100),
 		(s->>'played_at')::timestamptz, offs is not null, ok, taps,
-		case when s->>'source' in ('osu', 'lazer') then s->>'source' else 'etterna' end)
+		case when s->>'source' in ('osu', 'lazer', 'quaver') then s->>'source' else 'etterna' end)
 	on conflict (user_id, score_key) do nothing
 	returning id into sid;
 	if sid is null then return null; end if;
@@ -258,7 +270,7 @@ create function public.chart_leaderboard(chart text, at_rate real default null,
 	max_rows int default 50)
 returns table (place bigint, username text, user_id uuid, wife real, rate real, ssr_overall real,
 	marvelous int, perfect int, great int, good int, bad int, miss int, max_combo int,
-	modifiers text, played_at timestamptz, source text)
+	modifiers text, played_at timestamptz, source text, score_id bigint)
 language sql stable security definer set search_path = public as $$
 	with best as (
 		select distinct on (s.user_id) s.*
@@ -269,7 +281,7 @@ language sql stable security definer set search_path = public as $$
 	)
 	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc),
 		p.username, b.user_id, b.wife, b.rate, b.ssr_overall, b.marvelous, b.perfect, b.great,
-		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at, b.source
+		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at, b.source, b.id
 	from best b join public.profiles p on p.id = b.user_id
 	order by 1
 	limit least(greatest(max_rows, 1), 200)
@@ -346,28 +358,32 @@ grant execute on function public.admin_suspicious(int) to authenticated;
 -- profile pictures: avatars/<user id>.png in Storage (public), uploaded by the launcher at 128x128;
 -- profiles.avatar counts the changes (0: none), so the picture's address changes with it
 alter table public.profiles add column if not exists avatar int not null default 0;
+alter table public.profiles add column if not exists avatar_ext text not null default 'png' check (avatar_ext in ('png', 'gif'));
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('avatars', 'avatars', true, 262144, array['image/png'])
-on conflict (id) do update set public = true, file_size_limit = 262144, allowed_mime_types = array['image/png'];
+values ('avatars', 'avatars', true, 1048576, array['image/png', 'image/gif'])
+on conflict (id) do update set public = true, file_size_limit = 1048576, allowed_mime_types = array['image/png', 'image/gif'];
 
 drop policy if exists "vh avatars read" on storage.objects;
 create policy "vh avatars read" on storage.objects for select using (bucket_id = 'avatars');
 drop policy if exists "vh avatar insert" on storage.objects;
 create policy "vh avatar insert" on storage.objects for insert to authenticated
-	with check (bucket_id = 'avatars' and name = auth.uid()::text || '.png');
+	with check (bucket_id = 'avatars' and name in (auth.uid()::text || '.png', auth.uid()::text || '.gif'));
 drop policy if exists "vh avatar update" on storage.objects;
 create policy "vh avatar update" on storage.objects for update to authenticated
-	using (bucket_id = 'avatars' and name = auth.uid()::text || '.png')
-	with check (bucket_id = 'avatars' and name = auth.uid()::text || '.png');
+	using (bucket_id = 'avatars' and name in (auth.uid()::text || '.png', auth.uid()::text || '.gif'))
+	with check (bucket_id = 'avatars' and name in (auth.uid()::text || '.png', auth.uid()::text || '.gif'));
 
-create or replace function public.set_avatar(remove boolean default false) returns int
+drop function if exists public.set_avatar(boolean);
+drop function if exists public.set_avatar(boolean, text);
+create function public.set_avatar(remove boolean default false, ext text default 'png') returns int
 language sql security definer set search_path = public as $$
-	update public.profiles set avatar = case when remove then 0 else avatar + 1 end
+	update public.profiles set avatar = case when remove then 0 else avatar + 1 end,
+		avatar_ext = case when ext in ('png', 'gif') then ext else 'png' end
 	where id = auth.uid() returning avatar
 $$;
-revoke all on function public.set_avatar(boolean) from public, anon;
-grant execute on function public.set_avatar(boolean) to authenticated;
+revoke all on function public.set_avatar(boolean, text) from public, anon;
+grant execute on function public.set_avatar(boolean, text) to authenticated;
 
 create or replace function public.admin_clear_avatar(player uuid) returns void
 language plpgsql security definer set search_path = public as $$
@@ -383,7 +399,7 @@ create function public.rankings(k smallint default 4, skill text default 'overal
 	max_rows int default 100, skip int default 0)
 returns table (place bigint, username text, user_id uuid, rating real, overall real, stream real,
 	jumpstream real, handstream real, stamina real, jackspeed real, chordjack real, technical real,
-	plays int, avatar int)
+	plays int, avatar int, avatar_ext text)
 language plpgsql stable security definer set search_path = public as $$
 begin
 	if skill not in ('overall', 'stream', 'jumpstream', 'handstream', 'stamina', 'jackspeed', 'chordjack', 'technical') then
@@ -391,13 +407,61 @@ begin
 	end if;
 	return query execute format(
 		'select row_number() over (order by r.%1$I desc), p.username, r.user_id, r.%1$I, r.overall,
-			r.stream, r.jumpstream, r.handstream, r.stamina, r.jackspeed, r.chordjack, r.technical, r.plays, p.avatar
+			r.stream, r.jumpstream, r.handstream, r.stamina, r.jackspeed, r.chordjack, r.technical, r.plays, p.avatar, p.avatar_ext
 		from public.player_ratings r join public.profiles p on p.id = r.user_id
 		where r.keys = $1 and not p.banned and r.plays > 0
 		order by r.%1$I desc limit $2 offset $3', skill)
 	using k, least(greatest(max_rows, 1), 200), greatest(skip, 0);
 end $$;
 grant execute on function public.rankings(smallint, text, int, int) to anon, authenticated;
+
+-- pinned plays: the scores a player shows off on their profile (their own, up to 20)
+create table if not exists public.pins (
+	user_id uuid not null references public.profiles (id) on delete cascade,
+	score_id bigint not null references public.scores (id) on delete cascade,
+	pinned_at timestamptz not null default now(),
+	primary key (user_id, score_id)
+);
+alter table public.pins enable row level security;
+drop policy if exists "pins are public" on public.pins;
+create policy "pins are public" on public.pins for select using (true);
+revoke insert, update, delete on public.pins from anon, authenticated;
+
+create or replace function public.pin_score(score bigint, pin boolean default true) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+	if auth.uid() is null then raise exception 'not signed in'; end if;
+	if pin then
+		if not exists (select 1 from public.scores where id = score and user_id = auth.uid() and valid) then
+			raise exception 'not your score';
+		end if;
+		if (select count(*) from public.pins where user_id = auth.uid()) >= 20 then
+			raise exception 'you can pin up to 20 plays';
+		end if;
+		insert into public.pins (user_id, score_id) values (auth.uid(), score) on conflict do nothing;
+	else
+		delete from public.pins where user_id = auth.uid() and score_id = score;
+	end if;
+end $$;
+revoke all on function public.pin_score(bigint, boolean) from public, anon;
+grant execute on function public.pin_score(bigint, boolean) to authenticated;
+
+create or replace function public.pinned_scores(player uuid) returns setof public.scores
+language sql stable security definer set search_path = public as $$
+	select s.* from public.pins p join public.scores s on s.id = p.score_id
+	where p.user_id = player and s.valid
+	order by p.pinned_at desc
+$$;
+grant execute on function public.pinned_scores(uuid) to anon, authenticated;
+
+-- the 7K ratings already there, with the overall as the mean of six
+do $$
+declare r record;
+begin
+	for r in select distinct user_id from public.player_ratings where keys = 7 loop
+		perform public.vh_refresh_rating(r.user_id, 7::smallint);
+	end loop;
+end $$;
 
 -- To make yourself an admin, run once (with your player name):
 --   update public.profiles set is_admin = true where username = 'YourName';

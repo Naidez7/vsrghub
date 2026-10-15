@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.48",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.48.zip",
- "sha256": "5c48f55e11f14d51ddee2c84910b1a5e4b2aad86a8998870da85e666b8d7081a",
- "notes": "- Profiles with 4K, 7K and the graph no longer run out of the window: each side scrolls on its own.\n- The osu!lazer dot is gold (the ring on the pink one was too small to see).",
+ "version": "1.8.0-beta.49",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.49.zip",
+ "sha256": "07ac517b5a08d7ee5ad101320a00c70968f1a2bfc3e7d92d178bdc8908935ee5",
+ "notes": "- **Your Quaver plays count too:** \"Send my osu! / Quaver plays\" reads Quaver's replays as well (a cyan dot on those plays).\n- **Pinned plays.** Open one of your plays (click it), press **Pin** on your row, and it shows on your profile under a \"Pinned\" tab (up to 20).\n- **Profile pictures can move:** a GIF is shown as it is (up to 1 MB); a PNG keeps its transparent parts.\n- **7K ratings:** Etterna's calculator doesn't rate Technical for 7K (every 7K chart got 0.18), so the 7K overall is now the mean of the six skillsets it does rate, and Technical isn't shown for 7K.\n- osu! plays sent before the last server update showed as Etterna's: they're told apart again.\n- Rating your osu! / Quaver plays in the game goes on from where it was if you leave song select half way.\n- The Play page's arrows can be played: the keyboard arrows hit them, with a combo and judgements. Leave the keys for a few seconds and it plays itself again.",
  "latest": {
-  "version": "1.8.0-beta.48",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.48.zip",
-  "sha256": "5c48f55e11f14d51ddee2c84910b1a5e4b2aad86a8998870da85e666b8d7081a",
-  "notes": "- Profiles with 4K, 7K and the graph no longer run out of the window: each side scrolls on its own.\n- The osu!lazer dot is gold (the ring on the pink one was too small to see)."
+  "version": "1.8.0-beta.49",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.49.zip",
+  "sha256": "07ac517b5a08d7ee5ad101320a00c70968f1a2bfc3e7d92d178bdc8908935ee5",
+  "notes": "- **Your Quaver plays count too:** \"Send my osu! / Quaver plays\" reads Quaver's replays as well (a cyan dot on those plays).\n- **Pinned plays.** Open one of your plays (click it), press **Pin** on your row, and it shows on your profile under a \"Pinned\" tab (up to 20).\n- **Profile pictures can move:** a GIF is shown as it is (up to 1 MB); a PNG keeps its transparent parts.\n- **7K ratings:** Etterna's calculator doesn't rate Technical for 7K (every 7K chart got 0.18), so the 7K overall is now the mean of the six skillsets it does rate, and Technical isn't shown for 7K.\n- osu! plays sent before the last server update showed as Etterna's: they're told apart again.\n- Rating your osu! / Quaver plays in the game goes on from where it was if you leave song select half way.\n- The Play page's arrows can be played: the keyboard arrows hit them, with a combo and judgements. Leave the keys for a few seconds and it plays itself again."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.49",
+   "date": "2026-10-15",
+   "notes": "- **Your Quaver plays count too:** \"Send my osu! / Quaver plays\" reads Quaver's replays as well (a cyan dot on those plays).\n- **Pinned plays.** Open one of your plays (click it), press **Pin** on your row, and it shows on your profile under a \"Pinned\" tab (up to 20).\n- **Profile pictures can move:** a GIF is shown as it is (up to 1 MB); a PNG keeps its transparent parts.\n- **7K ratings:** Etterna's calculator doesn't rate Technical for 7K (every 7K chart got 0.18), so the 7K overall is now the mean of the six skillsets it does rate, and Technical isn't shown for 7K.\n- osu! plays sent before the last server update showed as Etterna's: they're told apart again.\n- Rating your osu! / Quaver plays in the game goes on from where it was if you leave song select half way.\n- The Play page's arrows can be played: the keyboard arrows hit them, with a combo and judgements. Leave the keys for a few seconds and it plays itself again."
+  },
   {
    "version": "1.8.0-beta.48",
    "date": "2026-10-15",

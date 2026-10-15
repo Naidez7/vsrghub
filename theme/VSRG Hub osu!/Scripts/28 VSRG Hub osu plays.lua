@@ -64,7 +64,7 @@ local function rateJob(f, byDir)
 	local s = {
 		score_key = key, chart_key = steps:GetChartKey(), keys = keys, rate = rate, wife = wife,
 		msd = 0, max_combo = tonumber(f[15]) or 0,
-		modifiers = (source == "lazer" and "osu!lazer" or "osu!") .. ((f[19] or "") ~= "" and (" " .. f[19]) or ""),
+		modifiers = (source == "lazer" and "osu!lazer" or source == "quaver" and "Quaver" or "osu!") .. ((f[19] or "") ~= "" and (" " .. f[19]) or ""),
 		song_title = song:GetDisplayMainTitle() or "", song_artist = song:GetDisplayArtist() or "",
 		chart_name = TW.diffName(steps) or "", holds_ok = 0, holds_ng = tonumber(f[17]) or 0, mines_hit = 0,
 		played_at = f[18] or "", source = source,
@@ -88,6 +88,12 @@ function TW.osuPlaysActor()
 			if done then return end
 			self.lines = split(txt:gsub("\r", ""), "\n")
 			self.i, self.sent, self.bad = 0, 0, {}
+			-- (left song select half way last time: goes on from where it was)
+			pcall(function()
+				local pr = File.Read(ONLINE .. "osu/progress.txt")
+				local i, sent = (pr or ""):match("^(%d+)\t(%d+)")
+				if i and tonumber(i) < #self.lines then self.i, self.sent = tonumber(i), tonumber(sent) end
+			end)
 			self.byDir = songIndex()
 			SCREENMAN:SystemMessage("Rating your osu! plays for VSRG Hub's ranking...")
 			self:queuecommand("Step")
@@ -115,9 +121,11 @@ function TW.osuPlaysActor()
 			end
 			self.i = last
 			if self.i < #lines then
+				if self.i % 80 == 0 then File.Write(ONLINE .. "osu/progress.txt", self.i .. "\t" .. self.sent .. "\n") end
 				self:sleep(0.02):queuecommand("Step")
 				return
 			end
+			File.Write(ONLINE .. "osu/progress.txt", "")
 			local parts = {}
 			for k, v in pairs(self.bad) do parts[#parts + 1] = k .. "=" .. v end
 			table.sort(parts)
