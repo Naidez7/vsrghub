@@ -1,0 +1,1541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VSRG Hub</title>
+<style>
+:root {
+	--bg: #0b0912; --bg2: #120f1c; --side: rgba(255,255,255,0.025); --card: rgba(255,255,255,0.045); --card2: rgba(255,255,255,0.07);
+	--edge: rgba(255,255,255,0.08); --edge2: rgba(255,255,255,0.14);
+	--text: #f4f0fb; --dim: #a39cb6; --dim2: #6f6886; --pink: #ff5c9e; --violet: #8a4dff; --ok: #5fe3a1; --warn: #ffb35c; --bad: #ff6b81;
+	--grad: linear-gradient(135deg, #ff5c9e, #8a4dff);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+	font: 14px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; user-select: none; -webkit-user-select: none; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+a { color: inherit; }
+.glow { position: fixed; border-radius: 50%; filter: blur(110px); z-index: 0; pointer-events: none; }
+.g1 { width: 560px; height: 560px; background: #4c1d9e; left: 120px; top: -320px; opacity: .45; }
+.g2 { width: 520px; height: 520px; background: #b02a68; right: -220px; bottom: -300px; opacity: .35; }
+.app { position: relative; z-index: 1; display: grid; grid-template-columns: 216px 1fr; height: 100%; }
+
+/* sidebar */
+nav { background: var(--side); border-right: 1px solid var(--edge); display: flex; flex-direction: column; padding: 22px 14px 16px; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 8px 22px; }
+.brand img { width: 38px; height: 38px; filter: drop-shadow(0 6px 16px rgba(255,92,158,.35)); }
+.brand b { font: 700 18px/1.1 "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -.2px; }
+.brand small { display: block; color: var(--dim2); font-size: 11.5px; font-weight: 500; margin-top: 2px; }
+.nav { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; color: var(--dim); font-weight: 600; font-size: 14px;
+	position: relative; transition: background .15s, color .15s; text-align: left; width: 100%; }
+.nav svg { width: 18px; height: 18px; flex: none; opacity: .85; }
+.nav:hover { background: rgba(255,255,255,.04); color: var(--text); }
+.nav.on { background: rgba(255,255,255,.07); color: var(--text); }
+.nav.on::before { content: ""; position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--grad); }
+.nav .badge { margin-left: auto; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--pink); color: #fff; display: none; }
+.nav .badge.show { display: inline-block; }
+.navfoot { margin-top: auto; padding: 12px 10px 0; border-top: 1px solid var(--edge); font-size: 12px; color: var(--dim2); display: flex; flex-direction: column; gap: 6px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dim2); display: inline-block; flex: none; }
+.dot.ok { background: var(--ok); box-shadow: 0 0 8px rgba(95,227,161,.6); }
+.dot.new { background: var(--pink); box-shadow: 0 0 8px rgba(255,92,158,.7); }
+.row { display: flex; align-items: center; gap: 8px; }
+
+/* pages */
+main { position: relative; overflow: hidden; }
+.page { position: absolute; inset: 0; padding: 30px 36px 0; display: none; flex-direction: column; }
+.page.on { display: flex; animation: pagein .28s ease-out; }
+@keyframes pagein { from { opacity: 0; transform: translateY(6px); } }
+.scroll { overflow-y: auto; padding-right: 10px; margin-right: -10px; padding-bottom: 28px; flex: 1; }
+.scroll::-webkit-scrollbar { width: 8px; }
+.scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 8px; }
+h1 { font: 700 30px/1.1 "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -.4px; }
+h2 { font: 600 12px/1 "Segoe UI", sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: var(--dim2); margin: 26px 0 12px; }
+.lead { color: var(--dim); margin-top: 6px; max-width: 620px; }
+
+/* play page */
+#play-page { padding: 0; }
+.play-grid { display: grid; grid-template-columns: minmax(0, 1fr) 250px; flex: 1; min-height: 0; }
+.hero { padding: 34px 10px 0 38px; display: flex; flex-direction: column; min-height: 0; }
+.title { font: 800 46px/1 "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: -1px;
+	background: linear-gradient(90deg, #fff 0%, #ffc4dd 55%, #cdb0ff 100%); -webkit-background-clip: text; color: transparent; }
+.tagline { color: var(--dim); margin-top: 8px; font-size: 14.5px; }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.gchip { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 8px; border-radius: 99px; background: var(--card); border: 1px solid var(--edge);
+	font-size: 12.5px; font-weight: 600; color: var(--text); cursor: pointer; transition: background .15s; }
+.gchip:hover { background: var(--card2); }
+.gchip.off { color: var(--dim2); }
+.gchip.off .dot { background: #3d3850; box-shadow: none; }
+.looks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.look { padding: 11px 12px 12px; border-radius: 13px; background: var(--card); border: 1px solid var(--edge); text-align: left; transition: background .15s, border-color .15s, transform .15s; }
+.look:hover { background: var(--card2); transform: translateY(-1px); }
+.look.on { border-color: rgba(255,92,158,.8); background: rgba(255,92,158,.10); box-shadow: 0 0 0 1px rgba(255,92,158,.3), 0 8px 26px rgba(255,92,158,.12); }
+.look.off { opacity: .35; pointer-events: none; }
+.look b { display: flex; align-items: center; gap: 7px; font-size: 13.5px; }
+.look i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.look span { display: block; color: var(--dim); font-size: 11.5px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.news { margin-top: 2px; padding: 16px 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--edge); min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.news .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.news .head b { font-size: 15px; }
+.news .head span { color: var(--dim2); font-size: 12px; }
+.news .head button { margin-left: auto; color: var(--pink); font-weight: 600; font-size: 12.5px; }
+.news .head button:hover { text-decoration: underline; }
+.news .md { color: var(--dim); font-size: 13px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 70%, transparent); }
+.stage { position: relative; margin-right: 22px; }
+canvas#lanes { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* bottom bar */
+.bar { display: flex; align-items: center; gap: 16px; padding: 18px 36px 22px 38px; border-top: 1px solid var(--edge); background: rgba(11,9,18,.55); backdrop-filter: blur(10px); }
+.status { flex: 1; min-width: 0; }
+.status .t { display: flex; align-items: center; gap: 9px; color: var(--dim); font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status .t.err { color: var(--bad); }
+.status .sub { color: var(--dim2); font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.progress { height: 5px; border-radius: 9px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 8px; display: none; max-width: 420px; }
+.progress div { height: 100%; width: 0; background: var(--grad); transition: width .2s; }
+.spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.18); border-top-color: var(--pink); border-radius: 50%; animation: s .8s linear infinite; flex: none; }
+@keyframes s { to { transform: rotate(360deg); } }
+.btn { padding: 9px 16px; border-radius: 10px; background: var(--card2); border: 1px solid var(--edge2); font-weight: 600; font-size: 13px; transition: background .15s, transform .1s; white-space: nowrap; }
+.btn:hover { background: rgba(255,255,255,.12); }
+.btn:active { transform: scale(.98); }
+.btn.primary { background: var(--grad); border-color: transparent; color: #fff; box-shadow: 0 6px 20px rgba(255,92,158,.25); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .45; cursor: default; filter: grayscale(.3); }
+.btn.small { padding: 6px 11px; font-size: 12.5px; border-radius: 8px; }
+.btn.ghost { background: none; border-color: transparent; color: var(--dim); }
+.btn.ghost:hover { color: var(--text); background: rgba(255,255,255,.05); }
+#playbtn { font: 800 22px/1 "Segoe UI Variable Display", "Segoe UI", sans-serif; letter-spacing: 3px; color: #fff; width: 230px; height: 64px; border-radius: 18px;
+	background: var(--grad); box-shadow: 0 12px 36px rgba(255,92,158,.35), inset 0 1px 0 rgba(255,255,255,.35); transition: transform .15s, box-shadow .15s, filter .15s; }
+#playbtn:hover { transform: translateY(-2px); box-shadow: 0 18px 48px rgba(255,92,158,.5), inset 0 1px 0 rgba(255,255,255,.4); }
+#playbtn:active { transform: scale(.98); }
+#playbtn:disabled { filter: grayscale(.5) brightness(.7); cursor: default; transform: none; box-shadow: none; }
+#updbtn { display: none; }
+
+/* games */
+.games { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.game { padding: 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--edge); display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+.game .top { display: flex; align-items: center; gap: 13px; }
+.logo { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font: 800 16px/1 "Segoe UI Variable Display", sans-serif; color: #fff; flex: none;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.3); transition: filter .2s, opacity .2s; }
+.game.off .logo { filter: grayscale(1); opacity: .45; }
+img.logo { object-fit: contain; background: rgba(255,255,255,.06); padding: 4px; }
+.game.off .name { color: var(--dim); }
+.game.miss { border-color: rgba(255,107,129,.45); }
+.name { font-weight: 700; font-size: 16px; }
+.pill { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 99px; letter-spacing: .3px; margin-left: auto; flex: none; }
+.pill.ok { background: rgba(95,227,161,.12); color: var(--ok); }
+.pill.off { background: rgba(255,255,255,.06); color: var(--dim2); }
+.pill.bad { background: rgba(255,107,129,.14); color: var(--bad); }
+.what { color: var(--dim); font-size: 12.5px; }
+.path { font: 12px/1.3 "Cascadia Mono", Consolas, monospace; color: var(--dim); background: rgba(0,0,0,.25); border: 1px solid var(--edge); border-radius: 8px; padding: 7px 10px;
+	white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl; text-align: left; }
+.path.none { direction: ltr; color: var(--dim2); font-family: inherit; font-style: italic; }
+.note { color: var(--warn); font-size: 12px; }
+.acts { display: flex; gap: 7px; flex-wrap: wrap; margin-top: auto; }
+
+/* changelog */
+.log { margin-top: 18px; position: relative; padding-left: 22px; }
+/* (the line runs from each circle to the next one in the same era, so it starts at the newest
+   version's circle and doesn't cross the era names; circle and line are placed from the same box) */
+.entry { position: relative; margin-bottom: 14px; padding: 15px 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--edge); }
+.entry::before { content: ""; position: absolute; left: -16px; top: 21px; width: 12px; height: 12px; transform: translateX(-50%); border-radius: 50%; background: var(--bg); border: 2px solid var(--violet); z-index: 1; }
+.entry::after { content: ""; position: absolute; left: -16px; top: 27px; bottom: -42px; width: 2px; transform: translateX(-50%); background: rgba(138,77,255,.35); }
+.entry.first::after { background: linear-gradient(var(--pink), rgba(138,77,255,.35)); }
+.entry.last::after { display: none; }
+.entry.first::before { border-color: var(--pink); background: var(--pink); box-shadow: 0 0 10px rgba(255,92,158,.7); }
+.entry .head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.entry .head b { font-size: 16px; }
+.entry .head code { color: var(--dim2); font: 12px "Cascadia Mono", Consolas, monospace; }
+.entry .head span { color: var(--dim2); font-size: 12px; margin-left: auto; }
+.entry .tag { font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: rgba(255,92,158,.15); color: var(--pink); }
+.entry .tag.cur { background: rgba(95,227,161,.12); color: var(--ok); }
+.entry .md { margin-top: 8px; color: #cfc8de; font-size: 13.2px; }
+.entry.fold .md { max-height: 112px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 55%, transparent); }
+.entry .more { margin-top: 6px; color: var(--pink); font-weight: 600; font-size: 12.5px; }
+.entry .more:hover { text-decoration: underline; }
+.era { margin: 22px 0 12px -22px; color: var(--dim2); font-size: 12px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; }
+.md ul { margin: 2px 0 0 18px; }
+.md li { margin: 4px 0; }
+.md li::marker { color: var(--pink); }
+.md p { margin: 4px 0; }
+.md b { color: var(--text); }
+.md code { font: 12px "Cascadia Mono", Consolas, monospace; background: rgba(255,255,255,.07); padding: 0 4px; border-radius: 4px; }
+
+/* options */
+.opts { margin-top: 6px; display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
+.opt { display: flex; align-items: center; gap: 18px; padding: 13px 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--edge); }
+.opt .l { flex: 1; min-width: 0; }
+.opt .l b { display: block; font-size: 14px; font-weight: 600; }
+.opt .l span { display: block; color: var(--dim); font-size: 12.5px; margin-top: 1px; }
+select { font: inherit; font-size: 13px; color: var(--text); background: #1a1626; border: 1px solid var(--edge2); border-radius: 9px; padding: 7px 30px 7px 11px; min-width: 170px;
+	appearance: none; background-image: linear-gradient(45deg, transparent 50%, #a39cb6 50%), linear-gradient(135deg, #a39cb6 50%, transparent 50%);
+	background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; cursor: pointer; }
+select:focus { outline: none; border-color: rgba(255,92,158,.6); }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--edge); }
+.seg button { padding: 6px 13px; border-radius: 7px; font-size: 12.5px; font-weight: 600; color: var(--dim); transition: background .15s, color .15s; }
+.seg button.on { background: var(--grad); color: #fff; }
+.seg button:not(.on):hover { color: var(--text); }
+.tog { width: 42px; height: 24px; border-radius: 99px; background: rgba(255,255,255,.12); position: relative; transition: background .2s; flex: none; }
+.tog::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.tog.on { background: var(--grad); }
+.tog.on::after { transform: translateX(18px); }
+.saved { color: var(--ok); font-size: 12px; opacity: 0; transition: opacity .3s; }
+.saved.show { opacity: 1; }
+
+/* setup */
+.veil { position: fixed; inset: 0; z-index: 10; background: rgba(7,5,12,.72); backdrop-filter: blur(6px); display: none; place-items: center; }
+.veil.show { display: grid; animation: fade .25s; }
+@keyframes fade { from { opacity: 0; } }
+.setup { width: 640px; border-radius: 20px; background: #141020; border: 1px solid var(--edge2); box-shadow: 0 30px 90px rgba(0,0,0,.6); padding: 28px 30px 24px; animation: pop .3s ease-out; }
+@keyframes pop { from { transform: translateY(10px) scale(.98); opacity: 0; } }
+.setup .top { display: flex; align-items: center; gap: 14px; }
+.setup .top img { width: 52px; height: 52px; }
+.setup h1 { font-size: 24px; }
+.step { margin-top: 16px; padding: 14px 16px; border-radius: 13px; background: var(--card); border: 1px solid var(--edge); }
+.step .h { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.step .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: rgba(255,255,255,.08); color: var(--dim); flex: none; }
+.step .n.ok { background: rgba(95,227,161,.16); color: var(--ok); }
+.step .n.bad { background: rgba(255,107,129,.16); color: var(--bad); }
+.step .b { margin: 8px 0 0 32px; color: var(--dim); font-size: 13px; }
+.step .b .acts { margin-top: 9px; }
+.check { display: inline-flex; align-items: center; gap: 8px; margin-right: 18px; cursor: pointer; color: var(--text); font-size: 13px; }
+.check .box { width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid var(--edge2); display: grid; place-items: center; transition: background .15s; }
+.check.on .box { background: var(--grad); border-color: transparent; }
+.check.on .box::after { content: ""; width: 8px; height: 4px; border: 2px solid #fff; border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.setup .foot { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+.setup .foot .grow { flex: 1; }
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); opacity: 0; z-index: 20; padding: 10px 16px; border-radius: 11px;
+	background: #1d1730; border: 1px solid var(--edge2); box-shadow: 0 12px 40px rgba(0,0,0,.5); font-size: 13px; transition: opacity .25s, transform .25s; pointer-events: none; max-width: 640px; }
+.toast.show { opacity: 1; transform: translateX(-50%); }
+.toast.err { border-color: rgba(255,107,129,.5); }
+
+/* online */
+.acct { display: grid; grid-template-columns: 340px 1fr; gap: 18px; margin-top: 22px; align-items: start; }
+.card { padding: 18px 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--edge); }
+.card h3 { font-size: 16px; margin-bottom: 4px; }
+.card .sub { color: var(--dim); font-size: 12.5px; margin-bottom: 12px; }
+.field { display: block; margin-top: 10px; }
+.field span { display: block; color: var(--dim); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+input.in { width: 100%; font: inherit; font-size: 13.5px; color: var(--text); background: rgba(0,0,0,.3); border: 1px solid var(--edge2); border-radius: 9px; padding: 9px 11px;
+	user-select: text; -webkit-user-select: text; outline: none; transition: border-color .15s; }
+input.in:focus { border-color: rgba(255,92,158,.6); }
+.formacts { display: flex; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.link { color: var(--pink); font-weight: 600; font-size: 12.5px; }
+.link:hover { text-decoration: underline; }
+.msg { margin-top: 10px; font-size: 12.5px; color: var(--dim); }
+.msg.err { color: var(--bad); }
+.msg.ok { color: var(--ok); }
+.who { display: flex; align-items: center; gap: 12px; }
+.av { overflow: hidden; }
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.av:has(img) { background: rgba(255,255,255,.04); }
+.av.sm { width: 26px; height: 26px; border-radius: 8px; font-size: 12px; }
+.pic { position: relative; }
+.pic .edit { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.55); color: #fff; font-size: 10.5px; font-weight: 700; opacity: 0; transition: opacity .15s; border-radius: inherit; }
+.pic:hover .edit { opacity: 1; }
+.rkname { display: flex; align-items: center; gap: 9px; }
+.src { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--violet); box-shadow: 0 0 0 2px rgba(138,77,255,.18); }
+.src.osu { background: #ff66aa; box-shadow: 0 0 0 2px rgba(255,102,170,.2); }
+.src.lazer { background: #ff66aa; box-shadow: 0 0 0 2px rgba(255,102,170,.2); }
+.src.quaver { background: #2fd0f5; box-shadow: 0 0 0 2px rgba(47,208,245,.2); }
+.srclegend { display: flex; gap: 6px; margin-top: 10px; color: var(--dim2); font-size: 11.5px; align-items: center; }
+.srclegend .hint { margin-right: 4px; }
+.srclegend button { font: inherit; font-size: 11.5px; font-weight: 600; color: var(--dim2); background: none; border: 1px solid transparent; border-radius: 8px; padding: 3px 8px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.srclegend button:hover { background: rgba(255,255,255,.06); color: var(--text); border-color: var(--edge); }
+.srclegend button.on { background: rgba(255,92,158,.14); color: var(--text); border-color: rgba(255,92,158,.4); }
+.hcard { width: 92vw; height: 86vh; display: flex; flex-direction: column; border-radius: 20px; background: #141020; border: 1px solid var(--edge2); box-shadow: 0 30px 90px rgba(0,0,0,.6); padding: 22px 26px 18px; animation: pop .3s ease-out; }
+.hcard .ph { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.hcard .ph b { font-size: 20px; display: block; } .hcard .ph small { color: var(--dim2); font-size: 12.5px; }
+.hcard .ph .x { margin-left: auto; width: 34px; height: 34px; border-radius: 10px; color: var(--dim); font-size: 20px; } .hcard .ph .x:hover { background: rgba(255,255,255,.06); color: var(--text); }
+.hwrap { position: relative; flex: 1; min-height: 0; border-radius: 14px; background: rgba(0,0,0,.25); border: 1px solid var(--edge); overflow: hidden; }
+.hwrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+.htip { position: absolute; display: none; min-width: 240px; max-width: 360px; padding: 10px 12px; border-radius: 12px; background: #1c1730; border: 1px solid var(--edge2); box-shadow: 0 12px 40px rgba(0,0,0,.5); font-size: 12.5px; pointer-events: none; z-index: 2; }
+.htip.pinned { pointer-events: auto; border-color: rgba(255,92,158,.5); }
+.htip .hd { display: flex; justify-content: space-between; gap: 12px; font-weight: 700; margin-bottom: 4px; } .htip .hd span { color: var(--pink); }
+.htip .n { color: var(--dim2); font-size: 11.5px; margin-bottom: 6px; }
+.htip .hp { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; padding: 5px 0; border-top: 1px solid var(--edge); cursor: pointer; }
+.htip .hp:hover { color: var(--pink); }
+.htip .hp .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .htip .hp small { color: var(--dim); }
+.htip .hp .r { font-weight: 700; text-align: right; }
+.hist .k { display: flex; align-items: center; } .hist .k .hexp { margin-left: auto; width: 22px; height: 22px; border-radius: 7px; color: var(--dim); font-size: 14px; letter-spacing: 0; } .hist .k .hexp:hover { background: rgba(255,255,255,.08); color: var(--text); }
+.motd { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(102,204,255,.07); border: 1px solid rgba(102,204,255,.3); font-size: 13px; white-space: pre-wrap; }
+.motd .k { color: #8fd3ff; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.adm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+.adm .st { padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid var(--edge); }
+.adm .st b { display: block; font-size: 22px; } .adm .st span { color: var(--dim2); font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+.adrow { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 8px 12px; border-radius: 11px; background: rgba(255,255,255,.035); border: 1px solid var(--edge); margin-bottom: 6px; align-items: center; }
+.adrow .t { font-weight: 600; font-size: 13.5px; } .adrow .t small { color: var(--dim); font-weight: 500; }
+.adrow .acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.adrow .acts .btn { padding: 4px 9px; font-size: 11.5px; }
+.adrow.banned .t { color: var(--bad); } .adrow.admin .t::after { content: " ADMIN"; color: var(--pink); font-size: 10px; letter-spacing: 1px; }
+.notices { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255,92,158,.06); border: 1px solid rgba(255,92,158,.25); }
+.notices .k { color: var(--pink); font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.notices .nt { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 3px 0; } .notices .nt small { color: var(--dim2); white-space: nowrap; }
+.hist { margin-top: 10px; padding: 10px 12px 6px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid var(--edge); }
+.hist .k { color: var(--dim2); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.hist svg { width: 100%; height: 90px; display: block; margin-top: 4px; }
+.feed { margin-top: 18px; }
+.feed .play .t a, .play .t .who-link { color: var(--text); font-weight: 700; cursor: pointer; }
+.play.clickable:hover, .feed .play:hover { border-color: rgba(255,92,158,.35); }
+.play.best { border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.05); }
+.play.top { border-color: rgba(255,92,158,.45); background: rgba(255,92,158,.07); }
+.star { color: #ffd27a; font-size: 13px; }
+.star.top { color: #ff5c9e; text-shadow: 0 0 8px rgba(255,92,158,.6); }
+.pager { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; color: var(--dim); font-size: 13px; }
+.pager input.in { width: 58px; text-align: center; padding: 5px 6px; margin: 0 4px; -moz-appearance: textfield; }
+.pager input.in::-webkit-outer-spin-button, .pager input.in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.pager .btn { padding: 5px 11px; font-size: 15px; line-height: 1; }
+.play .rank { display: inline-block; min-width: 22px; color: var(--dim2); font-weight: 700; font-size: 12px; }
+.play[draggable="true"] { cursor: grab; }
+.play.dragging { opacity: .4; }
+.play.over { border-color: var(--pink); box-shadow: 0 -2px 0 var(--pink); }
+.grip { color: var(--dim2); margin-right: 6px; font-size: 12px; letter-spacing: -2px; }
+textarea.in { width: 100%; min-height: 120px; resize: vertical; font: inherit; font-size: 13.5px; color: var(--text); background: rgba(0,0,0,.3); border: 1px solid var(--edge2); border-radius: 9px; padding: 9px 11px; user-select: text; -webkit-user-select: text; outline: none; }
+textarea.in:focus { border-color: rgba(255,92,158,.6); }
+.av { width: 46px; height: 46px; border-radius: 14px; background: var(--grad); display: grid; place-items: center; font: 800 20px/1 "Segoe UI Variable Display", sans-serif; color: #fff; flex: none; }
+.who b { font-size: 18px; }
+.who small { display: block; color: var(--dim2); font-size: 12px; }
+.ratings { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.rat { padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid var(--edge); }
+.rat .big { font: 800 24px/1.1 "Segoe UI Variable Display", sans-serif; }
+.rat .k { color: var(--dim2); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.rat .ss { display: grid; grid-template-columns: 1fr auto; gap: 1px 8px; margin-top: 6px; font-size: 11.5px; color: var(--dim); }
+.rat .ss b { color: var(--text); font-weight: 600; text-align: right; }
+.rankhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rankhead h3 { margin: 0 auto 0 0; }
+table.rk { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+table.rk th { text-align: left; color: var(--dim2); font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; padding: 0 8px 6px; }
+table.rk td { padding: 7px 8px; border-top: 1px solid var(--edge); }
+table.rk td.n { color: var(--dim2); width: 44px; }
+table.rk td.r { text-align: right; font-weight: 700; }
+table.rk td.p { text-align: right; color: var(--dim); width: 70px; }
+table.rk tr.me td { background: rgba(255,92,158,.10); }
+table.rk tr.me td:first-child { box-shadow: inset 3px 0 0 var(--pink); }
+.empty { color: var(--dim2); font-size: 13px; padding: 18px 8px; }
+
+/* a player's profile */
+.pcard { width: 860px; max-height: 88vh; display: flex; flex-direction: column; border-radius: 20px; background: #141020; border: 1px solid var(--edge2); box-shadow: 0 30px 90px rgba(0,0,0,.6); padding: 24px 26px 18px; animation: pop .3s ease-out; }
+.pcard .ph { display: flex; align-items: center; gap: 14px; }
+.pcard .ph .av { width: 58px; height: 58px; border-radius: 17px; font-size: 26px; }
+.pcard .ph b { font-size: 24px; display: block; }
+.pcard .ph small { color: var(--dim2); font-size: 12.5px; }
+.pcard .ph .x { margin-left: auto; width: 34px; height: 34px; border-radius: 10px; color: var(--dim); font-size: 20px; }
+.pcard .ph .x:hover { background: rgba(255,255,255,.06); color: var(--text); }
+.ranks { display: flex; gap: 8px; margin-top: 6px; }
+.ranks span { font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: rgba(255,92,158,.14); color: var(--pink); }
+.pbody { display: grid; grid-template-columns: 300px 1fr; grid-template-rows: minmax(0, 1fr); gap: 16px; margin-top: 16px; min-height: 0; flex: 1; }
+/* (both columns scroll on their own inside the card, so a profile with 4K, 7K and the graph never runs out of it) */
+.pbody > div:first-child { min-height: 0; overflow-y: auto; padding-right: 4px; }
+.pbody > div:first-child::-webkit-scrollbar { width: 7px; } .pbody > div:first-child::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 7px; }
+.pbody .ratings { grid-template-columns: 1fr; margin-top: 0; }
+.plist { min-height: 0; display: flex; flex-direction: column; }
+.plist .seg { align-self: flex-start; }
+.plist .segs { display: flex; flex-wrap: wrap; gap: 6px 0; align-items: center; }
+.plays { overflow-y: auto; margin-top: 10px; padding-right: 6px; flex: 1; }
+.plays::-webkit-scrollbar { width: 7px; } .plays::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 7px; }
+.play { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 9px 12px; border-radius: 11px; background: rgba(255,255,255,.035); border: 1px solid var(--edge); margin-bottom: 7px; }
+.play .t { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.play .t small { color: var(--dim); font-weight: 500; }
+.play .s { text-align: right; font-weight: 800; font-size: 15px; }
+.play .d { color: var(--dim); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.play .a { text-align: right; color: var(--dim); font-size: 12px; }
+.play .a b { color: var(--text); }
+.clickable { cursor: pointer; }
+table.rk tr.clickable:hover td { background: rgba(255,255,255,.05); }
+</style>
+</head>
+<body>
+<div class="glow g1"></div><div class="glow g2"></div>
+<div class="app">
+	<nav>
+		<div class="brand"><img src="{{ICON}}" alt=""><div><b>VSRG Hub</b><small id="navver"></small></div></div>
+		<button class="nav on" data-page="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>Play</button>
+		<button class="nav" data-page="games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Games<span class="badge" id="gamesbadge">!</span></button>
+		<button class="nav" data-page="news"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>What's new<span class="badge" id="newsbadge">NEW</span></button>
+		<button class="nav" data-page="online"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Online</button>
+		<button class="nav" data-page="options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Options</button>
+		<div class="navfoot">
+			<button class="btn small ghost" id="repbtn" style="align-self:flex-start">Report a problem</button>
+			<button class="btn small" id="chkbtn" style="align-self:flex-start">Check for updates</button>
+			<div class="row"><span class="dot" id="upddot"></span><span id="updline">Checking for updates...</span></div>
+		</div>
+	</nav>
+	<main>
+		<!-- Play -->
+		<section class="page on" id="play-page">
+			<div class="play-grid">
+				<div class="hero">
+					<div class="title">VSRG Hub</div>
+					<div class="tagline">Your osu!, Quaver and Qwilight songs and skins, played in Etterna.</div>
+					<div class="chips" id="chips"></div>
+					<h2>Look</h2>
+					<div class="looks" id="looks"></div>
+					<h2 id="newsh">What's new</h2>
+					<div class="news" id="news"></div>
+				</div>
+				<div class="stage"><canvas id="lanes"></canvas></div>
+			</div>
+			<div class="bar">
+				<div class="status">
+					<div class="t" id="status"></div>
+					<div class="sub" id="statussub"></div>
+					<div class="progress" id="prog"><div id="progfill"></div></div>
+				</div>
+				<button class="btn" id="updbtn">Update</button>
+				<button id="playbtn">PLAY</button>
+			</div>
+		</section>
+		<!-- Games -->
+		<section class="page" id="games-page">
+			<div class="scroll">
+				<h1>Your games</h1>
+				<div class="lead">VSRG Hub brings in the songs and skins of the games you have. Only Etterna is needed; the others are optional. Pick a folder if one wasn't found, or if it's somewhere else.</div>
+				<div class="games" id="games"></div>
+			</div>
+		</section>
+		<!-- What's new -->
+		<section class="page" id="news-page">
+			<div class="scroll">
+				<h1>What's new</h1>
+				<div class="lead">Everything each version brought, newest first.</div>
+				<div class="log" id="log"></div>
+			</div>
+		</section>
+		<!-- Online -->
+		<section class="page" id="online-page">
+			<div class="scroll">
+				<h1>Online</h1>
+				<div class="lead">Your VSRG Hub account: every chart is ranked, and your scores count for the rankings (rated as Etterna rates them, 4K and 7K apart). Your plays are sent when you're signed in.</div>
+				<div class="acct">
+					<div class="card" id="acctcard"><div class="msg">Loading...</div></div>
+					<div class="card">
+						<div class="rankhead">
+							<h3>Rankings</h3>
+							<div class="seg" id="rkkeys"><button data-k="4" class="on">4K</button><button data-k="7">7K</button></div>
+							<select id="rkskill">
+								<option value="overall">Overall</option><option value="month">This month</option><option value="stream">Stream</option><option value="jumpstream">Jumpstream</option>
+								<option value="handstream">Handstream</option><option value="stamina">Stamina</option><option value="jackspeed">Jackspeed</option>
+								<option value="chordjack">Chordjack</option><option value="technical">Technical</option>
+							</select>
+						</div>
+						<input class="in" id="rkfind" placeholder="Find a player" style="width:100%;margin-top:10px">
+						<div id="rkbody"><div class="empty">Loading...</div></div>
+					</div>
+				</div>
+				<div class="card feed">
+					<div class="rankhead"><div class="seg" id="feedseg"><button class="on" data-feed="latest">Latest plays</button><button data-feed="potd">Plays of the day</button><button data-feed="best">Best plays</button><button data-feed="daily">Daily challenge</button></div><div class="seg" id="feedkeys"><button class="on" data-k="0">All</button><button data-k="4">4K</button><button data-k="7">7K</button></div><button class="btn small ghost" id="feedreload" style="margin-left:auto">Refresh</button></div>
+					<div class="plays" id="feedbody" style="overflow:visible"><div class="empty">Loading...</div></div>
+					<div class="pager" id="feedpager" style="display:none"><button class="btn small ghost" id="pg-prev" title="Previous page">‹</button><span>Page <input class="in" id="pg-in" type="number" min="1" value="1"> of <b id="pg-n">1</b></span><button class="btn small ghost" id="pg-next" title="Next page">›</button></div>
+				</div>
+			</div>
+		</section>
+		<!-- Options -->
+		<section class="page" id="options-page">
+			<div class="scroll">
+				<h1>Options</h1>
+				<div class="lead">How the game starts. These are Etterna's own settings: they apply the next time you press Play (and can also be changed in the game).</div>
+				<div id="optsbody"></div>
+			</div>
+		</section>
+	</main>
+</div>
+
+<div class="veil" id="veil"><div class="setup" id="setup"></div></div>
+<div class="veil" id="pveil"><div class="pcard" id="pcard"></div></div>
+<div class="veil" id="hveil" style="z-index:11"><div class="hcard"><div class="ph"><div><b id="h-title"></b><small>Scroll to zoom, drag to pan, double-click to reset. Hover a day for its best plays; click it to keep them open.</small></div><button class="x" id="h-x">✕</button></div><div class="hwrap"><canvas id="hcanvas"></canvas><div class="htip" id="htip"></div></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const LOOKS = [
+	{ id: "VSRG Hub osu!", name: "osu!", sub: "Your osu! skin", col: "#ff66aa" },
+	{ id: "VSRG Hub lazer", name: "osu!lazer", sub: "lazer's menus", col: "#8866ee" },
+	{ id: "VSRG Hub Quaver", name: "Quaver", sub: "Quaver's menus", col: "#0fbae5" },
+	{ id: "Til Death", name: "Til' Death", sub: "Etterna classic", col: "#9b8cff" },
+	{ id: "Rebirth", name: "Rebirth", sub: "Etterna newer", col: "#ffb35c" },
+];
+const GAME = {
+	etterna: { col: "linear-gradient(135deg,#7b5cff,#4a2bd0)", mark: "E" },
+	osu: { col: "linear-gradient(135deg,#ff79b4,#e0367f)", mark: "osu" },
+	quaver: { col: "linear-gradient(135deg,#2fd0f5,#0a8fc2)", mark: "Q" },
+	qwilight: { col: "linear-gradient(135deg,#ffc95c,#e08a1e)", mark: "Qw" },
+};
+let S = null, busy = false, latest = null, feedLog = [];
+
+// --- small markdown: **bold**, `code`, "- " lists, paragraphs ---
+function md(text) {
+	const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`(.+?)`/g, "<code>$1</code>");
+	let out = "", list = false;
+	for (const raw of String(text || "").split("\n")) {
+		const l = raw.trim();
+		if (/^[-*] /.test(l)) { if (!list) { out += "<ul>"; list = true; } out += "<li>" + inline(l.slice(2)) + "</li>"; continue; }
+		if (list) { out += "</ul>"; list = false; }
+		if (l === "" || /^-{3,}$/.test(l)) continue;
+		out += "<p>" + inline(l) + "</p>";
+	}
+	return out + (list ? "</ul>" : "");
+}
+function nice(v) {
+	let m = /^(\d+\.\d+\.\d+)-beta\.(\d+)$/.exec(v);
+	if (m) return "Beta " + m[2];
+	return (cmpVer(v, "1.8.0-beta.10") < 0 ? "TriWheel " : "") + v;
+}
+function cmpVer(a, b) {
+	const p = v => { const [main, pre] = String(v).split("-"); return [main.split(".").map(Number), pre ? Number(pre.split(".").pop()) : Infinity]; };
+	const [am, ap] = p(a), [bm, bp] = p(b);
+	for (let i = 0; i < 3; i++) if ((am[i] || 0) !== (bm[i] || 0)) return (am[i] || 0) - (bm[i] || 0);
+	return ap === bp ? 0 : (ap > bp ? 1 : -1);
+}
+function fmtDate(d) {
+	if (!d) return "";
+	const t = new Date(d + "T12:00:00");
+	return isNaN(t) ? d : t.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+function toast(text, kind) {
+	const t = $("toast"); t.textContent = text; t.className = "toast show" + (kind === "err" ? " err" : "");
+	clearTimeout(t._h); t._h = setTimeout(() => t.className = "toast", 3800);
+}
+window.onToast = toast;
+// the game running with the launcher open (Options: keep the launcher open): Play waits for it
+window.onGame = running => { busy = running; $("playbtn").disabled = running; if (!running) playState(); };
+window.onAccountRefresh = () => { window.vh_account(); loadRankings(); loadActivity(); window.vh_notices(); };
+
+// --- pages ---
+function show(page) {
+	document.querySelectorAll(".nav").forEach(n => n.classList.toggle("on", n.dataset.page === page));
+	document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === page + "-page"));
+	if (page === "news") { $("newsbadge").classList.remove("show"); try { localStorage.setItem("seen", S.version); } catch (e) {} }
+}
+document.querySelectorAll(".nav").forEach(n => n.onclick = () => show(n.dataset.page));
+
+// --- play page ---
+function drawChips() {
+	$("chips").innerHTML = S.games.map(g => `<span class="gchip ${g.found ? "" : "off"}" data-g="${g.id}"><span class="dot ${g.found ? "ok" : ""}"></span>${esc(g.name)}${g.found ? "" : (g.required ? " — not found" : "")}</span>`).join("");
+	document.querySelectorAll(".gchip").forEach(c => c.onclick = () => show("games"));
+	const missing = S.games.some(g => g.required && !g.found);
+	$("gamesbadge").classList.toggle("show", missing);
+}
+function drawLooks() {
+	const avail = S.themes || [];
+	$("looks").innerHTML = "";
+	for (const l of LOOKS) {
+		const on = avail.includes(l.id);
+		const d = document.createElement("button");
+		d.className = "look" + (l.id === S.theme ? " on" : "") + (on ? "" : " off");
+		d.innerHTML = `<b><i style="background:${l.col};box-shadow:0 0 8px ${l.col}"></i>${l.name}</b><span>${on ? l.sub : "Not installed"}</span>`;
+		d.onclick = () => { if (busy || !on) return; S.theme = l.id; window.vh_pick(l.id); drawLooks(); };
+		$("looks").appendChild(d);
+	}
+}
+function allLog() {
+	const seen = new Set(), out = [];
+	for (const e of [...feedLog, ...(S.changelog || [])]) { if (!seen.has(e.version)) { seen.add(e.version); out.push(e); } }
+	out.sort((a, b) => cmpVer(b.version, a.version));
+	return out;
+}
+function drawNews() {
+	const log = allLog();
+	const cur = log.find(e => e.version === S.version) || log[0];
+	if (!cur) { $("news").style.display = "none"; return; }
+	$("newsh").textContent = cur.version === S.version ? "New in this version" : "What's new";
+	$("news").innerHTML = `<div class="head"><b>${esc(nice(cur.version))}</b><span>${esc(fmtDate(cur.date))}</span><button id="allnews">All changes →</button></div><div class="md">${md(cur.notes)}</div>`;
+	$("allnews").onclick = () => show("news");
+}
+function setStatus(text, kind, sub) {
+	$("status").className = "t" + (kind === "err" ? " err" : "");
+	$("status").innerHTML = (kind === "busy" ? '<div class="spin"></div>' : kind === "ok" ? '<span class="dot ok"></span>' : kind === "warn" ? '<span class="dot new"></span>' : "") + `<span>${esc(text)}</span>`;
+	$("statussub").textContent = sub || "";
+}
+// what the big button does now
+function playState() {
+	const b = $("playbtn");
+	b.disabled = busy;
+	if (!S.etterna) { b.textContent = "FIND ETTERNA"; b.onclick = () => show("games"); setStatus("Etterna wasn't found on this PC", "err", "VSRG Hub plays through Etterna: pick its folder or get it in Games."); return; }
+	if (!S.installed) {
+		b.textContent = "INSTALL"; b.onclick = install;
+		setStatus("VSRG Hub isn't installed in Etterna yet", "warn", latest ? `Installs ${latest.latest} into ${S.etterna}\\VSRGHub` : "It's downloaded from the update server.");
+		return;
+	}
+	// (Etterna's VSRG Hub isn't this launcher's version: older versions didn't write which they are, "?")
+	if (S.standalone && S.installed !== S.version) {
+		b.textContent = "UPDATE"; b.onclick = install;
+		setStatus(S.installed === "?" ? `Etterna has an older VSRG Hub; this launcher is ${S.version}` : `Etterna has VSRG Hub ${S.installed}; this launcher is ${S.version}`, "warn", "Update to play with this version.");
+		return;
+	}
+	b.textContent = "PLAY"; b.onclick = play;
+	if (!busy) setStatus("Ready to play", "ok", "Etterna: " + S.etterna);
+}
+function play() {
+	if (busy) return;
+	busy = true; $("playbtn").disabled = true; setStatus("Getting ready", "busy");
+	window.vh_play();
+}
+function install() {
+	if (busy) return;
+	if (!latest || !latest.ok) {
+		toast(latest && latest.state === "offline" ? "The update server can't be reached right now. You can install from a zip file in Options." : "No download is set up yet. Install from a zip file in Options.", "err");
+		return;
+	}
+	busy = true; $("playbtn").disabled = true; $("updbtn").disabled = true;
+	setStatus("Downloading " + latest.latest, "busy"); $("prog").style.display = "block";
+	window.vh_update();
+}
+$("updbtn").onclick = install;
+window.onStatus = (text, kind, sub) => {
+	setStatus(text, kind, sub);
+	if (kind === "err") { busy = false; playState(); }
+};
+window.onProgress = p => {
+	if (p.error) { busy = false; $("prog").style.display = "none"; $("updbtn").disabled = false; playState(); setStatus(p.error, "err"); toast(p.error, "err"); return; }
+	$("prog").style.display = "block"; $("progfill").style.width = (p.pct || 0) + "%";
+	setStatus(p.text || "Working...", "busy");
+	if ($("veil").classList.contains("show")) { const s = $("setupstatus"); if (s) s.textContent = p.text || ""; }
+};
+$("feedreload").onclick = loadActivity;
+$("feedkeys").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { feedKeys = +b.dataset.k; $("feedkeys").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); $("feedbody").innerHTML = '<div class="empty">Loading...</div>'; $("feedpager").style.display = "none"; loadActivity(); });
+$("feedseg").querySelectorAll("[data-feed]").forEach(b => b.onclick = () => { feedMode = b.dataset.feed; $("feedseg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); $("feedbody").innerHTML = '<div class="empty">Loading...</div>'; $("feedpager").style.display = "none"; loadActivity(); });
+$("repbtn").onclick = openReport;
+$("chkbtn").onclick = () => {
+	if (busy) return;
+	$("upddot").className = "dot"; $("updline").textContent = "Checking for updates...";
+	$("chkbtn").disabled = true; setTimeout(() => $("chkbtn").disabled = false, 3000);
+	window.vh_check();
+};
+window.onFeed = f => {
+	const dot = $("upddot"), line = $("updline");
+	latest = f;
+	latest.ok = f.state === "ok";
+	if (f.state === "nofeed") { dot.className = "dot"; line.textContent = "Version " + S.version; }
+	else if (f.state === "offline") { dot.className = "dot"; line.textContent = "Couldn't check for updates"; }
+	else {
+		feedLog = f.changelog || [];
+		if (f.newer) {
+			dot.className = "dot new"; line.textContent = f.latest + " is out";
+			// (always offered when a newer version is out: also when Etterna has an older VSRG Hub than
+			// this launcher, or one so old it doesn't say which it is)
+			if (S.installed) { $("updbtn").style.display = "inline-block"; $("updbtn").textContent = "Update to " + nice(f.latest); }
+		} else { dot.className = "dot ok"; line.textContent = "Up to date · " + nice(S.version); }
+		drawNews(); drawLog();
+	}
+	playState();
+	if ($("veil").classList.contains("show")) drawSetup();
+};
+
+// --- games page ---
+function drawGames() {
+	$("games").innerHTML = "";
+	for (const g of S.games) {
+		const look = GAME[g.id] || { col: "#555", mark: "?" };
+		const c = document.createElement("div");
+		c.className = "game" + (g.found ? "" : " off") + (g.required && !g.found ? " miss" : "");
+		const pill = g.found ? '<span class="pill ok">FOUND</span>' : g.required ? '<span class="pill bad">REQUIRED</span>' : '<span class="pill off">NOT FOUND</span>';
+		let acts = "";
+		if (g.fixed) acts = `<button class="btn small" data-a="open">Open folder</button><span class="what" style="align-self:center">This copy of VSRG Hub lives in this Etterna.</span>`;
+		else if (g.found) acts = `<button class="btn small" data-a="pick">Change folder</button><button class="btn small" data-a="open">Open</button>` + (g.required ? "" : `<button class="btn small ghost" data-a="forget">Don't use</button>`);
+		else acts = `<button class="btn small primary" data-a="pick">Choose folder...</button>` + (g.id === "etterna" ? `<button class="btn small" data-a="get">Get Etterna</button>` : "");
+		c.innerHTML = `<div class="top">${g.icon ? `<img class="logo" src="${g.icon}" alt="">` : `<div class="logo" style="background:${look.col}">${look.mark}</div>`}<div><div class="name">${esc(g.name)}</div></div>${pill}</div>
+			<div class="what">${esc(g.what)}</div>
+			<div class="path ${g.path ? "" : "none"}" title="${esc(g.path)}">${g.path ? "‎" + esc(g.path) + "‎" : (g.required ? "Not found on this PC" : "Not found: its songs and skins are left out")}</div>
+			${g.note ? `<div class="note">${esc(g.note)}</div>` : ""}
+			<div class="acts">${acts}</div>`;
+		c.querySelectorAll("[data-a]").forEach(b => b.onclick = () => gameAct(g, b.dataset.a));
+		$("games").appendChild(c);
+	}
+}
+async function gameAct(g, a) {
+	if (a === "open") { window.vh_open(g.id === "etterna" ? "etterna" : "game:" + g.id); return; }
+	if (a === "get") { window.vh_open("https://github.com/etternagame/etterna/releases/latest"); return; }
+	if (a === "forget") { await window.vh_forgetGame(g.id); await refresh(); toast(g.name + " won't be used"); return; }
+	const r = await window.vh_pickGame(g.id);
+	if (r === "cancel") return;
+	if (r === "restart") { toast("Etterna found. Restarting the launcher..."); return; }
+	if (r) { toast(r, "err"); return; }
+	await refresh(); toast(g.name + " folder saved");
+}
+
+// --- changelog page ---
+function drawLog() {
+	const log = allLog();
+	let html = "", era = "";
+	log.forEach((e, i) => {
+		const isOld = cmpVer(e.version, "1.8.0-beta.10") < 0;
+		const thisEra = isOld ? "TriWheel (VSRG Hub's first name)" : "VSRG Hub 1.8 betas";
+		if (thisEra !== era) { era = thisEra; html += `<div class="era">${era}</div>`; }
+		const long = (e.notes || "").length > 420 && i > 0;
+		const tag = e.version === S.version ? '<span class="tag cur">YOU HAVE THIS</span>' : (latest && latest.newer && e.version === latest.latest ? '<span class="tag">NEW</span>' : "");
+		const next = log[i + 1], lastOfEra = !next || (cmpVer(next.version, "1.8.0-beta.10") < 0) !== isOld;
+		html += `<div class="entry ${i === 0 ? "first" : ""} ${lastOfEra ? "last" : ""} ${long ? "fold" : ""}"><div class="head"><b>${esc(nice(e.version))}</b><code>${esc(e.version)}</code>${tag}<span>${esc(fmtDate(e.date))}</span></div>
+			<div class="md">${md(e.notes)}</div>${long ? '<button class="more">Show everything</button>' : ""}</div>`;
+	});
+	$("log").innerHTML = html;
+	$("log").querySelectorAll(".more").forEach(b => b.onclick = () => { b.parentElement.classList.remove("fold"); b.remove(); });
+}
+
+// --- options page ---
+const LIMITS = [[0, "Unlimited"], [60, "60"], [120, "120"], [144, "144"], [165, "165"], [240, "240"], [360, "360"], [500, "500"], [1000, "1000"]];
+function stageOn() { try { return localStorage.getItem("stage") !== "0"; } catch (e) { return true; } }
+function optRow(title, sub, control) { return `<div class="opt"><div class="l"><b>${title}</b><span>${sub}</span></div>${control}</div>`; }
+function sel(key, items, cur) { return `<select data-k="${key}">` + items.map(([v, t]) => `<option value="${esc(v)}" ${String(v) === String(cur) ? "selected" : ""}>${esc(t)}</option>`).join("") + "</select>"; }
+function seg(key, items, cur) { return `<div class="seg" data-k="${key}">` + items.map(([v, t]) => `<button data-v="${v}" class="${v === cur ? "on" : ""}">${t}</button>`).join("") + "</div>"; }
+function tog(key, on) { return `<button class="tog ${on ? "on" : ""}" data-k="${key}"></button>`; }
+function drawOptions() {
+	const o = S.options, d = S.displays || {};
+	let h = "";
+	if (o) {
+		const res = `${o.width}x${o.height}`;
+		const sizes = [...(d.sizes || [])];
+		if (!sizes.includes(res)) sizes.unshift(res);
+		const rates = [[0, "Automatic"], ...(d.rates || []).map(r => [r, r + " Hz"])];
+		if (!rates.some(r => r[0] === o.refresh)) rates.push([o.refresh, o.refresh + " Hz"]);
+		const lim = v => { const l = [...LIMITS]; if (!l.some(x => x[0] === v)) l.push([v, String(v)]); return l; };
+		h += `<h2>Display</h2><div class="opts">`;
+		h += optRow("Resolution", "The game's size" + (d.current ? ` (your screen: ${d.current.replace("x", " × ")})` : ""), sel("resolution", sizes.map(s => [s, s.replace("x", " × ") + (s === d.current ? "  (screen)" : "")]), res));
+		h += optRow("Display mode", "Borderless is fullscreen that Alt+Tabs instantly", seg("mode", [["fullscreen", "Fullscreen"], ["borderless", "Borderless"], ["windowed", "Windowed"]], o.mode));
+		h += optRow("Refresh rate", "For fullscreen; Automatic uses your screen's", sel("refresh", rates, o.refresh));
+		h += optRow("VSync", "Waits for the screen: no tearing, but a little more input delay", tog("vsync", o.vsync));
+		h += `</div><h2>Performance</h2><div class="opts">`;
+		h += optRow("Frame limit in menus", "Song select, results, options", sel("frameLimit", lim(o.frameLimit), o.frameLimit));
+		h += optRow("Frame limit while playing", "Higher is smoother and lower latency", sel("frameLimitGameplay", lim(o.frameLimitGameplay), o.frameLimitGameplay));
+		h += optRow("Renderer", "OpenGL draws the osu! look's frosted glass and runs menus faster; Direct3D is Etterna's default", seg("renderer", [["d3d", "Direct3D"], ["opengl", "OpenGL"]], o.renderer));
+		h += optRow("Show FPS", "Etterna's frame rate counter in a corner", tog("showStats", o.showStats));
+		h += `</div>`;
+	}
+	h += `<h2>VSRG Hub</h2><div class="opts">`;
+	h += optRow("Desktop shortcut", S.shortcut ? "VSRG Hub is on your desktop" : "Put VSRG Hub on your desktop", `<button class="btn small" id="o-short" ${S.shortcut ? "disabled" : ""}>${S.shortcut ? "Done" : "Add shortcut"}</button>`);
+	if (S.standalone) h += optRow("The launcher", `<span style="font-family:Consolas,monospace;font-size:12px">${esc(S.exe)}</span>`, `<button class="btn small" id="o-launcher">Open folder</button>`);
+	if (S.etterna) {
+		h += optRow("Install from a zip file", "A VSRGHub-....zip you downloaded (from Melty, say)", `<button class="btn small" id="o-zip">Choose zip...</button>`);
+		h += optRow("VSRG Hub's folder", esc(S.etterna) + "\\VSRGHub", `<button class="btn small" id="o-hub">Open</button>`);
+	}
+	h += optRow("Log", "What VSRG Hub did last time (for reporting problems)", `<button class="btn small" id="o-log">Open</button>`);
+	h += optRow("Keep the launcher open while playing", "Off closes the launcher once the game is up (it comes back when you open it again)", `<button class="tog ${S.keepOpen ? "on" : ""}" data-k="keepOpen"></button>`);
+	if (S.discord && S.discord.ready) h += optRow("Discord", "Show what you're playing as your Discord activity while the game runs", `<button class="tog ${S.discord.on ? "on" : ""}" data-k="discord"></button>`);
+	h += optRow("Falling arrows on the Play page", "Off saves the graphics card on a slow PC (the launcher only; the game isn't touched)", `<button class="tog ${stageOn() ? "on" : ""}" data-k="stage"></button>`);
+	h += `</div>`;
+	$("optsbody").innerHTML = h;
+	$("optsbody").querySelectorAll("select").forEach(s => s.onchange = () => setOpt(s.dataset.k, isNaN(+s.value) || s.dataset.k === "resolution" ? s.value : +s.value));
+	$("optsbody").querySelectorAll(".seg").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => {
+		g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); setOpt(g.dataset.k, b.dataset.v);
+	}));
+	$("optsbody").querySelectorAll(".tog").forEach(t => t.onclick = () => { t.classList.toggle("on"); if (t.dataset.k === "keepOpen") { S.keepOpen = t.classList.contains("on"); window.vh_setKeepOpen(S.keepOpen); return; } if (t.dataset.k === "discord") { S.discord.on = t.classList.contains("on"); window.vh_setDiscord(S.discord.on); return; } if (t.dataset.k === "stage") { try { localStorage.setItem("stage", t.classList.contains("on") ? "1" : "0"); } catch (e) {} return; } setOpt(t.dataset.k, t.classList.contains("on")); });
+	const on = (id, f) => { const e = $(id); if (e) e.onclick = f; };
+	on("o-short", async () => { if (await window.vh_shortcut()) { S.shortcut = true; drawOptions(); toast("Shortcut added to your desktop"); } });
+	on("o-launcher", () => window.vh_open("launcher"));
+	on("o-hub", () => window.vh_open("hub"));
+	on("o-log", () => window.vh_open("log"));
+	on("o-zip", async () => {
+		const r = await window.vh_installZip();
+		if (r === "cancel") return;
+		if (r) { toast(r, "err"); return; }
+		busy = true; show("play"); $("prog").style.display = "block"; setStatus("Installing", "busy");
+	});
+}
+async function setOpt(k, v) {
+	const r = await window.vh_setOption(k, v);
+	if (r) toast(r, "err"); else toast("Saved: applies the next time the game starts");
+}
+
+// --- setup (the launcher on its own, the first time) ---
+let setupDir = "", setupDesk = true, setupStart = true, setupSkipped = false;
+function needSetup() { return S.standalone && !setupSkipped && (!S.placed || !S.etterna || !S.installed); }
+function drawSetup() {
+	const e = S.etterna, inst = S.installed;
+	if (!setupDir) setupDir = S.installDir;
+	const found = S.games.filter(g => g.id !== "etterna");
+	const step = (n, state, title, body) => `<div class="step"><div class="h"><span class="n ${state}">${state === "ok" ? "✓" : n}</span>${title}</div><div class="b">${body}</div></div>`;
+	let h = `<div class="top"><img src="{{ICON}}" alt=""><div><h1>Set up VSRG Hub</h1><div class="lead" style="margin-top:3px">Three quick things, then you're playing.</div></div></div>`;
+	h += step(1, e ? "ok" : "bad", "Etterna", e ? `Found at <b style="color:var(--text)">${esc(e)}</b><div class="acts"><button class="btn small" id="s-ett">Change...</button></div>`
+		: `VSRG Hub plays through Etterna, and it wasn't found on this PC.<div class="acts"><button class="btn small primary" id="s-ett">I have it: choose its folder...</button><button class="btn small" id="s-get">Get Etterna</button></div>`);
+	h += step(2, "ok", "Your games", `<div class="chips" style="margin-top:2px">${found.map(g => `<span class="gchip ${g.found ? "" : "off"}"><span class="dot ${g.found ? "ok" : ""}"></span>${esc(g.name)}</span>`).join("")}</div>
+		<div style="margin-top:7px">Optional. Folders can be picked or changed any time in <b style="color:var(--text)">Games</b>.</div>`);
+	if (!S.placed) h += step(3, "", "Where to keep the launcher", `<div class="path" style="margin-top:2px" title="${esc(setupDir)}">‎${esc(setupDir)}\\VSRG Hub.exe‎</div>
+		<div class="acts" style="align-items:center"><button class="btn small" id="s-dir">Change...</button>
+		<span class="check ${setupDesk ? "on" : ""}" id="s-desk"><span class="box"></span>Desktop shortcut</span>
+		<span class="check ${setupStart ? "on" : ""}" id="s-start"><span class="box"></span>Start menu</span></div>`);
+	const what = !inst ? (latest && latest.ok ? `Install VSRG Hub ${nice(latest.latest)}` : "Install VSRG Hub") : "Done";
+	h += `<div class="what" id="setupstatus" style="margin:14px 2px 0;min-height:18px">${!e ? "" : !inst ? (latest && latest.ok ? "Downloads about 7 MB into " + esc(e) + "\\VSRGHub" : latest && latest.state === "offline" ? "The download server can't be reached: you can install from a zip file." : "Checking the download...") : ""}</div><div class="foot" style="margin-top:12px"><span class="grow"></span>
+		${e && !inst ? '<button class="btn ghost small" id="s-zip">From a zip file...</button>' : ""}
+		<button class="btn ghost" id="s-skip">Not now</button><button class="btn primary" id="s-go" ${e && (inst || (latest && latest.ok)) ? "" : "disabled"}>${what}</button></div>`;
+	$("setup").innerHTML = h;
+	const on = (id, f) => { const x = $(id); if (x) x.onclick = f; };
+	on("s-ett", async () => { const r = await window.vh_pickGame("etterna"); if (r === "restart") $("setupstatus").textContent = "Restarting with Etterna..."; else if (r && r !== "cancel") toast(r, "err"); });
+	on("s-get", () => window.vh_open("https://github.com/etternagame/etterna/releases/latest"));
+	on("s-dir", async () => { const d = await window.vh_pickDir(setupDir); if (d) { setupDir = d; drawSetup(); } });
+	on("s-desk", () => { setupDesk = !setupDesk; drawSetup(); });
+	on("s-start", () => { setupStart = !setupStart; drawSetup(); });
+	on("s-skip", () => { setupSkipped = true; if (!S.placed) window.vh_keepHere(); $("veil").classList.remove("show"); });
+	on("s-zip", async () => {
+		if (!S.placed) { const r = await window.vh_placeLauncher(setupDir, setupDesk, setupStart, false); if (r) { toast(r, "err"); return; } }
+		const r = await window.vh_installZip();
+		if (r && r !== "cancel") toast(r, "err");
+		else if (!r) { $("s-go").disabled = true; $("setupstatus").textContent = "Installing..."; }
+	});
+	on("s-go", async () => {
+		$("s-go").disabled = true;
+		if (!S.placed) {
+			const r = await window.vh_placeLauncher(setupDir, setupDesk, setupStart, !!inst);
+			if (r) { toast(r, "err"); $("s-go").disabled = false; return; }
+			if (inst) { $("setupstatus").textContent = "Starting the launcher from its new place..."; return; }
+		}
+		if (inst) { $("veil").classList.remove("show"); return; }
+		$("setupstatus").textContent = "Downloading...";
+		busy = true; window.vh_update();
+	});
+}
+
+// --- start ---
+async function refresh() {
+	S = await window.vh_state();
+	const ORDER = { etterna: 0, osu: 1, quaver: 2, qwilight: 3 };
+	S.games.sort((a, b) => (ORDER[a.id] ?? 9) - (ORDER[b.id] ?? 9));
+	$("navver").textContent = nice(S.version);
+	drawChips(); drawLooks(); drawNews(); drawGames(); drawLog(); drawOptions(); playState();
+}
+// --- online: the VSRG Hub account and the rankings (online.go) ---
+let acct = null, acctMode = "in", acctMsg = "", acctMsgKind = "", rkKeys = 4, rkSkill = "overall";
+const SKILLS = [["stream", "Stream"], ["jumpstream", "Jumpstream"], ["handstream", "Handstream"], ["stamina", "Stamina"], ["jackspeed", "Jackspeed"], ["chordjack", "Chordjack"], ["technical", "Technical"]];
+// (Etterna's calculator doesn't rate Technical for 7K: every 7K chart gets 0.18, so it's left out there)
+const skillsFor = k => k === 7 ? SKILLS.filter(([id]) => id !== "technical") : SKILLS;
+// a player's picture, or their initial
+function avatar(pic, name, cls) { return `<div class="av ${cls || ""}">${pic ? `<img src="${esc(pic)}" alt="">` : esc(((name || "?")[0] || "?").toUpperCase())}</div>`; }
+// where a play came from: Etterna (violet), an osu! replay (pink), an osu!lazer replay (gold)
+function srcDot(s) { const k = ["osu", "lazer", "quaver"].includes(s) ? s : "etterna"; return `<span class="src ${k}" title="${k === "osu" ? "Played in osu!" : k === "lazer" ? "Played in osu!lazer" : k === "quaver" ? "Played in Quaver" : "Played in Etterna / VSRG Hub"}"></span>`; }
+// the legend under a profile's plays doubles as the filter: a game's plays only (click again for all)
+function srcLegend(on) { return `<div class="srclegend"><span class="hint">${on ? "Best plays in" : "Best plays per game:"}</span>${[["etterna", "Etterna"], ["osu", "osu!"], ["quaver", "Quaver"]].map(([v, n]) => `<button data-src="${v}" class="${on === v ? "on" : ""}" title="${on === v ? "All games" : "Only " + n + " plays"}"><span class="src ${v}"></span>${n}</button>`).join("")}</div>`; }
+function ago(s) {
+	const d = new Date(s); if (isNaN(d)) return "";
+	const m = Math.round((Date.now() - d) / 60000);
+	if (m < 1) return "just now"; if (m < 60) return m + " min ago";
+	const h = Math.round(m / 60); if (h < 24) return h + " h ago";
+	const days = Math.round(h / 24); return days < 30 ? days + " d ago" : fmtDate(s);
+}
+// your osu! plays: the launcher reads the replays, the game rates them (28 VSRG Hub osu plays.lua)
+let osuState = null;
+function osuMsg(a) {
+	if (osuState && osuState.progress) return `<div class="msg">${esc(osuState.progress)}</div>`;
+	if (osuState && osuState.report) {
+		const r = osuState.report;
+		if (r.error && !r.jobs) return `<div class="msg err">${esc(r.error)}</div>`;
+		const why = Object.entries(r.skipped || {}).map(([k, v]) => `${v} ${k}`).join(", ");
+		return `<div class="msg ok">${r.jobs} of ${r.found} osu! / Quaver plays can be rated: they're rated and sent the next time song select comes up in the game.${r.lazerOnly ? ` ${r.lazerOnly} lazer plays are on maps that aren't in your osu! stable Songs folder (put those maps there to count them).` : ""}${why ? ` Left out: ${esc(why)}.` : ""}${r.datesFixed ? ` ${r.datesFixed} plays sent earlier got their real dates.` : ""}</div>`;
+	}
+	if (!a.osu) return `<div class="msg">Played osu!mania or Quaver? Their replays can count for the rankings too: they're judged as Etterna would, on the same charts.</div>`;
+	if (a.osu === "want") return `<div class="msg ok">Your osu! / Quaver plays are rated the next time song select comes up in the game: stay there until it says they're ready, then they're sent.</div>`;
+	const m = /^done\s*(\d+)\s*(.*)$/.exec(a.osu);
+	return `<div class="msg">osu! / Quaver plays rated: ${m ? m[1] : "?"}${m && m[2] ? ` (not rated: ${esc(m[2])})` : ""}.</div>`;
+}
+function acctBusy(text) { acctMsg = text; acctMsgKind = ""; drawAccount(true); }
+function drawAccount(busyNow) {
+	const c = $("acctcard"), a = acct || {};
+	const msg = acctMsg ? `<div class="msg ${acctMsgKind}">${esc(acctMsg)}</div>` : "";
+	const dis = busyNow ? "disabled" : "";
+	if (a.signedIn && !a.username) {
+		c.innerHTML = `<h3>Choose your player name</h3><div class="sub">Shown on the rankings. 3 to 20 letters, digits, spaces or _ - . [ ]. It can't be changed later.</div>
+			<label class="field"><span>Player name</span><input class="in" id="o-name" maxlength="20" autocomplete="off"></label>
+			<div class="formacts"><button class="btn primary" id="o-setname" ${dis}>Save</button><button class="btn ghost small" id="o-out">Sign out</button></div>${msg}`;
+		$("o-setname").onclick = () => { const n = $("o-name").value.trim(); if (n.length < 3) { acctMsg = "At least 3 characters."; acctMsgKind = "err"; drawAccount(); return; } acctBusy("Saving..."); window.vh_setName(n); };
+		$("o-out").onclick = () => { acctBusy("Signing out..."); window.vh_signOut(); };
+		return;
+	}
+	if (a.signedIn) {
+		const r = {}; (a.ratings || []).forEach(x => r[x.keys] = x);
+		const box = k => { const x = r[k]; if (!x || !x.plays) return `<div class="rat"><div class="k">${k}K</div><div class="big">—</div><div class="msg">No ranked plays yet</div></div>`;
+			return `<div class="rat"><div class="k">${k}K · ${x.plays} play${x.plays === 1 ? "" : "s"}</div><div class="big">${x.overall.toFixed(2)}</div><div class="ss">${skillsFor(k).map(([id, nm]) => `<span>${nm}</span><b>${(x[id] || 0).toFixed(2)}</b>`).join("")}</div></div>`; };
+		c.innerHTML = `<div class="who"><div class="pic clickable" id="o-pic" title="Change your picture">${avatar(a.picture, a.username)}<div class="edit">CHANGE</div></div><div class="clickable" id="o-me" title="Your profile"><b>${esc(a.username)}</b><small>${esc(a.email || "")}</small></div>${a.picture ? `<button class="link" id="o-nopic" style="margin-left:auto">Remove picture</button>` : ""}</div>
+			<div class="ratings">${box(4)}${box(7)}</div>
+			${a.waiting ? `<div class="msg">${a.waiting} play${a.waiting === 1 ? "" : "s"} waiting to be sent${a.note ? ": " + esc(a.note) : ""}</div>` : ""}
+			${!a.backfill ? `<div class="msg">Played before you signed up? Send your older plays (your best at each rate on every 4K and 7K chart, with their replays) to the rankings.</div>`
+				: a.backfill.startsWith("want") ? `<div class="msg ok">Your older plays are sent the next time song select comes up in the game.</div>`
+				: `<div class="msg">Older plays sent (${esc(a.backfill.replace(/^done\s*/, ""))}).</div>`}
+			${osuMsg(a)}
+			${a.motd ? `<div class="motd"><div class="k">MESSAGE FROM THE ADMINS</div>${esc(a.motd)}</div>` : ""}
+			${noticesBox()}
+			${a.serverBehind !== undefined ? `<div class="msg err">The server is behind this launcher (it has update ${a.serverBehind}, this needs ${a.serverWant}): the owner has to run server/supabase/v2.sql in Supabase's SQL editor. Until then some things here won't work.</div>` : ""}
+			<div class="formacts"><button class="btn small" id="o-reload">Refresh</button>${a.waiting ? `<button class="btn small" id="o-send">Send now</button>` : ""}${!a.backfill ? `<button class="btn small" id="o-old">Send my older plays</button>` : ""}${!a.osu || a.osu.startsWith("done") ? `<button class="btn small" id="o-osu">${a.osu ? "Send my osu! / Quaver plays again" : "Send my osu! / Quaver plays"}</button>` : ""}<button class="btn small ghost" id="o-csv" title="Every score of yours as a spreadsheet file, on your desktop">Export scores</button>${a.admin ? `<button class="btn small" id="o-sus">Scores to check</button><button class="btn small" id="o-admin">Admin tools</button>` : ""}<button class="btn ghost small" id="o-out">Sign out</button></div>${msg}`;
+		if ($("o-send")) $("o-send").onclick = () => { acctBusy("Sending..."); window.vh_sendScores(); };
+		if ($("o-old")) $("o-old").onclick = () => window.vh_backfill();
+		if ($("o-osu")) $("o-osu").onclick = () => { osuState = { progress: "Looking for your osu! replays..." }; drawAccount(); window.vh_osuImport(); };
+		if ($("o-sus")) $("o-sus").onclick = openSuspicious;
+		if ($("o-admin")) $("o-admin").onclick = openAdmin;
+		if ($("o-csv")) $("o-csv").onclick = () => { toast("Getting your scores..."); window.vh_exportScores(); };
+		$("o-out").onclick = () => { acctBusy("Signing out..."); window.vh_signOut(); };
+		$("o-me").onclick = () => { if (a.userId) openPlayer(a.userId); };
+		$("o-pic").onclick = () => window.vh_setPicture(false);
+		if ($("o-nopic")) $("o-nopic").onclick = () => window.vh_setPicture(true);
+		$("o-reload").onclick = () => { window.vh_account(); loadRankings(); loadActivity(); };
+		return;
+	}
+	const up = acctMode === "up";
+	c.innerHTML = `<div class="seg" id="o-mode"><button data-m="in" class="${up ? "" : "on"}">Sign in</button><button data-m="up" class="${up ? "on" : ""}">Create account</button></div>
+		<label class="field"><span>E-mail</span><input class="in" id="o-email" type="email" autocomplete="email"></label>
+		<label class="field"><span>Password</span><input class="in" id="o-pass" type="password" autocomplete="${up ? "new-password" : "current-password"}"></label>
+		${up ? `<label class="field"><span>Password again</span><input class="in" id="o-pass2" type="password" autocomplete="new-password"></label>` : ""}
+		<div class="formacts"><button class="btn primary" id="o-go" ${dis}>${up ? "Create account" : "Sign in"}</button>${up ? "" : `<button class="link" id="o-forgot">Forgot your password?</button>`}</div>${msg}
+		${a.offline ? `<div class="msg err">VSRG Hub's server can't be reached right now.</div>` : ""}`;
+	c.querySelectorAll("#o-mode button").forEach(b => b.onclick = () => { acctMode = b.dataset.m; acctMsg = ""; drawAccount(); });
+	const go = () => {
+		const e = $("o-email").value.trim(), p = $("o-pass").value;
+		if (!e || !p) { acctMsg = "Type your e-mail and password."; acctMsgKind = "err"; drawAccount(); return; }
+		if (up) {
+			if (p.length < 6) { acctMsg = "Use at least 6 characters for the password."; acctMsgKind = "err"; drawAccount(); return; }
+			if (p !== $("o-pass2").value) { acctMsg = "The two passwords aren't the same."; acctMsgKind = "err"; drawAccount(); return; }
+			acctBusy("Creating your account..."); window.vh_signUp(e, p);
+		} else { acctBusy("Signing in..."); window.vh_signIn(e, p); }
+	};
+	$("o-go").onclick = go;
+	c.querySelectorAll("input").forEach(i => i.onkeydown = ev => { if (ev.key === "Enter") { ev.stopPropagation(); go(); } });
+	if ($("o-forgot")) $("o-forgot").onclick = () => {
+		const e = $("o-email").value.trim();
+		if (!e) { acctMsg = "Type your e-mail first, then click this again."; acctMsgKind = "err"; drawAccount(); return; }
+		acctBusy("Sending..."); window.vh_resetPassword(e);
+	};
+}
+// the rankings table, narrowed by the search box (players not on this ranking are looked up by name)
+let rkRows = [], rkMe = "", rkFound = null;
+function drawRankings() {
+	const q = $("rkfind").value.trim().toLowerCase();
+	let rows = rkRows.filter(r => !q || r.username.toLowerCase().includes(q));
+	let extra = "";
+	if (q && rkFound && rkFound.length) {
+		const have = new Set(rows.map(r => r.user_id));
+		const more = rkFound.filter(p => !have.has(p.id));
+		if (more.length) extra = `<div class="msg">Not on this ranking:</div><table class="rk">` + more.map(p => `<tr class="clickable" data-u="${esc(p.id)}"><td class="n"></td><td><div class="rkname">${avatar(p.picture, p.username, "sm")}${esc(p.username)}</div></td><td class="r"></td><td class="p"></td></tr>`).join("") + `</table>`;
+	}
+	if (!rows.length && !extra) { $("rkbody").innerHTML = `<div class="empty">${q ? "No player by that name." : rkSkill === "month" ? "Nobody has played this month yet: the month's ranking counts only plays made this month." : "Nobody is ranked here yet. Play a few charts while signed in to be the first."}</div>`; return; }
+	$("rkbody").innerHTML = (rows.length ? `<table class="rk"><tr><th>#</th><th>Player</th><th style="text-align:right">Rating</th><th style="text-align:right">Plays</th></tr>` +
+		rows.map(r => `<tr class="clickable ${r.user_id === rkMe ? "me" : ""}" data-u="${esc(r.user_id)}"><td class="n">${r.place}</td><td><div class="rkname">${avatar(r.picture, r.username, "sm")}${esc(r.username)}</div></td><td class="r">${r.rating.toFixed(2)}</td><td class="p">${r.plays}</td></tr>`).join("") + `</table>` : "") + extra;
+	$("rkbody").querySelectorAll("tr[data-u]").forEach(tr => tr.onclick = () => openPlayer(tr.dataset.u));
+}
+let rkFindT = null;
+$("rkfind").oninput = () => { rkFound = null; drawRankings(); clearTimeout(rkFindT); const q = $("rkfind").value.trim().toLowerCase(); if (q.length >= 2) rkFindT = setTimeout(() => window.vh_findPlayers(q), 300); };
+// ranking notices: who passed you (notices.go)
+let notices = [];
+function noticesBox() {
+	if (!notices.length) return "";
+	return `<div class="notices"><div class="k">RANKING CHANGES</div>${notices.slice(0, 6).map(n => `<div class="nt"><span>${esc(n.text)}</span><small>${ago(n.when)}</small></div>`).join("")}</div>`;
+}
+function loadRankings() { $("rkbody").innerHTML = `<div class="empty">Loading...</div>`; window.vh_rankings(rkKeys, rkSkill); }
+document.querySelectorAll("#rkkeys button").forEach(b => b.onclick = () => {
+	rkKeys = +b.dataset.k; document.querySelectorAll("#rkkeys button").forEach(x => x.classList.toggle("on", x === b));
+	const tech = $("rkskill").querySelector('option[value="technical"]');
+	tech.disabled = rkKeys === 7; tech.textContent = rkKeys === 7 ? "Technical (not rated in 7K)" : "Technical";
+	if (rkKeys === 7 && rkSkill === "technical") { rkSkill = "overall"; $("rkskill").value = "overall"; }
+	loadRankings(); });
+$("rkskill").onchange = () => { rkSkill = $("rkskill").value; loadRankings(); };
+// a player's profile: ratings by pattern, best plays (4K / 7K) and the latest ones
+let pShown = null, pTab = "top4", pSrc = "all";
+function openPlayer(id) {
+	pShown = { id }; pTab = "top4";
+	$("pcard").innerHTML = `<div class="ph"><div><b>Loading...</b></div><button class="x" id="p-x">✕</button></div>`;
+	$("p-x").onclick = closePlayer;
+	$("pveil").classList.add("show");
+	window.vh_player(id);
+}
+function closePlayer() { $("pveil").classList.remove("show"); pShown = null; }
+$("pveil").onclick = e => { if (e.target === $("pveil")) closePlayer(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("pveil").classList.contains("show")) closePlayer(); });
+function fmtDate(s) { if (!s) return ""; const d = new Date(s); return isNaN(d) ? "" : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
+function drawPlayer() {
+	const ev = pShown; if (!ev) return;
+	const c = $("pcard");
+	if (ev.error) { c.innerHTML = `<div class="ph"><div><b>Couldn't open this profile</b><small>${esc(ev.error)}</small></div><button class="x" id="p-x">✕</button></div>`; $("p-x").onclick = closePlayer; return; }
+	const p = ev.player, r = {}; (p.ratings || []).forEach(x => r[x.keys] = x);
+	const box = k => { const x = r[k]; if (!x || !x.plays) return `<div class="rat"><div class="k">${k}K</div><div class="big">—</div><div class="msg">No ranked plays yet</div></div>`;
+		return `<div class="rat"><div class="k">${k}K · ${x.plays} chart${x.plays === 1 ? "" : "s"}</div><div class="big">${x.overall.toFixed(2)}</div><div class="ss">${skillsFor(k).map(([id, nm]) => `<span>${nm}</span><b>${(x[id] || 0).toFixed(2)}</b>`).join("")}</div></div>`; };
+	const ranks = [p.place4 ? `#${p.place4} in 4K` : "", p.place7 ? `#${p.place7} in 7K` : ""].filter(Boolean).map(t => `<span>${t}</span>`).join("");
+	// (only the key counts the player has plays in: a 4K-only player's profile has no empty 7K box)
+	const has4 = !!(r[4] && r[4].plays) || !!(p.top4 || []).length, has7 = !!(r[7] && r[7].plays) || !!(p.top7 || []).length;
+	if (pTab === "top7" && !has7) pTab = "top4";
+	if (pTab === "top4" && !has4 && has7) pTab = "top7";
+	const hasPins = !!(p.pinned || []).length;
+	if (pTab === "pinned" && !hasPins) pTab = has4 || !has7 ? "top4" : "top7";
+	// (Best 4K / 7K can be narrowed to one game's plays: fetched apart, since the top 25 overall may hold none)
+	const topTab = pTab === "top4" || pTab === "top7";
+	const tk = pTab === "top7" ? 7 : 4;
+	let list = pTab === "top4" ? p.top4 : pTab === "top7" ? p.top7 : pTab === "pinned" ? p.pinned : p.recent;
+	if (topTab && pSrc !== "all") {
+		ev.bySrc = ev.bySrc || {};
+		const key = tk + ":" + pSrc;
+		if (!ev.bySrc[key]) { ev.bySrc[key] = { loading: true }; window.vh_playerTop(p.id, tk, pSrc); }
+		list = ev.bySrc[key].rows || [];
+	}
+	// the rating over time: for the key count on show (Latest: the one with plays)
+	const histKeys = pTab === "top7" || (pTab === "recent" && !has4 && has7) ? 7 : 4;
+	ev.hist = ev.hist || {};
+	if (!ev.hist[histKeys] && (histKeys === 7 ? has7 : has4)) { ev.hist[histKeys] = { loading: true }; window.vh_history(p.id, histKeys); }
+	const mine = pTab === "pinned" && p.id === ev.me;
+	const plays = (list || []).map(s => `<div class="play clickable" ${mine ? `draggable="true" data-id="${s.id}"` : ""} data-ck="${esc(s.chart_key || "")}" data-title="${esc((s.song_title || "?") + (s.chart_name ? " · " + s.chart_name : "") + " · " + s.keys + "K")}" title="This chart's top">
+		<div class="t">${mine ? `<span class="grip" title="Drag to reorder">⋮⋮</span>` : ""}${srcDot(s.source)}${esc(s.song_title || "?")} <small>${esc(s.song_artist || "")}${s.chart_name ? " · " + esc(s.chart_name) : ""} · ${s.keys}K${s.verified === false ? ` · <span style="color:var(--warn)">not ranked (no replay)</span>` : ""}</small></div>
+		<div class="s">${s.ssr_overall.toFixed(2)}${ev.admin && s.id ? ` <button class="btn small ghost" data-rm="${s.id}" title="Take this score off the rankings">✕</button>` : ""}</div>
+		<div class="d">${(+s.rate).toFixed(2).replace(/0$/, "")}x · MSD ${s.msd.toFixed(2)} · ${s.marvelous}/${s.perfect}/${s.great}/${s.good}/${s.bad}/${s.miss} · ${s.max_combo}x${pTab === "recent" || pTab === "pinned" ? " · " + fmtDate(s.played_at || s.submitted_at) : ""}</div>
+		<div class="a"><b>${s.wife.toFixed(2)}%</b></div></div>`).join("") || `<div class="empty">${topTab && pSrc !== "all" && ev.bySrc && ev.bySrc[tk + ":" + pSrc] && ev.bySrc[tk + ":" + pSrc].loading ? "Loading..." : "No plays here yet."}</div>`;
+	c.innerHTML = `<div class="ph">${avatar(p.picture, p.username)}
+		<div><b>${esc(p.username)}${p.id === ev.me ? ` <small>(you)</small>` : ""}${p.banned ? ` <small style="color:var(--bad)">(banned)</small>` : ""}</b><small>Joined ${fmtDate(p.created_at)}</small><div class="ranks">${ranks}</div></div>
+		${ev.admin && p.id !== ev.me ? `<button class="btn small" id="p-ban" style="margin-left:auto">${p.banned ? "Unban" : "Ban"}</button>` : ""}
+		<button class="x" id="p-x">✕</button></div>
+		<div class="pbody"><div><div class="ratings">${has4 || !has7 ? box(4) : ""}${has7 ? box(7) : ""}</div>${histBox(ev, histKeys)}</div>
+		<div class="plist"><div class="segs"><div class="seg" id="p-tabs">${has4 || !has7 ? `<button data-t="top4">Best 4K</button>` : ""}${has7 ? `<button data-t="top7">Best 7K</button>` : ""}<button data-t="recent">Latest</button>${hasPins ? `<button data-t="pinned">Pinned</button>` : ""}</div></div>
+		<div class="plays">${plays}</div>${p.id === ev.me && !hasPins ? `<div class="msg">Pin your favourite plays: open one (click it), then press Pin on your row. They show here under "Pinned".</div>` : ""}${mine ? `<div class="msg">Drag your pinned plays to put them in the order you like.</div>` : ""}${topTab ? srcLegend(pSrc === "all" ? "" : pSrc) : `<div class="srclegend"><span class="hint">Played in:</span><span><span class="src"></span>Etterna</span> <span><span class="src osu"></span>osu!</span> <span><span class="src quaver"></span>Quaver</span></div>`}</div></div>`;
+	c.querySelectorAll("[data-ck]").forEach(r => r.onclick = e => { if (e.target.closest("[data-rm]") || !r.dataset.ck || r.wasDragged) return; openChart(r.dataset.ck, r.dataset.title, ev); });
+	// your pinned plays: dragged into the order you like (kept on the server)
+	if (mine) {
+		const box = c.querySelector(".plays");
+		let dragging = null;
+		box.querySelectorAll("[draggable]").forEach(r => {
+			r.ondragstart = e => { dragging = r; r.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; };
+			r.ondragend = () => { r.classList.remove("dragging"); box.querySelectorAll(".over").forEach(x => x.classList.remove("over")); r.wasDragged = true; setTimeout(() => r.wasDragged = false, 50); };
+			r.ondragover = e => { if (!dragging || dragging === r) return; e.preventDefault(); e.dataTransfer.dropEffect = "move"; box.querySelectorAll(".over").forEach(x => x.classList.remove("over")); r.classList.add("over"); };
+			r.ondrop = e => {
+				e.preventDefault(); r.classList.remove("over");
+				if (!dragging || dragging === r) return;
+				const after = (e.clientY - r.getBoundingClientRect().top) > r.offsetHeight / 2;
+				r.parentNode.insertBefore(dragging, after ? r.nextSibling : r);
+				const ids = [...box.querySelectorAll("[draggable]")].map(x => +x.dataset.id);
+				p.pinned.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+				window.vh_reorderPins(ids);
+			};
+		});
+	}
+	c.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { if (confirm("Take this score off the rankings?")) window.vh_adminScore(+b.dataset.rm, true, p.id); });
+	if ($("p-ban")) $("p-ban").onclick = () => { if (confirm((p.banned ? "Unban " : "Ban ") + p.username + "?")) window.vh_adminBan(p.id, !p.banned); };
+	c.querySelectorAll("#p-tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === pTab); b.onclick = () => { pTab = b.dataset.t; drawPlayer(); }; });
+	c.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { pSrc = pSrc === b.dataset.src ? "all" : b.dataset.src; drawPlayer(); });
+	c.querySelectorAll("[data-hk]").forEach(b => b.onclick = () => openHistory(p, +b.dataset.hk, pShown.hist[+b.dataset.hk].points || []));
+	$("p-x").onclick = closePlayer;
+}
+// --- the big rating-over-time chart: dates along, rating up, zoom and pan, a day's best plays on hover ---
+let hv = null;
+function openHistory(player, k, pts) {
+	if (pts.length < 2) return;
+	hv = { player, k, pts, t: pts.map(p => new Date(p.day + "T12:00:00").getTime()), hover: -1, pinned: -1 };
+	hv.lo = hv.t[0] - 86400e3 * 0.5; hv.hi = hv.t[hv.t.length - 1] + 86400e3 * 0.5; hv.x0 = hv.lo; hv.x1 = hv.hi;
+	$("h-title").textContent = `${player.username} · ${k}K rating over time`;
+	$("hveil").classList.add("show");
+	drawHistory();
+}
+function closeHistory() { $("hveil").classList.remove("show"); hv = null; }
+$("h-x").onclick = closeHistory;
+$("hveil").onclick = e => { if (e.target === $("hveil")) closeHistory(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && hv) closeHistory(); });
+addEventListener("resize", () => { if (hv) drawHistory(); });
+function histGeom() {
+	const cv = $("hcanvas"), r = cv.getBoundingClientRect(), D = devicePixelRatio || 1;
+	if (cv.width !== Math.round(r.width * D) || cv.height !== Math.round(r.height * D)) { cv.width = Math.round(r.width * D); cv.height = Math.round(r.height * D); }
+	const L = 56, R = 18, T = 18, B = 36;
+	return { cv, r, D, L, R, T, B, W: r.width, H: r.height, px: t => L + (r.width - L - R) * (t - hv.x0) / (hv.x1 - hv.x0) };
+}
+function drawHistory() {
+	if (!hv) return;
+	const g = histGeom(), cx = g.cv.getContext("2d"), { L, R, T, B, W, H, D } = g;
+	cx.setTransform(D, 0, 0, D, 0, 0); cx.clearRect(0, 0, W, H);
+	// the ratings in view (with a little room)
+	const vis = hv.pts.filter((p, i) => hv.t[i] >= hv.x0 && hv.t[i] <= hv.x1);
+	const rs = (vis.length ? vis : hv.pts).map(p => p.rating);
+	let lo = Math.min(...rs), hi = Math.max(...rs); if (hi - lo < 0.5) { lo -= 0.25; hi += 0.25; } const pad = (hi - lo) * 0.12; lo -= pad; hi += pad;
+	const py = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+	// grid and the rating axis
+	cx.font = "11px Segoe UI, sans-serif"; cx.textBaseline = "middle";
+	const ystep = [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10].find(s => (hi - lo) / s <= 8) || 10;
+	for (let v = Math.ceil(lo / ystep) * ystep; v <= hi; v += ystep) {
+		const y = py(v); cx.strokeStyle = "rgba(255,255,255,.07)"; cx.beginPath(); cx.moveTo(L, y); cx.lineTo(W - R, y); cx.stroke();
+		cx.fillStyle = "#8f86a8"; cx.textAlign = "right"; cx.fillText(v.toFixed(ystep < 1 ? 2 : 0), L - 8, y);
+	}
+	cx.save(); cx.translate(14, (T + H - B) / 2); cx.rotate(-Math.PI / 2); cx.textAlign = "center"; cx.fillStyle = "#6f6886"; cx.font = "bold 10px Segoe UI, sans-serif"; cx.fillText("RATING (MSD)", 0, 0); cx.restore();
+	// the date axis: a tick every day, week, month or year as the span allows
+	const span = (hv.x1 - hv.x0) / 86400e3, day = 86400e3;
+	const ticks = [];
+	const add = (t, label) => { const x = g.px(t); if (x >= L && x <= W - R) ticks.push({ x, label }); };
+	if (span <= 20) { for (let t = Math.ceil(hv.x0 / day) * day; t <= hv.x1; t += day) { const d = new Date(t); add(t + 12 * 3600e3 - d.getTimezoneOffset() * 60e3 * 0, d.toLocaleDateString(undefined, { month: "short", day: "numeric" })); } }
+	else if (span <= 120) { const d = new Date(hv.x0); d.setHours(12, 0, 0, 0); while (d.getDay() !== 1) d.setDate(d.getDate() + 1); for (; d.getTime() <= hv.x1; d.setDate(d.getDate() + 7)) add(d.getTime(), d.toLocaleDateString(undefined, { month: "short", day: "numeric" })); }
+	else if (span <= 900) { const d = new Date(hv.x0); d.setDate(1); d.setHours(12, 0, 0, 0); if (d.getTime() < hv.x0) d.setMonth(d.getMonth() + 1); for (; d.getTime() <= hv.x1; d.setMonth(d.getMonth() + 1)) add(d.getTime(), d.toLocaleDateString(undefined, { month: "short", year: span > 400 ? "2-digit" : undefined })); }
+	else { const d = new Date(hv.x0); d.setMonth(0, 1); d.setHours(12, 0, 0, 0); if (d.getTime() < hv.x0) d.setFullYear(d.getFullYear() + 1); for (; d.getTime() <= hv.x1; d.setFullYear(d.getFullYear() + 1)) add(d.getTime(), String(d.getFullYear())); }
+	cx.textAlign = "center"; cx.textBaseline = "top";
+	let lastX = -1e9;
+	for (const t of ticks) {
+		cx.strokeStyle = "rgba(255,255,255,.05)"; cx.beginPath(); cx.moveTo(t.x, T); cx.lineTo(t.x, H - B); cx.stroke();
+		if (t.x - lastX > 54) { cx.fillStyle = "#8f86a8"; cx.font = "11px Segoe UI, sans-serif"; cx.fillText(t.label, t.x, H - B + 8); lastX = t.x; }
+	}
+	// the line, its shade and the points
+	const X = hv.t.map(g.px), Y = hv.pts.map(p => py(p.rating));
+	cx.save(); cx.beginPath(); cx.rect(L, T, W - L - R, H - T - B); cx.clip();
+	const grad = cx.createLinearGradient(0, T, 0, H - B); grad.addColorStop(0, "rgba(255,92,158,.3)"); grad.addColorStop(1, "rgba(255,92,158,0)");
+	cx.beginPath(); X.forEach((x, i) => i ? cx.lineTo(x, Y[i]) : cx.moveTo(x, Y[i])); cx.lineTo(X[X.length - 1], H - B); cx.lineTo(X[0], H - B); cx.closePath(); cx.fillStyle = grad; cx.fill();
+	cx.beginPath(); X.forEach((x, i) => i ? cx.lineTo(x, Y[i]) : cx.moveTo(x, Y[i])); cx.strokeStyle = "#ff5c9e"; cx.lineWidth = 2.2; cx.lineJoin = "round"; cx.stroke();
+	const dense = (W - L - R) / Math.max(1, vis.length) < 7;
+	X.forEach((x, i) => { if (x < L - 5 || x > W - R + 5) return; const on = i === hv.hover || i === hv.pinned; if (dense && !on) return; cx.beginPath(); cx.arc(x, Y[i], on ? 5 : 3, 0, Math.PI * 2); cx.fillStyle = on ? "#ff5c9e" : "#fff"; cx.fill(); if (on) { cx.strokeStyle = "#fff"; cx.lineWidth = 2; cx.stroke(); } });
+	const sel = hv.pinned >= 0 ? hv.pinned : hv.hover;
+	if (sel >= 0) { cx.strokeStyle = "rgba(255,255,255,.35)"; cx.lineWidth = 1; cx.setLineDash([4, 4]); cx.beginPath(); cx.moveTo(X[sel], T); cx.lineTo(X[sel], H - B); cx.stroke(); cx.setLineDash([]); }
+	cx.restore();
+	// the day's card
+	const tip = $("htip");
+	if (sel >= 0) {
+		const p = hv.pts[sel];
+		tip.innerHTML = `<div class="hd">${esc(fmtDate(p.day))}<span>${p.rating.toFixed(2)}</span></div><div class="n">${p.n || 0} play${p.n === 1 ? "" : "s"} that day${(p.plays || []).length ? " · the best:" : ""}</div>` +
+			(p.plays || []).map(q => `<div class="hp" data-ck="${esc(q.chart_key)}" data-title="${esc((q.song_title || "?") + (q.chart_name ? " · " + q.chart_name : "") + " · " + hv.k + "K")}"><div class="t">${srcDot(q.source)}${esc(q.song_title || "?")} <small>${esc(q.chart_name || "")} · ${(+q.rate).toFixed(2).replace(/0$/, "")}x</small></div><div class="r">${(+q.ssr_overall).toFixed(2)}<br><small>${(+q.wife).toFixed(2)}%</small></div></div>`).join("");
+		tip.className = "htip" + (hv.pinned >= 0 ? " pinned" : "");
+		tip.style.display = "block";
+		const tw = tip.offsetWidth, th = tip.offsetHeight;
+		let x = X[sel] + 14, y = Y[sel] - th / 2; if (x + tw > W - 6) x = X[sel] - tw - 14; y = Math.max(6, Math.min(H - th - 6, y));
+		tip.style.left = x + "px"; tip.style.top = y + "px";
+		tip.querySelectorAll("[data-ck]").forEach(r => r.onclick = () => { const back = pShown; closeHistory(); openChart(r.dataset.ck, r.dataset.title, back); });
+	} else tip.style.display = "none";
+}
+(() => {
+	const cv = $("hcanvas"); let drag = null;
+	const nearest = e => { const g = histGeom(); const mx = e.clientX - g.r.left; let best = -1, bd = 14; hv.t.forEach((t, i) => { const d = Math.abs(g.px(t) - mx); if (d < bd) { bd = d; best = i; } }); return best; };
+	cv.onmousemove = e => { if (!hv) return; if (drag) { const g = histGeom(); const dt = (e.clientX - drag.x) * (hv.x1 - hv.x0) / (g.W - g.L - g.R); let x0 = drag.x0 - dt, x1 = drag.x1 - dt; if (x0 < hv.lo) { x1 += hv.lo - x0; x0 = hv.lo; } if (x1 > hv.hi) { x0 -= x1 - hv.hi; x1 = hv.hi; } hv.x0 = x0; hv.x1 = x1; drag.moved = true; drawHistory(); return; } const h = nearest(e); if (h !== hv.hover) { hv.hover = h; drawHistory(); } };
+	cv.onmouseleave = () => { if (hv && hv.hover >= 0) { hv.hover = -1; drawHistory(); } };
+	cv.onmousedown = e => { if (!hv || e.button !== 0) return; drag = { x: e.clientX, x0: hv.x0, x1: hv.x1, moved: false }; };
+	addEventListener("mouseup", e => { if (!hv || !drag) return; const d = drag; drag = null; if (!d.moved) { const h = nearest(e); hv.pinned = hv.pinned === h ? -1 : h; drawHistory(); } });
+	cv.onwheel = e => { if (!hv) return; e.preventDefault(); const g = histGeom(); const mx = e.clientX - g.r.left; const f = e.deltaY < 0 ? 1 / 1.25 : 1.25; const at = hv.x0 + (hv.x1 - hv.x0) * (mx - g.L) / (g.W - g.L - g.R); let x0 = at - (at - hv.x0) * f, x1 = at + (hv.x1 - at) * f; const min = 2 * 86400e3; if (x1 - x0 < min) { x0 = at - min / 2; x1 = at + min / 2; } x0 = Math.max(hv.lo, x0); x1 = Math.min(hv.hi, x1); hv.x0 = x0; hv.x1 = x1; drawHistory(); };
+	cv.ondblclick = () => { if (!hv) return; hv.x0 = hv.lo; hv.x1 = hv.hi; hv.pinned = -1; drawHistory(); };
+})();
+// a player's rating over time (worked out by the launcher from their plays, day by day)
+function histBox(ev, k) {
+	const h = ev.hist && ev.hist[k];
+	if (!h) return "";
+	if (h.loading) return `<div class="hist"><div class="k">${k}K RATING OVER TIME</div><div class="msg">Loading...</div></div>`;
+	const pts = h.points || [];
+	if (pts.length < 2) return pts.length ? `<div class="hist"><div class="k">${k}K RATING OVER TIME</div><div class="msg">All on ${fmtDate(pts[0].day)}: ${pts[0].rating.toFixed(2)}</div></div>` : "";
+	const W = 260, H = 90, lo = Math.min(...pts.map(p => p.rating)), hi = Math.max(...pts.map(p => p.rating));
+	const t0 = new Date(pts[0].day).getTime(), t1 = new Date(pts[pts.length - 1].day).getTime();
+	const x = p => 4 + (W - 8) * (t1 > t0 ? (new Date(p.day).getTime() - t0) / (t1 - t0) : 0);
+	const y = p => 8 + (H - 22) * (hi > lo ? 1 - (p.rating - lo) / (hi - lo) : 0.5);
+	const line = pts.map((p, i) => `${i ? "L" : "M"}${x(p).toFixed(1)},${y(p).toFixed(1)}`).join("");
+	const last = pts[pts.length - 1];
+	return `<div class="hist"><div class="k">${k}K RATING OVER TIME<button class="hexp" data-hk="${k}" title="Expand">⤢</button></div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+		<defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5c9e" stop-opacity=".35"/><stop offset="1" stop-color="#ff5c9e" stop-opacity="0"/></linearGradient></defs>
+		<path d="${line}L${x(last).toFixed(1)},${H - 14}L4,${H - 14}Z" fill="url(#hg)"/>
+		<path d="${line}" fill="none" stroke="#ff5c9e" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+		${pts.map(p => `<circle cx="${x(p).toFixed(1)}" cy="${y(p).toFixed(1)}" r="2.2" fill="#fff"><title>${fmtDate(p.day)}: ${p.rating.toFixed(2)}</title></circle>`).join("")}
+		<text x="4" y="${H - 2}" fill="#8f86a8" font-size="9">${esc(fmtDate(pts[0].day))}</text><text x="${W - 4}" y="${H - 2}" fill="#8f86a8" font-size="9" text-anchor="end">${esc(fmtDate(last.day))}</text>
+	</svg></div>`;
+}
+// one chart's top: each player's best on it (opened from a play)
+let chartBack = null;
+function openChart(ck, title, back) {
+	chartBack = back || null;
+	pShown = { id: "#chart:" + ck, title };
+	$("pcard").innerHTML = `<div class="ph"><div><b>${esc(title || "Chart")}</b><small>Loading...</small></div><button class="x" id="p-x">✕</button></div>`;
+	$("p-x").onclick = closePlayer;
+	$("pveil").classList.add("show");
+	window.vh_chart(ck, title || "");
+}
+function drawChart(ev) {
+	const c = $("pcard");
+	const pins = new Set((ev.pins || []).map(Number));
+	const rows = (ev.rows || []).map(s => `<div class="play clickable" data-u="${esc(s.user_id)}">
+		<div class="t">${srcDot(s.source)}#${s.place} ${esc(s.username)}${ev.me && s.user_id === ev.me && s.score_id ? ` <button class="btn small ${pins.has(Number(s.score_id)) ? "" : "ghost"}" data-pin="${s.score_id}" data-on="${pins.has(Number(s.score_id)) ? 1 : 0}">${pins.has(Number(s.score_id)) ? "Pinned ✓" : "Pin"}</button>` : ""} <small>${(+s.rate).toFixed(2).replace(/0$/, "")}x · ${s.marvelous}/${s.perfect}/${s.great}/${s.good}/${s.bad}/${s.miss} · ${s.max_combo}x · ${fmtDate(s.played_at)}</small></div>
+		<div class="s">${(+s.ssr_overall).toFixed(2)}</div><div class="d"></div><div class="a"><b>${(+s.wife).toFixed(2)}%</b></div></div>`).join("")
+		|| `<div class="empty">${ev.error ? esc(ev.error) : "No plays on this chart yet."}</div>`;
+	c.innerHTML = `<div class="ph">${chartBack ? `<button class="btn small ghost" id="p-back">‹ Back</button>` : ""}<div><b>${esc(ev.title || "Chart")}</b><small>Each player's best on this chart (any rate), by SSR. Click one to open the player.</small></div><button class="x" id="p-x">✕</button></div><div class="plays">${rows}</div>`;
+	$("p-x").onclick = closePlayer;
+	if ($("p-back")) $("p-back").onclick = () => { const back = chartBack; chartBack = null; if (back.stale) openPlayer(back.player.id); else { pShown = back; drawPlayer(); } };
+	c.querySelectorAll("[data-pin]").forEach(b => b.onclick = e => { e.stopPropagation(); b.disabled = true; window.vh_pin(+b.dataset.pin, b.dataset.on !== "1"); });
+	c.querySelectorAll("[data-u]").forEach(r => r.onclick = e => { if (e.target.closest("[data-pin]")) return; openPlayer(r.dataset.u); });
+}
+// what was played lately, by everyone
+let feedMode = "latest", feedKeys = 0;
+function loadActivity() { if (feedMode === "daily") { window.vh_daily(feedKeys || 4); return; } if (feedMode === "potd") window.vh_playsOfTheDay(feedKeys); else if (feedMode === "best") window.vh_bestPlays(feedKeys); else window.vh_activity(feedKeys); }
+// a play of the feed as a row. mark: "best" (the day's best, a gold star), "top" (the best of all,
+// a pink one); rank: its number on a top
+function feedRow(s, mark, when, rank) {
+	return `<div class="play clickable ${mark || ""}" data-ck="${esc(s.chart_key)}" data-title="${esc((s.song_title || "?") + (s.chart_name ? " · " + s.chart_name : "") + " · " + s.keys + "K")}">
+		<div class="t">${rank ? `<span class="rank">${rank}</span>` : ""}${srcDot(s.source)}<span class="who-link" data-u="${esc(s.user_id)}">${esc(s.profiles.username)}</span> <small>${esc(s.song_title || "?")}${s.chart_name ? " · " + esc(s.chart_name) : ""} · ${s.keys}K · ${(+s.rate).toFixed(2).replace(/0$/, "")}x</small></div>
+		<div class="s">${mark ? `<span class="star ${mark}" title="${mark === "top" ? "The best play of the day of all" : "Best play of the day"}">★</span> ` : ""}${(+s.ssr_overall).toFixed(2)}</div><div class="d">${when}</div><div class="a"><b>${(+s.wife).toFixed(2)}%</b></div></div>`;
+}
+// the day a play was made, by this PC's clock ("2026-10-15"), and what to call it
+function dayOf(s) { const t = new Date(s.played_at || ""); if (isNaN(t)) return ""; return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0"); }
+function dayName(d) { if (!d) return ""; const t = new Date(d + "T12:00:00"); const today = new Date(); today.setHours(12, 0, 0, 0); const diff = Math.round((today - t) / 86400000); return diff === 0 ? "Today" : diff === 1 ? "Yesterday" : fmtDate(d); }
+// the top plays of everyone (one per player and chart)
+function drawBestPlays(ev) {
+	if (feedMode !== "best" || (ev.keys ?? 0) !== feedKeys) return;
+	const seen = {}, top = [];
+	for (const s of ev.rows || []) { const k = s.user_id + "|" + s.chart_key; if (seen[k]) continue; seen[k] = true; top.push(s); if (top.length >= 50) break; }
+	showFeed(top.map((s, i) => ({ head: "", html: feedRow(s, i === 0 ? "top" : "", fmtDate(dayOf(s)), i + 1) })), ev.error ? esc(ev.error) : "Nothing played yet.");
+}
+function wireFeed() {
+	$("feedbody").querySelectorAll("[data-u]").forEach(n => n.onclick = e => { e.stopPropagation(); openPlayer(n.dataset.u); });
+	$("feedbody").querySelectorAll("[data-ck]").forEach(r => r.onclick = () => openChart(r.dataset.ck, r.dataset.title));
+}
+// --- the daily challenge (a feed tab): today's chart, its board for the day, the last days' winners ---
+function drawDaily(ev) {
+	if (feedMode !== "daily" || ev.keys !== (feedKeys || 4)) return;
+	const b = $("feedbody"); $("feedpager").style.display = "none";
+	if (ev.error) { b.innerHTML = `<div class="empty">${esc(ev.error)}</div>`; return; }
+	const d = ev.daily || {}, c = d.chart, K = ev.keys;
+	if (!c) { b.innerHTML = `<div class="empty">No ${K}K chart to pick from yet: a daily needs charts people have played at 1.0x.</div>`; return; }
+	const left = d.left || 0;
+	const me = d.me, board = d.board || [], mine = board.find(r => r.user_id === me);
+	const title = esc(c.song_title || "?") + (c.chart_name ? " · " + esc(c.chart_name) : "") + " · " + K + "K";
+	b.innerHTML = `<div class="era" style="margin:14px 0 8px">Today's ${K}K chart · ${Math.floor(left / 3600)}h ${Math.floor(left % 3600 / 60)}m left${feedKeys === 0 ? " · pick 4K or 7K beside the tabs" : ""}</div>
+		<div class="play"><span class="t"><b>${esc(c.song_title || "?")}</b> <small>${esc(c.song_artist || "")}${c.chart_name ? " · " + esc(c.chart_name) : ""} · ${K}K · MSD ${(+c.msd).toFixed(2)} · played by ${c.players} player${c.players === 1 ? "" : "s"} all-time</small></span>
+		<span class="s"><button class="btn small" id="daily-play">Play it</button></span>
+		<span class="d">${mine ? `You're #${mine.place} today with ${(+mine.ssr_overall).toFixed(2)}` : "No play of yours today yet"} · ${board.length} player${board.length === 1 ? "" : "s"} so far today</span>
+		<span class="a"><a class="dim" href="#" id="daily-chart">All-time board ›</a></span></div>
+		<div class="era" style="margin:14px 0 8px">Today's board</div>` +
+		(board.slice(0, 10).map(r => `<div class="play ${r.user_id === me ? "best" : ""}" style="cursor:pointer" data-u="${esc(r.user_id)}"><span class="t"><span class="rank">${r.place}</span>${srcDot(r.source)}<b>${esc(r.username)}</b> <small>${(+r.rate).toFixed(2).replace(/0$/, "")}x · ${r.max_combo}x combo</small></span><span class="s">${(+r.ssr_overall).toFixed(2)}</span><span class="d">${ago(r.played_at)}</span><span class="a"><b>${(+r.wife).toFixed(2)}%</b></span></div>`).join("") || `<div class="empty">Nobody has played it today. Be the first!</div>`) +
+		`<div class="era" style="margin:14px 0 8px">The last days</div>` +
+		((d.history || []).slice(1).map(h => `<div class="adrow"><div class="t">${fmtDate(h.day)} <small>· ${esc(h.song_title || "?")}${h.chart_name ? " · " + esc(h.chart_name) : ""} · MSD ${(+h.msd).toFixed(2)}</small></div><div class="acts dim">${h.winner ? `<span class="star">★</span> ${esc(h.winner)} ${(+h.winner_ssr).toFixed(2)} · ${h.players} player${h.players === 1 ? "" : "s"}` : "nobody played it"}</div></div>`).join("") || `<div class="empty">The first day.</div>`);
+	$("daily-play").onclick = async () => { const running = await window.vh_dailyPlay(c.chart_key); toast(running ? "Song select will jump to it (open it, or go back to it)" : "Press Play: song select opens on today's chart"); };
+	$("daily-chart").onclick = e => { e.preventDefault(); openChart(c.chart_key, title); };
+	b.querySelectorAll("[data-u]").forEach(r => r.onclick = () => openPlayer(r.dataset.u));
+}
+// the feed in pages of ten: each item is { head, html } (head: the day heading over it, shown when
+// it changes from the item before on the page)
+const FEED_PAGE = 10;
+let feedItems = [], feedPage = 1;
+function showFeed(items, empty) {
+	feedItems = items; feedPage = 1;
+	if (!items.length) { $("feedbody").innerHTML = `<div class="empty">${empty}</div>`; $("feedpager").style.display = "none"; return; }
+	drawFeedPage();
+}
+function drawFeedPage() {
+	const n = Math.max(1, Math.ceil(feedItems.length / FEED_PAGE));
+	feedPage = Math.max(1, Math.min(n, feedPage));
+	let last = null, out = "";
+	for (const it of feedItems.slice((feedPage - 1) * FEED_PAGE, feedPage * FEED_PAGE)) {
+		if (it.head && it.head !== last) out += `<div class="era" style="margin:${last === null ? 14 : 22}px 0 8px">${it.head}</div>`;
+		last = it.head; out += it.html;
+	}
+	$("feedbody").innerHTML = out;
+	wireFeed();
+	$("feedpager").style.display = n > 1 ? "" : "none";
+	$("pg-in").value = feedPage; $("pg-in").max = n; $("pg-n").textContent = n;
+	$("pg-prev").disabled = feedPage <= 1; $("pg-next").disabled = feedPage >= n;
+}
+$("pg-prev").onclick = () => { feedPage--; drawFeedPage(); };
+$("pg-next").onclick = () => { feedPage++; drawFeedPage(); };
+$("pg-in").onchange = () => { feedPage = parseInt($("pg-in").value, 10) || 1; drawFeedPage(); };
+$("pg-in").onkeydown = e => { if (e.key === "Enter") { $("pg-in").onchange(); $("pg-in").blur(); } };
+// every day's best play, newest first (each one starred)
+function drawPlaysOfTheDay(ev) {
+	if (feedMode !== "potd" || (ev.keys ?? 0) !== feedKeys) return;
+	// (the best of them all in pink)
+	let top = null; for (const s of ev.rows || []) if (!top || s.ssr_overall > top.ssr_overall) top = s;
+	showFeed((ev.rows || []).map(s => ({ head: dayName(dayOf(s)), html: feedRow(s, s === top ? "top" : "best", ago(s.played_at)) })), ev.error ? esc(ev.error) : "Nothing played yet.");
+}
+function drawActivity(ev) {
+	if (feedMode !== "latest" || (ev.keys ?? 0) !== feedKeys) return;
+	// the best play (by SSR) of each day gets a star; days are headed
+	const byDay = {}; (ev.rows || []).forEach(s => { const d = dayOf(s); if (!byDay[d] || s.ssr_overall > byDay[d].ssr_overall) byDay[d] = s; });
+	// each day's best play goes first; today's stands on its own as the play of the day
+	const list = (ev.rows || []).slice().sort((a, b) => { const da = dayOf(a), db = dayOf(b); if (da !== db) return da < db ? 1 : -1; if (byDay[da] === a) return -1; if (byDay[db] === b) return 1; return 0; });
+	showFeed(list.map(s => { const d = dayOf(s); const best = byDay[d] === s; const name = dayName(d);
+		return { head: best && name === "Today" ? "Play of the day" : name, html: feedRow(s, best ? "best" : "", ago(s.played_at)) }; }),
+		ev.error ? esc(ev.error) : "Nothing played yet.");
+}
+// "Report a problem": the logs in a zip on the desktop (report.go)
+function openReport() {
+	pShown = { id: "#report" };
+	const c = $("pcard");
+	c.innerHTML = `<div class="ph"><div><b>Report a problem</b><small>VSRG Hub puts what's needed to see what happened (its logs and the game's) in a zip on your desktop. Send that zip with your message.</small></div><button class="x" id="p-x">✕</button></div>
+		<label class="field"><span>What happened? What were you doing just before?</span><textarea class="in" id="r-text" placeholder="e.g. I picked a song, pressed Enter and the game stayed on the options message"></textarea></label>
+		<div class="formacts"><button class="btn primary" id="r-go">Make the zip</button></div><div class="msg" id="r-msg"></div>`;
+	$("p-x").onclick = closePlayer;
+	$("pveil").classList.add("show");
+	$("r-go").onclick = () => { $("r-go").disabled = true; $("r-msg").className = "msg"; $("r-msg").textContent = "Making the zip..."; window.vh_report($("r-text").value); };
+}
+window.onReport = r => {
+	if (!pShown || pShown.id !== "#report") { if (r.path) toast("Report saved on your desktop"); return; }
+	const m = $("r-msg"); if (!m) return;
+	$("r-go").disabled = false;
+	if (r.error) { m.className = "msg err"; m.textContent = "The zip couldn't be made: " + r.error; return; }
+	m.className = "msg ok"; m.textContent = "Saved on your desktop: " + r.path.split(/[\\/]/).pop() + " (it's selected in the window that opened). Send it to whoever helps you with VSRG Hub.";
+};
+// admins: the scores worth a look (unverified, very high accuracy, taken off)
+function openSuspicious() {
+	pShown = { id: "#sus" };
+	$("pcard").innerHTML = `<div class="ph"><div><b>Scores to check</b><small>Loading...</small></div><button class="x" id="p-x">✕</button></div>`;
+	$("p-x").onclick = closePlayer;
+	$("pveil").classList.add("show");
+	window.vh_adminSuspicious();
+}
+function drawSuspicious(ev) {
+	const c = $("pcard");
+	const rows = (ev.rows || []).map(s => `<div class="play clickable" data-u="${esc(s.user_id)}">
+		<div class="t">${esc(s.username)} <small>${esc(s.song_title || "?")}${s.chart_name ? " · " + esc(s.chart_name) : ""} · ${s.keys}K · ${(+s.rate).toFixed(2).replace(/0$/, "")}x</small></div>
+		<div class="s">${(+s.wife).toFixed(2)}%</div>
+		<div class="d">${s.valid ? "" : "taken off · "}${s.verified ? "verified" : (s.has_replay ? "replay doesn't match" : "no replay")} · SSR ${(+s.ssr_overall).toFixed(2)} · ${fmtDate(s.submitted_at)}</div><div></div></div>`).join("")
+		|| `<div class="empty">${ev.error ? esc(ev.error) : "Nothing to check."}</div>`;
+	c.innerHTML = `<div class="ph"><div><b>Scores to check</b><small>Not verified, 99.7% and up, or taken off. Click one to open the player.</small></div><button class="x" id="p-x">✕</button></div><div class="plays">${rows}</div>`;
+	$("p-x").onclick = closePlayer;
+	c.querySelectorAll("[data-u]").forEach(r => r.onclick = () => openPlayer(r.dataset.u));
+}
+// --- the Admin page: numbers, the message of the day, the players (ban, admin, rename, wipe, recalc), a chart off ---
+let adm = { tab: "players", stats: null, players: [], q: "", motd: "" };
+function openAdmin() {
+	if (acct && acct.serverBehind !== undefined) { toast(`The server needs v2.sql run again (it has update ${acct.serverBehind}, the admin tools need ${acct.serverWant})`, "err"); return; }
+	pShown = { id: "#admin" };
+	$("pveil").classList.add("show");
+	drawAdmin();
+	window.vh_admin("admin_stats", {});
+	window.vh_admin("admin_players", { q: adm.q, max_rows: 50 });
+}
+function drawAdmin() {
+	if (!pShown || pShown.id !== "#admin") return;
+	const c = $("pcard");
+	const tabs = [["players", "Players"], ["stats", "Overview"], ["motd", "Message"], ["chart", "Charts"], ["dupes", "Duplicates"]];
+	let body = "";
+	if (adm.tab === "stats") {
+		const s = adm.stats;
+		body = !s ? `<div class="empty">Loading...</div>` : `<div class="adm">
+			${[["players", "Players"], ["new_players_7d", "New this week"], ["players_7d", "Played this week"], ["banned", "Banned"], ["scores", "Scores"], ["scores_today", "Scores today"], ["scores_7d", "Scores this week"], ["charts", "Charts played"], ["scores_unverified", "Unverified"], ["scores_removed", "Taken off"], ["admins", "Admins"]].map(([k, l]) => `<div class="st"><b>${(+s[k] || 0).toLocaleString()}</b><span>${l}</span></div>`).join("")}
+			<div class="st"><b style="font-size:14px">${Object.entries(s.by_source || {}).map(([k, v]) => esc(k) + " " + (+v).toLocaleString()).join(" · ") || "—"}</b><span>By game</span></div></div>`;
+	} else if (adm.tab === "motd") {
+		body = `<div class="dim" style="margin:8px 0">Shown to everyone on the Online page (empty: nothing shown).</div><textarea class="in" id="ad-motd" maxlength="400">${esc(acct && acct.motd || "")}</textarea><div class="formacts"><button class="btn small" id="ad-motd-save">Save</button></div>`;
+	} else if (adm.tab === "dupes") {
+		const d = adm.dupes;
+		body = `<div class="dim" style="margin:8px 0">The same play sent from two games (same player, chart and rate, played within 3 seconds): new ones are refused now; these got in before. Clean up keeps the verified one (then the Etterna one) and takes the other off the rankings.</div>` +
+			(!d ? `<div class="empty">Loading...</div>` : d.length ? d.map(x => `<div class="adrow"><div class="t">${esc(x.username)} <small>· ${esc(x.song_title || "?")}${x.chart_name ? " · " + esc(x.chart_name) : ""} · ${x.keys}K · ${(+x.rate).toFixed(2).replace(/0$/, "")}x</small></div><div class="acts dim">keep ${esc(x.kept_source)} · drop ${esc(x.dropped_source)}</div></div>`).join("") + `<div class="formacts"><button class="btn small" id="ad-dupes-fix">Clean up (${d.length})</button></div>` : `<div class="empty">No duplicates.</div>`);
+	} else if (adm.tab === "chart") {
+		body = `<div class="dim" style="margin:8px 0">Take every score on a chart off the rankings (a broken or duplicate chart), or put them back. The chart key is on a chart's page (click a play, then copy it from the title bar) or in the game's log.</div>
+			<label class="field"><span>Chart key</span><input class="in" id="ad-ck" placeholder="X…" autocomplete="off"></label>
+			<div class="formacts"><button class="btn small" id="ad-ck-off">Take off</button><button class="btn small ghost" id="ad-ck-on">Put back</button></div>`;
+	} else {
+		body = `<input class="in" id="ad-q" placeholder="Find a player" value="${esc(adm.q)}" autocomplete="off" style="margin:8px 0">` + (adm.players.map(p => `<div class="adrow ${p.banned ? "banned" : ""} ${p.is_admin ? "admin" : ""}">
+			<div class="t">${esc(p.username)} <small>· ${(+p.scores).toLocaleString()} scores${p.rating4 ? " · 4K " + (+p.rating4).toFixed(2) : ""}${p.rating7 ? " · 7K " + (+p.rating7).toFixed(2) : ""} · joined ${fmtDate(p.created_at)}${p.last_play ? " · last play " + ago(p.last_play) : ""}</small></div>
+			<div class="acts"><button class="btn small ghost" data-a="open" data-id="${p.id}">Open</button>
+				<button class="btn small ghost" data-a="rename" data-id="${p.id}" data-n="${esc(p.username)}">Rename</button>
+				<button class="btn small ghost" data-a="recalc" data-id="${p.id}">Recalc</button>
+				<button class="btn small ghost" data-a="avatar" data-id="${p.id}">Clear picture</button>
+				<button class="btn small ghost" data-a="wipe" data-id="${p.id}" data-n="${esc(p.username)}">Wipe scores</button>
+				<button class="btn small ghost" data-a="unwipe" data-id="${p.id}">Restore scores</button>
+				${p.id !== (acct && acct.userId) ? `<button class="btn small ghost" data-a="admin" data-id="${p.id}" data-on="${p.is_admin ? 0 : 1}">${p.is_admin ? "Remove admin" : "Make admin"}</button>
+				<button class="btn small ${p.banned ? "" : "ghost"}" data-a="ban" data-id="${p.id}" data-on="${p.banned ? 0 : 1}">${p.banned ? "Unban" : "Ban"}</button>` : ""}</div></div>`).join("") || `<div class="empty">No players found.</div>`);
+	}
+	c.innerHTML = `<div class="ph"><div><b>Admin tools</b><small>Everything here is done on the server at once. Taking off and banning can be undone.</small></div><button class="x" id="p-x">✕</button></div>
+		<div class="seg" style="margin:10px 0">${tabs.map(([k, l]) => `<button class="${adm.tab === k ? "on" : ""}" data-t="${k}">${l}</button>`).join("")}</div><div class="plays">${body}</div>`;
+	$("p-x").onclick = closePlayer;
+	c.querySelectorAll("[data-t]").forEach(b => b.onclick = () => { adm.tab = b.dataset.t; drawAdmin(); if (adm.tab === "dupes" && !adm.dupes) window.vh_admin("admin_duplicates", { fix: false }); });
+	if ($("ad-dupes-fix")) $("ad-dupes-fix").onclick = () => { if (confirm("Take the duplicate scores off the rankings?")) { adm.dupes = null; drawAdmin(); call("admin_duplicates", { fix: true }, n => { toast((n || []).length + " duplicates cleaned up"); adm.dupes = null; window.vh_admin("admin_duplicates", { fix: false }); }); } };
+	const call = (fn, args, after) => { window.vh_admin(fn, args); adm.after = after; };
+	const reload = () => window.vh_admin("admin_players", { q: adm.q, max_rows: 50 });
+	if ($("ad-q")) { $("ad-q").oninput = () => { adm.q = $("ad-q").value; clearTimeout(adm._t); adm._t = setTimeout(reload, 300); }; $("ad-q").focus(); $("ad-q").setSelectionRange(adm.q.length, adm.q.length); }
+	if ($("ad-motd-save")) $("ad-motd-save").onclick = () => call("admin_set_motd", { text_: $("ad-motd").value.trim() }, () => { acct.motd = $("ad-motd") ? $("ad-motd").value.trim() : ""; drawAccount(); toast("Message saved"); });
+	if ($("ad-ck-off")) { $("ad-ck-off").onclick = () => { const k = $("ad-ck").value.trim(); if (k && confirm("Take every score on " + k + " off the rankings?")) call("admin_remove_chart", { chart: k, remove: true }, n => toast(n + " scores taken off")); };
+		$("ad-ck-on").onclick = () => { const k = $("ad-ck").value.trim(); if (k) call("admin_remove_chart", { chart: k, remove: false }, n => toast(n + " scores put back")); }; }
+	c.querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
+		const id = b.dataset.id, a = b.dataset.a, on = b.dataset.on === "1";
+		if (a === "open") { openPlayer(id); return; }
+		if (a === "rename") { const n = prompt("New name for " + b.dataset.n + ":", b.dataset.n); if (n && n.trim() !== b.dataset.n) call("admin_rename", { player: id, new_name: n.trim() }, () => { toast("Renamed"); reload(); }); return; }
+		if (a === "recalc") { call("admin_recalc", { player: id }, () => { toast("Ratings worked out again"); reload(); }); return; }
+		if (a === "avatar") { if (confirm("Remove this player's picture?")) call("admin_clear_avatar", { player: id }, () => toast("Picture removed")); return; }
+		if (a === "wipe") { if (confirm("Take ALL of " + b.dataset.n + "'s scores off the rankings? (They're kept; Restore scores puts them back.)")) call("admin_wipe_player", { player: id, remove: true }, n => { toast(n + " scores taken off"); reload(); }); return; }
+		if (a === "unwipe") { call("admin_wipe_player", { player: id, remove: false }, n => { toast(n + " scores put back"); reload(); }); return; }
+		if (a === "admin") { if (confirm((on ? "Make this player an admin?" : "Remove this player's admin rights?"))) call("admin_set_admin", { player: id, make: on }, () => { toast(on ? "Now an admin" : "No longer an admin"); reload(); }); return; }
+		if (a === "ban") { if (confirm(on ? "Ban this player? Their scores leave the rankings." : "Unban this player?")) call("admin_ban", { player: id, ban: on }, () => { toast(on ? "Banned" : "Unbanned"); reload(); }); return; }
+	});
+}
+function onAdmin(ev) {
+	if (ev.error) { toast(ev.error, "err"); adm.after = null; return; }
+	if (ev.fn === "admin_stats") { adm.stats = ev.data; drawAdmin(); return; }
+	if (ev.fn === "admin_players") { adm.players = ev.data || []; drawAdmin(); return; }
+	if (ev.fn === "admin_duplicates" && !(ev.args && ev.args.fix)) { adm.dupes = ev.data || []; drawAdmin(); return; }
+	if (adm.after) { const f = adm.after; adm.after = null; f(ev.data); }
+}
+window.onOnline = ev => {
+	if (ev.kind === "admin") { onAdmin(ev); return; }
+	if (ev.kind === "toast") { toast(ev.error || ev.text, ev.error || ev.bad ? "err" : ""); return; }
+	if (ev.kind === "activity") { drawActivity(ev); return; }
+	if (ev.kind === "potd") { drawPlaysOfTheDay(ev); return; }
+	if (ev.kind === "daily") { drawDaily(ev); return; }
+	if (ev.kind === "best") { drawBestPlays(ev); return; }
+	if (ev.kind === "playerTop") { if (pShown && pShown.player && pShown.player.id === ev.id) { pShown.bySrc = pShown.bySrc || {}; pShown.bySrc[ev.keys + ":" + ev.source] = ev; drawPlayer(); } return; }
+	if (ev.kind === "chart") { if (pShown && pShown.id === "#chart:" + ev.chart) { pShown.ev = ev; drawChart(ev); } return; }
+	if (ev.kind === "pinned") {
+		toast(ev.pin ? "Pinned" : "Unpinned");
+		if (pShown && pShown.ev && pShown.id.startsWith("#chart:")) {
+			const pins = new Set((pShown.ev.pins || []).map(Number)); ev.pin ? pins.add(Number(ev.id)) : pins.delete(Number(ev.id));
+			pShown.ev.pins = [...pins]; drawChart(pShown.ev);
+		}
+		if (chartBack && chartBack.player) chartBack.stale = true;
+		return;
+	}
+	if (ev.kind === "history") {
+		// (also kept for a profile left open under a chart's top)
+		for (const p of [pShown, chartBack]) if (p && p.player && p.player.id === ev.id) { p.hist = p.hist || {}; p.hist[ev.keys] = ev; }
+		if (pShown && pShown.player && pShown.player.id === ev.id) drawPlayer();
+		return;
+	}
+	if (ev.kind === "picture") { toast("Picture changed"); loadRankings(); loadActivity(); return; }
+	if (ev.kind === "notices") { notices = ev.list || []; (ev.fresh || []).forEach(n => toast(n.text)); drawAccount(); return; }
+	if (ev.kind === "osu") { osuState = ev.report ? { report: ev.report } : ev.error ? { report: { error: ev.error } } : { progress: ev.progress }; drawAccount(); return; }
+	if (ev.kind === "suspicious") { if (pShown && pShown.id === "#sus") drawSuspicious(ev); return; }
+	if (ev.kind === "player") { if (pShown && pShown.id === ev.id) { pShown = ev; drawPlayer(); } return; }
+	if (ev.kind === "account") { acct = ev; acctMsg = ""; drawAccount(); return; }
+	if (ev.kind === "error") { acctMsg = ev.error; acctMsgKind = "err"; drawAccount(); return; }
+	if (ev.kind === "confirm") { acctMode = "in"; acctMsg = "Account made. We sent a link to " + ev.email + ": open it to confirm your e-mail, then sign in here."; acctMsgKind = "ok"; drawAccount(); return; }
+	if (ev.kind === "reset") { acctMsg = "If there's an account with " + ev.email + ", a mail with a link to set a new password is on its way."; acctMsgKind = "ok"; drawAccount(); return; }
+	if (ev.kind === "rankings") {
+		if (ev.keys !== rkKeys || ev.skill !== rkSkill) return;
+		if (ev.error) { $("rkbody").innerHTML = `<div class="empty">${esc(ev.error)}</div>`; return; }
+		rkRows = ev.rows || []; rkMe = ev.me;
+		drawRankings();
+	}
+	if (ev.kind === "players") { if ($("rkfind").value.trim().toLowerCase() === ev.q) { rkFound = ev.rows || []; drawRankings(); } return; }
+};
+document.addEventListener("keydown", e => { if (e.key === "Enter" && !$("veil").classList.contains("show") && document.querySelector("#play-page.on")) $("playbtn").click(); });
+document.addEventListener("contextmenu", e => e.preventDefault());
+refresh().then(() => {
+	try { if (localStorage.getItem("seen") !== S.version) $("newsbadge").classList.add("show"); } catch (e) {}
+	if (needSetup()) { drawSetup(); $("veil").classList.add("show"); }
+	window.vh_check();
+	window.vh_account(); loadRankings(); loadActivity(); window.vh_notices();
+});
+
+// --- the stage on the Play page: Etterna's 4K arrows (left, down, up, right) falling onto their
+// receptors, which light up as they're hit and glow while a hold runs into them ---
+const cv = $("lanes"), cx = cv.getContext("2d");
+let W, H, D, notes = [];
+function size() { D = devicePixelRatio; const r = cv.getBoundingClientRect(); W = cv.width = Math.max(1, r.width * D); H = cv.height = Math.max(1, r.height * D); }
+addEventListener("resize", size); new ResizeObserver(size).observe(cv); size();
+const LANES = 4, TURN = [Math.PI / 2, 0, Math.PI, -Math.PI / 2];
+const ARROW = new Path2D();
+[[0, .47], [.47, 0], [.29, -.15], [.115, .03], [.115, -.47], [-.115, -.47], [-.115, .03], [-.29, -.15], [-.47, 0]]
+	.forEach(([x, y], k) => k ? ARROW.lineTo(x, y) : ARROW.moveTo(x, y));
+ARROW.closePath();
+const COL = [["#ff5c9e", "#ffb3d2"], ["#8a4dff", "#c9a8ff"], ["#8a4dff", "#c9a8ff"], ["#ff5c9e", "#ffb3d2"]];
+const flash = [0, 0, 0, 0], held = [false, false, false, false];
+// playing it: the keyboard arrows hit the notes (left, down, up, right); without a key for a while
+// the stage plays itself again
+const KEYS = { ArrowLeft: 0, ArrowDown: 1, ArrowUp: 2, ArrowRight: 3 };
+const down = [false, false, false, false];
+let lastKey = -1e9, combo = 0, judge = null, judgeAt = 0, misses = 0, manual = false;
+// (once you've pressed a key the stage is yours until the Play page is opened again from another
+// page: handing it back to itself mid-play left notes stuck under the receptors)
+const playing = () => manual;
+function keyLane(i, t) {
+	// the nearest note still to hit in this lane, within the window (as Etterna's judge 4: 180 ms)
+	const ry = receptorY(), win = 0.4 * D * 180;
+	let best = null, bd = Infinity;
+	for (const n of notes) { if (n.l !== i || n.hit) continue; const d = Math.abs(n.y - ry); if (d < bd) { bd = d; best = n; } }
+	if (!best || bd > win) return;
+	best.hit = true;
+	const ms = bd / (0.4 * D);
+	judge = ms <= 22.5 ? ["Marvelous", "#9be8ff"] : ms <= 45 ? ["Perfect", "#ffe27a"] : ms <= 90 ? ["Great", "#7affa0"] : ms <= 135 ? ["Good", "#8fb0ff"] : ["Bad", "#ff9ad0"];
+	judgeAt = t; combo++; flash[i] = 1;
+	if (!best.len) best.done = true; else best.holding = true;
+}
+document.addEventListener("keydown", e => {
+	if (!(e.key in KEYS) || e.repeat) return;
+	if (!document.querySelector("#play-page.on") || $("veil").classList.contains("show") || $("pveil").classList.contains("show")) return;
+	e.preventDefault();
+	const i = KEYS[e.key], now = performance.now();
+	if (!manual) { manual = true; combo = 0; misses = 0; notes.forEach(n => { n.hit = false; }); }
+	lastKey = now; down[i] = true; keyLane(i, now);
+});
+document.addEventListener("keyup", e => { if (e.key in KEYS) down[KEYS[e.key]] = false; });
+function field() { const w = Math.min(W * 0.84, 250 * D); return { x0: (W - w) / 2, w }; }
+function lane(i) { const f = field(); return { x: f.x0 + i * f.w / LANES, w: f.w / LANES }; }
+function arrowSize() { return Math.min(lane(0).w * 0.74, 54 * D); }
+function receptorY() { return H - 70 * D; }
+function spawn() {
+	const s = arrowSize(), gap = s * 0.95, top = [Infinity, Infinity, Infinity, Infinity];
+	for (const n of notes) top[n.l] = Math.min(top[n.l], n.y - n.len - s / 2);
+	const free = [];
+	for (let i = 0; i < LANES; i++) if (top[i] > gap) free.push(i);
+	if (!free.length) return;
+	notes.push({ l: free[Math.floor(Math.random() * free.length)], y: -s, len: Math.random() < 0.2 ? (80 + Math.random() * 200) * D : 0 });
+}
+function drawArrow(x, y, s, turn, fill, stroke, lw) {
+	cx.save(); cx.translate(x, y); cx.rotate(turn); cx.scale(s, s);
+	cx.lineJoin = "round"; cx.lineWidth = lw / s;
+	if (fill) { cx.fillStyle = fill; cx.fill(ARROW); }
+	if (stroke) { cx.strokeStyle = stroke; cx.stroke(ARROW); }
+	cx.restore();
+}
+let last = performance.now(), acc = 0, stageOff = false;
+function frame(t) {
+	const dt = Math.min(50, t - last); last = t;
+	requestAnimationFrame(frame);
+	if (!document.querySelector("#play-page.on") || W < 10) { if (manual) { manual = false; notes = []; combo = 0; judge = null; } return; }
+	if (!stageOn()) { if (!stageOff) { stageOff = true; cx.clearRect(0, 0, W, H); notes = []; } return; }
+	stageOff = false;
+	acc += dt;
+	if (acc > 200) { acc = 0; spawn(); if (Math.random() < 0.18) spawn(); }
+	cx.clearRect(0, 0, W, H);
+	const s = arrowSize(), ry = receptorY(), sp = 0.4 * D * dt, f = field();
+	// the stage: a dark see-through playfield with thin lane lines, fading out towards the top
+	const bg = cx.createLinearGradient(0, 0, 0, H);
+	bg.addColorStop(0, "rgba(10,8,16,0)"); bg.addColorStop(0.35, "rgba(10,8,16,0.45)"); bg.addColorStop(1, "rgba(10,8,16,0.7)");
+	cx.fillStyle = bg; cx.fillRect(f.x0, 0, f.w, H);
+	const edge = cx.createLinearGradient(0, 0, 0, H);
+	edge.addColorStop(0, "rgba(255,255,255,0)"); edge.addColorStop(0.5, "rgba(255,255,255,0.07)"); edge.addColorStop(1, "rgba(255,255,255,0.12)");
+	cx.fillStyle = edge;
+	for (let i = 0; i <= LANES; i++) cx.fillRect(Math.round(f.x0 + i * f.w / LANES) - (i % LANES ? 0.5 : 1) * D, 0, (i % LANES ? 1 : 2) * D, H);
+	// the judgement line's glow under the receptors
+	const jl = cx.createLinearGradient(0, ry - s, 0, ry + s);
+	jl.addColorStop(0, "rgba(255,92,158,0)"); jl.addColorStop(0.5, "rgba(255,92,158,0.08)"); jl.addColorStop(1, "rgba(255,92,158,0)");
+	cx.fillStyle = jl; cx.fillRect(f.x0, ry - s, f.w, 2 * s);
+	held.fill(false);
+	const live = playing(), win = 0.4 * D * 180;
+	for (const n of notes) {
+		if (!live) {
+			if (n.y < ry) { n.y = Math.min(ry, n.y + sp); if (n.y >= ry && !n.len) { n.done = true; flash[n.l] = 1; } }
+			else if (n.len > 0) { n.len -= sp; held[n.l] = true; if (n.len <= 0) { n.done = true; flash[n.l] = 1; } }
+			continue;
+		}
+		// playing: notes fall past the receptors unless they were hit; a hold runs while its key stays down
+		if (n.holding) {
+			n.y = Math.max(n.y, ry); n.len -= sp;
+			if (down[n.l]) held[n.l] = true; else if (!n.dropped) { n.dropped = true; combo = 0; judge = ["Dropped", "#ff6b81"]; judgeAt = t; }
+			if (n.len <= 0) { n.done = true; flash[n.l] = 1; }
+			continue;
+		}
+		n.y += sp;
+		if (!n.hit && !n.missed && n.y > ry + win) { n.missed = true; combo = 0; misses++; judge = ["Miss", "#ff6b81"]; judgeAt = t; }
+		if (n.y - (n.len || 0) > H + s) n.done = true;
+	}
+	notes = notes.filter(n => !n.done);
+	for (let i = 0; i < LANES; i++) {
+		const L = lane(i), x = L.x + L.w / 2;
+		flash[i] = Math.max(held[i] ? 0.55 : 0, flash[i] - dt / 260);
+		const k = flash[i], z = 1 + 0.08 * k;
+		if (k > 0) {
+			cx.save(); cx.shadowColor = COL[i][0]; cx.shadowBlur = 22 * D * k;
+			drawArrow(x, ry, s * z, TURN[i], `rgba(255,255,255,${0.10 + 0.25 * k})`, null, 0);
+			cx.restore();
+			// a soft beam up the lane on a hit
+			const g = cx.createLinearGradient(0, ry - 160 * D, 0, ry);
+			g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(1, `rgba(255,170,215,${0.10 * k})`);
+			cx.fillStyle = g; cx.fillRect(L.x + 2 * D, ry - 160 * D, L.w - 4 * D, 160 * D);
+		}
+		drawArrow(x, ry, s * z, TURN[i], "rgba(10,8,16,0.6)", `rgba(255,255,255,${0.30 + 0.4 * k})`, 2.2 * D);
+	}
+	// the combo and the judgement while playing; a hint before
+	cx.textAlign = "center"; cx.textBaseline = "middle";
+	if (live) {
+		if (combo > 1) { cx.font = `800 ${34 * D}px "Segoe UI Variable Display", "Segoe UI", sans-serif`; cx.fillStyle = "rgba(255,255,255,0.9)"; cx.fillText(String(combo), f.x0 + f.w / 2, H * 0.42); }
+		if (judge && t - judgeAt < 500) {
+			const k = 1 - (t - judgeAt) / 500;
+			cx.font = `700 ${15 * D}px "Segoe UI", sans-serif`; cx.fillStyle = judge[1]; cx.globalAlpha = Math.min(1, k * 2);
+			cx.fillText(judge[0], f.x0 + f.w / 2, H * 0.42 + 30 * D); cx.globalAlpha = 1;
+		}
+	} else {
+		cx.font = `600 ${12 * D}px "Segoe UI", sans-serif`; cx.fillStyle = "rgba(255,255,255,0.22)";
+		cx.fillText("← ↓ ↑ → to play", f.x0 + f.w / 2, H * 0.42);
+	}
+	for (const n of notes) {
+		if (!(n.len > 0)) continue;
+		const L = lane(n.l), x = L.x + L.w / 2, bw = s * 0.36, top = Math.max(-s, n.y - n.len);
+		const g = cx.createLinearGradient(0, top, 0, n.y);
+		g.addColorStop(0, "rgba(138,77,255,0.12)"); g.addColorStop(1, "rgba(255,92,158,0.38)");
+		cx.fillStyle = g;
+		cx.beginPath(); cx.roundRect(x - bw / 2, top, bw, Math.max(0, n.y - top), bw / 2); cx.fill();
+	}
+	for (const n of notes) {
+		const L = lane(n.l), x = L.x + L.w / 2;
+		if (n.y >= ry && n.len > 0) continue;
+		const a = Math.min(1, Math.max(0, (n.y + s) / (H * 0.3))) * (n.missed ? 0.35 : 1);
+		drawArrow(x, n.y, s, TURN[n.l], "#130e1f", null, 0);
+		const g = cx.createLinearGradient(0, n.y - s / 2, 0, n.y + s / 2);
+		g.addColorStop(0, COL[n.l][1]); g.addColorStop(1, COL[n.l][0]);
+		cx.globalAlpha = 0.85 * a;
+		drawArrow(x, n.y, s, TURN[n.l], g, "rgba(255,255,255,0.7)", 1.4 * D);
+		cx.globalAlpha = 1;
+	}
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

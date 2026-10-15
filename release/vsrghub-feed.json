@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.80",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.80.zip",
- "sha256": "9eecebfac41ad245c22074fe231d0c52e71b13436ba0bc18c9e21afabe4d4384",
- "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed.",
+ "version": "1.8.0-beta.81",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.81.zip",
+ "sha256": "89299cc25b61b69b8f1e8a90763f3d73e606dcdda106b2de1ebb4a5525fd1e5c",
+ "notes": "- The launcher's Go source is in the GitHub repository now (the publishing step had been leaving the `cmd/triwheel` folder out), so the Actions build and \"read every line\" are true.",
  "latest": {
-  "version": "1.8.0-beta.80",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.80.zip",
-  "sha256": "9eecebfac41ad245c22074fe231d0c52e71b13436ba0bc18c9e21afabe4d4384",
-  "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed."
+  "version": "1.8.0-beta.81",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.81.zip",
+  "sha256": "89299cc25b61b69b8f1e8a90763f3d73e606dcdda106b2de1ebb4a5525fd1e5c",
+  "notes": "- The launcher's Go source is in the GitHub repository now (the publishing step had been leaving the `cmd/triwheel` folder out), so the Actions build and \"read every line\" are true."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.81",
+   "date": "2026-10-15",
+   "notes": "- The launcher's Go source is in the GitHub repository now (the publishing step had been leaving the `cmd/triwheel` folder out), so the Actions build and \"read every line\" are true."
+  },
   {
    "version": "1.8.0-beta.80",
    "date": "2026-10-15",
