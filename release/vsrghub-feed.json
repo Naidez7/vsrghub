@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.56",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.56.zip",
- "sha256": "4e7287e0592fdc90d861fadf26469c892b5c556f90b76c52636fb9cf7a2a826e",
- "notes": "- On a profile, the legend under the plays (Etterna, osu!, Quaver) is the per-game filter: hover shows it can be pressed, press one for that game's best plays by SSR, again for all. osu!lazer plays count as osu! (no separate colour).",
+ "version": "1.8.0-beta.57",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.57.zip",
+ "sha256": "023d81d099bd63db0220aadc358caa5e0bdf40a47eadb32957b6de8812dd0fc9",
+ "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent.",
  "latest": {
-  "version": "1.8.0-beta.56",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.56.zip",
-  "sha256": "4e7287e0592fdc90d861fadf26469c892b5c556f90b76c52636fb9cf7a2a826e",
-  "notes": "- On a profile, the legend under the plays (Etterna, osu!, Quaver) is the per-game filter: hover shows it can be pressed, press one for that game's best plays by SSR, again for all. osu!lazer plays count as osu! (no separate colour)."
+  "version": "1.8.0-beta.57",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.57.zip",
+  "sha256": "023d81d099bd63db0220aadc358caa5e0bdf40a47eadb32957b6de8812dd0fc9",
+  "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.57",
+   "date": "2026-10-15",
+   "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent."
+  },
   {
    "version": "1.8.0-beta.56",
    "date": "2026-10-15",

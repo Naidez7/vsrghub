@@ -248,6 +248,8 @@ local function gate(event)
 		if not panel then TW.openKeybinds() end
 		return true
 	end
+	-- Ctrl+G: a goal for the selected chart (28 VSRG Hub goals.lua)
+	if not panel and TW.goalKey and TW.goalKey(event) then return true end
 	if ctrlO then return true end
 	if not panel and event.char and event.char:match("^[%w%p]$") and not TW.rateKey(event) and not INPUTFILTER:IsControlPressed()
 		and not TW.altHeld() and not b:find("F%d") then

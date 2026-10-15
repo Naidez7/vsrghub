@@ -65,6 +65,7 @@ return Def.ActorFrame { TW.mouse(), f, replay,
 		if TW.exportScore then TW.exportScore() end
 	end,
 	-- (what VSRG Hub's ranking made of it, at the bottom)
+	TW.goalResult and TW.goalResult(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(40), function(init) return TW.text(TW.M(14), true, init) end) or Def.Actor {},
 	TW.hubResultLine and TW.hubResultLine(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(16), function(init) return TW.text(TW.M(13), true, init) end) or Def.Actor {},
 	OffCommand = function(self) TW.closeOptions() end,
 	TW.optionsPanel(), TW.listPanel(),

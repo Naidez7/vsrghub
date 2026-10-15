@@ -24,6 +24,7 @@ local t = Def.ActorFrame {
 		if TW.exportScore then TW.exportScore() end
 	end,
 	-- (what VSRG Hub's ranking made of it, at the bottom)
+	TW.goalResult and TW.goalResult(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(94), function(init) return TW.text(TW.M(14), true, init) end) or Def.Actor {},
 	TW.hubResultLine and TW.hubResultLine(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(70), function(init) return TW.text(TW.M(13), true, init) end) or Def.Actor {},
 	OffCommand = function(self) TW.closeOptions() end,
 	-- the footer's shade
