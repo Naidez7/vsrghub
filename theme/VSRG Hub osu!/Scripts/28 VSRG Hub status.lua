@@ -59,3 +59,60 @@ function TW.noticeReader()
 		end,
 	}
 end
+
+-- The daily challenge (daily.go): today's charts in online/daily.txt, one line per key count:
+-- "keys<TAB>chart key<TAB>title<TAB>artist<TAB>chart name<TAB>msd". TW.daily(keys) gives today's for
+-- 4 or 7; TW.jumpToChart(ck) puts song select on a chart; the launcher's "Play it" leaves the key in
+-- online/jump.txt, which song select takes up (TW.jumpWatcher, in the system layer).
+function TW.daily(keys)
+	local ok, txt = pcall(function() return File.Read(ONLINE .. "daily.txt") end)
+	if not ok or not txt then return nil end
+	for line in txt:gmatch("[^\r\n]+") do
+		local f = {}
+		for v in (line .. "\t"):gmatch("([^\t]*)\t") do f[#f + 1] = v end
+		if tonumber(f[1]) == keys and f[2] and f[2] ~= "" then
+			return { keys = keys, chart = f[2], title = f[3] or "", artist = f[4] or "", name = f[5] or "", msd = tonumber(f[6]) or 0 }
+		end
+	end
+	return nil
+end
+function TW.jumpToChart(ck, what)
+	local s = SCREENMAN:GetTopScreen()
+	if not s or s:GetName() ~= "ScreenSelectMusic" then return false end
+	local song, steps
+	pcall(function() song = SONGMAN:GetSongByChartKey(ck); steps = SONGMAN:GetStepsByChartKey(ck) end)
+	if not song or not steps then
+		SCREENMAN:SystemMessage("You don't have " .. (what or "that chart") .. " in your library")
+		return false
+	end
+	local w = s:GetMusicWheel()
+	if not w then return false end
+	if TW.browsing ~= nil then TW.browsing = false end
+	w:SelectSong(song)
+	GAMESTATE:SetCurrentSteps(PLAYER_1, steps)
+	if TW.pick then TW.pick = { song = song, steps = steps } end
+	MESSAGEMAN:Broadcast("CurrentStepsChanged")
+	return true
+end
+-- the launcher's "Play it" (or the menu's daily challenge): the chart waits in jump.txt
+function TW.jumpWatcher()
+	return Def.Actor {
+		InitCommand = function(self)
+			self:SetUpdateFunction(function()
+				local s = SCREENMAN:GetTopScreen()
+				if not s or s:GetName() ~= "ScreenSelectMusic" then return end
+				local ok, txt = pcall(function() return File.Read(ONLINE .. "jump.txt") end)
+				if not ok or not txt then return end
+				local ck = txt:match("^%s*(%S+)")
+				if not ck then return end
+				pcall(function() File.Write(ONLINE .. "jump.txt", "") end)
+				local w = s:GetMusicWheel()
+				if w and not w:IsSettled() then return end
+				local d4, d7 = TW.daily(4), TW.daily(7)
+				local what = "that chart"
+				if d4 and d4.chart == ck then what = "today's 4K chart (" .. d4.title .. ")" elseif d7 and d7.chart == ck then what = "today's 7K chart (" .. d7.title .. ")" end
+				if TW.jumpToChart(ck, what) then SCREENMAN:SystemMessage("Daily challenge: " .. (what:gsub("^today's ", "today's ")) ) end
+			end):SetUpdateFunctionInterval(1.5)
+		end,
+	}
+end

@@ -358,6 +358,62 @@ language sql stable security definer set search_path = public as $$
 $$;
 grant execute on function public.lost_firsts(uuid, timestamptz) to anon, authenticated;
 
+-- ---------------------------------------------------------------------------------------------
+-- the daily challenge: one chart a day (4K and 7K each), the same for everyone, picked from the
+-- charts people have played at 1.0x (MSD 8 to 32, the ones two or more players know first), by a
+-- hash of the day; the day's board is everyone's best on it played that day (UTC)
+
+create or replace function public.daily_chart(day date, k smallint default 4)
+returns table(chart_key text, song_title text, song_artist text, chart_name text, msd real, players bigint)
+language sql stable security definer set search_path = public as $$
+	select c.chart_key, c.song_title, c.song_artist, c.chart_name, c.msd, c.n
+	from (select s.chart_key, max(s.song_title) as song_title, max(s.song_artist) as song_artist, max(s.chart_name) as chart_name,
+			max(s.msd) as msd, count(distinct s.user_id) as n
+		from public.scores s join public.profiles p on p.id = s.user_id
+		where s.valid and not p.banned and s.keys = k and abs(s.rate - 1) < 0.001 and s.msd between 8 and 32
+		group by s.chart_key) c
+	order by (c.n >= 2) desc, md5(day::text || c.chart_key)
+	limit 1
+$$;
+grant execute on function public.daily_chart(date, smallint) to anon, authenticated;
+
+create or replace function public.daily_board(day date, k smallint default 4)
+returns table(place bigint, user_id uuid, username text, avatar int, avatar_ext text, wife real, rate real, ssr_overall real,
+	max_combo int, played_at timestamptz, source text, score_id bigint)
+language sql stable security definer set search_path = public as $$
+	with d as (select chart_key from public.daily_chart(day, k)),
+	best as (
+		select distinct on (s.user_id) s.user_id, s.wife, s.rate, s.ssr_overall, s.max_combo, s.played_at, s.source, s.id
+		from public.scores s join d on d.chart_key = s.chart_key join public.profiles p on p.id = s.user_id
+		where s.valid and not p.banned and s.played_at >= day::timestamptz and s.played_at < (day + 1)::timestamptz
+		order by s.user_id, s.ssr_overall desc, s.wife desc)
+	select row_number() over (order by b.ssr_overall desc, b.wife desc), b.user_id, p.username, p.avatar, p.avatar_ext,
+		b.wife, b.rate, b.ssr_overall, b.max_combo, b.played_at, b.source, b.id
+	from best b join public.profiles p on p.id = b.user_id
+	order by b.ssr_overall desc, b.wife desc
+	limit 100
+$$;
+grant execute on function public.daily_board(date, smallint) to anon, authenticated;
+
+-- the last days' challenges and who won them
+create or replace function public.daily_history(days int default 14, k smallint default 4)
+returns table(day date, chart_key text, song_title text, chart_name text, msd real, winner text, winner_ssr real, players bigint)
+language plpgsql stable security definer set search_path = public as $$
+declare
+	d date;
+begin
+	for i in 1..least(greatest(days, 1), 60) loop
+		d := (now() at time zone 'UTC')::date - (i - 1);
+		return query
+		select d, c.chart_key, c.song_title, c.chart_name, c.msd,
+			(select b.username from public.daily_board(d, k) b where b.place = 1),
+			(select b.ssr_overall from public.daily_board(d, k) b where b.place = 1),
+			(select count(*) from public.daily_board(d, k))
+		from public.daily_chart(d, k) c;
+	end loop;
+end $$;
+grant execute on function public.daily_history(int, smallint) to anon, authenticated;
+
 -- a player's place in 4K or 7K (0 when unranked)
 create or replace function public.player_place(player uuid, k smallint default 4) returns int
 language sql stable security definer set search_path = public as $$
@@ -680,7 +736,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '14')
+insert into public.vh_meta (key, value) values ('schema_version', '15')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

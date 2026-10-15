@@ -48,6 +48,13 @@ local levels = {
 			{ label = "multi", icon = "users", col = TW.rgb(94, 63, 186), act = function() TW.startMulti(function() choose("Multi") end) end, key = "M" },
 			-- (lazer's playlists: your collections, opened as song select comes up)
 			{ label = "playlists", icon = "layer-group", col = TW.rgb(86, 58, 170), act = function() TW.openCollectionsOnSelect = true; choose("GameStart") end, key = "L" },
+			-- (today's chart for everyone: song select opens on it)
+			{ label = "daily challenge", icon = "trophy", col = TW.rgb(120, 70, 200), key = "C", act = function()
+				local d = TW.daily(TW.gameName() == "kb7" and 7 or 4)
+				if not d then SCREENMAN:SystemMessage("No daily challenge today (is VSRG Hub's ranking reachable?)") return end
+				pcall(function() File.Write("Save/VSRGHub/online/jump.txt", d.chart .. "\n") end)
+				choose("GameStart")
+			end },
 		},
 	},
 }

@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.75",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.75.zip",
- "sha256": "319c7ff1c440a7176caa73361f3a339b16aaf20fa593f8f34a89c9b06cff03e0",
- "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72).",
+ "version": "1.8.0-beta.76",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.76.zip",
+ "sha256": "3193887d0f2fcdf005c12a16b8e8b52fcb7fde7b2535feaa068610b27f44212c",
+ "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15).",
  "latest": {
-  "version": "1.8.0-beta.75",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.75.zip",
-  "sha256": "319c7ff1c440a7176caa73361f3a339b16aaf20fa593f8f34a89c9b06cff03e0",
-  "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72)."
+  "version": "1.8.0-beta.76",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.76.zip",
+  "sha256": "3193887d0f2fcdf005c12a16b8e8b52fcb7fde7b2535feaa068610b27f44212c",
+  "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.76",
+   "date": "2026-10-15",
+   "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15)."
+  },
   {
    "version": "1.8.0-beta.75",
    "date": "2026-10-15",
