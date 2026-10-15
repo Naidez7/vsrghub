@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.76",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.76.zip",
- "sha256": "3193887d0f2fcdf005c12a16b8e8b52fcb7fde7b2535feaa068610b27f44212c",
- "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15).",
+ "version": "1.8.0-beta.77",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.77.zip",
+ "sha256": "6d784ef99e4fcb3fe618ff6df3f38881c2bad9049ef4fbba475c5b25508e7c6d",
+ "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now.",
  "latest": {
-  "version": "1.8.0-beta.76",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.76.zip",
-  "sha256": "3193887d0f2fcdf005c12a16b8e8b52fcb7fde7b2535feaa068610b27f44212c",
-  "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15)."
+  "version": "1.8.0-beta.77",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.77.zip",
+  "sha256": "6d784ef99e4fcb3fe618ff6df3f38881c2bad9049ef4fbba475c5b25508e7c6d",
+  "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.77",
+   "date": "2026-10-15",
+   "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now."
+  },
   {
    "version": "1.8.0-beta.76",
    "date": "2026-10-15",

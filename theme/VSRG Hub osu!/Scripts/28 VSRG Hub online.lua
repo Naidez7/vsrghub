@@ -318,7 +318,7 @@ function TW.hubResultLine(x, y, textFn)
 		-- (textFn(init): the look's text actor, init run on it)
 		textFn(function(self) self:align(0.5, 0.5):shadowlength(1) end) .. { Name = "T" },
 		-- (the dark band behind fits the words)
-		Def.Actor { InitCommand = function(self)
+		Def.ActorFrame { InitCommand = function(self)
 			self:SetUpdateFunction(function(a)
 				local p = a:GetParent()
 				local t = p:GetChild("T")

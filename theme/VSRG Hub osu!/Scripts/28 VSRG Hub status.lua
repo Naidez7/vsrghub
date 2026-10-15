@@ -33,7 +33,7 @@ end
 
 function TW.statusWriter()
 	local last = nil
-	return Def.Actor {
+	return Def.ActorFrame { -- (update functions live on frames, not on plain actors)
 		InitCommand = function(self)
 			self:SetUpdateFunction(function()
 				local ok, line = pcall(statusLine)
@@ -46,7 +46,7 @@ function TW.statusWriter()
 end
 
 function TW.noticeReader()
-	return Def.Actor {
+	return Def.ActorFrame { -- (update functions live on frames, not on plain actors)
 		InitCommand = function(self)
 			self:SetUpdateFunction(function()
 				local ok, txt = pcall(function() return File.Read(ONLINE .. "notice.txt") end)
@@ -96,7 +96,7 @@ function TW.jumpToChart(ck, what)
 end
 -- the launcher's "Play it" (or the menu's daily challenge): the chart waits in jump.txt
 function TW.jumpWatcher()
-	return Def.Actor {
+	return Def.ActorFrame { -- (update functions live on frames, not on plain actors)
 		InitCommand = function(self)
 			self:SetUpdateFunction(function()
 				local s = SCREENMAN:GetTopScreen()
