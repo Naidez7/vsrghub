@@ -39,7 +39,7 @@ local t = Def.ActorFrame {}
 -- header: the song's picture, title, difficulty, mapper
 t[#t + 1] = Def.Quad { InitCommand = function(self) self:align(0, 0):xy(M(86), M(110)):zoomto(M(144), M(135)):diffuse(TW.rgb(30, 30, 30)) end }
 t[#t + 1] = Def.Sprite { OnCommand = function(self)
-	local p = song and (song:GetBackgroundPath() or song:GetBannerPath())
+	local p = song and (TW.thumbPath(song) or song:GetBannerPath())
 	if p and p ~= "" then self:LoadBackground(p):align(0, 0):xy(M(94), M(118)):scaletoclipped(M(128), M(127)) end
 end }
 t[#t + 1] = Def.Quad { InitCommand = function(self) self:align(0, 0):xy(M(86), M(249)):zoomto(M(144), M(4)):diffuse(QV.cyan) end }

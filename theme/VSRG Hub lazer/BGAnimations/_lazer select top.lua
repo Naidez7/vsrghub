@@ -44,7 +44,7 @@ local wedge = Def.ActorFrame {
 		Name = "Pic",
 		InfoCommand = function(self)
 			local s = GAMESTATE:GetCurrentSong()
-			local p = s and s:GetBackgroundPath()
+			local p = s and TW.bigPicture(s)
 			if not p or p == "" then self:visible(false) self.shown = nil return end
 			local fresh = p ~= self.shown
 			if fresh then

@@ -322,7 +322,7 @@ function LZ.nowPlaying()
 		-- the song's picture, faded towards the bottom
 		Def.Sprite { Name = "Pic", FillCommand = function(self)
 			local s = song()
-			local p = s and s:GetBackgroundPath()
+			local p = s and TW.bigPicture(s)
 			if p and p ~= "" and p ~= self.shown then self.shown = p; self:LoadBackground(p) end
 			self:visible(p ~= nil and p ~= ""):scaletocover(M(4), M(4), W - M(4), H - M(40)):cropbottom(0):diffusealpha(0.45):fadebottom(0.5)
 		end },

@@ -607,7 +607,7 @@ body[#body + 1] = Def.Sprite {
 	TWPanelMessageCommand = function(self, p)
 		if p.name ~= "Playlist" then return end
 		local s = GAMESTATE:GetCurrentSong()
-		local b = s and (s:GetBannerPath() or s:GetBackgroundPath())
+		local b = s and ((s:GetBannerPath() ~= "" and s:GetBannerPath() ~= s:GetBackgroundPath()) and s:GetBannerPath() or TW.thumbPath(s))
 		if b and b ~= "" then self:LoadBackground(b):align(0, 0):scaletoclipped(DW, M(84)):visible(true) else self:visible(false) end
 	end
 }

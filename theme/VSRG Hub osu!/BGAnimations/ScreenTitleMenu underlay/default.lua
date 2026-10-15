@@ -8,7 +8,7 @@ local function randomBackground()
 	local songs = SONGMAN:GetAllSongs()
 	for _ = 1, 20 do
 		local s = songs[math.random(1, math.max(1, #songs))]
-		local p = s and s:GetBackgroundPath()
+		local p = s and TW.bigPicture(s)
 		if p and p ~= "" and FILEMAN:DoesFileExist(p) then return p end
 	end
 	return nil
@@ -33,7 +33,7 @@ local pic = Def.Sprite {
 	-- the menu's song changed: its background, if the skin has none of its own
 	TWMenuMusicMessageCommand = function(self)
 		if TW.has("menu_bg") or not TW.menu.song then return end
-		local p = TW.menu.song:GetBackgroundPath()
+		local p = TW.bigPicture(TW.menu.song)
 		if not p or p == "" or p == self.shown then return end
 		self.shown = p
 		self:stoptweening():linear(0.25):diffusealpha(0):queuecommand("Swap")

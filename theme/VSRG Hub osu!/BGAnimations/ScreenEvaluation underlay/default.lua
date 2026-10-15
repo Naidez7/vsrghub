@@ -6,7 +6,7 @@ return Def.ActorFrame { Def.ActorFrame {
 	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(color("#000000")) end },
 	Def.Sprite { OnCommand = function(self)
 		local s = GAMESTATE:GetCurrentSong()
-		local p = s and s:GetBackgroundPath()
+		local p = s and TW.bigPicture(s)
 		if p then self:LoadBackground(p); cover(self); self:diffusealpha(0.3) end
 	end },
 	TW.sprite("ranking_bg_overlay", function(self) cover(self) end),

@@ -196,7 +196,7 @@ function TW.stableDiffRows(spec)
 		c.Msd:settextf("%.2f", m):diffuse(txt)
 		place(c.Msd, 0.16, px + T + 0.1 * ah + 9 * 0.35 * ah + 0.25 * ah, sy + 0.08 * ah, ah)
 		-- the song's background as the thumbnail
-		local want = hasThumb and bgPath or nil
+		local want = hasThumb and TW.thumbPath(song) or nil
 		if want then
 			if c.Thumb.shown ~= want then
 				c.Thumb:LoadFromCached("Background", want)

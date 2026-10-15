@@ -95,8 +95,7 @@ function TW.songBackground(o)
 			-- the screen going dark and the next song's picture coming up from black)
 			if not s then return end
 			self:stoptweening()
-			want = s:GetBackgroundPath() or nil
-			if want == "" then want = nil end
+			want = TW.bigPicture(s)
 			if not want then return end
 			-- (the same picture again, e.g. the game's song put back to the picked one after a
 			-- scroll: nothing to do, or it would fade in over itself)
@@ -254,6 +253,22 @@ function TW.thumbPath(song)
 	if dir and FILEMAN:DoesFileExist(dir .. "vsrghub-thumb-mipmaps.jpg") then
 		thumbs[dir] = dir .. "vsrghub-thumb-mipmaps.jpg"
 		return thumbs[dir]
+	end
+	local bg = song:GetBackgroundPath()
+	return (bg and bg ~= "") and bg or nil
+end
+
+-- The song's background for a screen: the launcher's 1080p copy when the original is bigger (a 4K
+-- photo takes long to read on each change of song), else the original.
+local bigs = {}
+function TW.bigPicture(song)
+	if not song then return nil end
+	local dir = song:GetSongDir()
+	local t = dir and bigs[dir]
+	if t then return t end
+	if dir and FILEMAN:DoesFileExist(dir .. "vsrghub-bg.jpg") then
+		bigs[dir] = dir .. "vsrghub-bg.jpg"
+		return bigs[dir]
 	end
 	local bg = song:GetBackgroundPath()
 	return (bg and bg ~= "") and bg or nil

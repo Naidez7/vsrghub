@@ -3,7 +3,7 @@
 -- once loaded this part moves on top, so the pointer shows over the pause menu.
 return Def.ActorFrame {
 	TW.base("BGAnimations/ScreenSystemLayer overlay"),
-	TW.volumeHook(),
+	TW.volumeHook(), TW.statusWriter(), TW.noticeReader(),
 	TW.volumeDisplay(TW.rgb(5, 155, 172)),
 	TW.choosablePointer(),
 	InitCommand = function(self) self:queuecommand("Lift") end,

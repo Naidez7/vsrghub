@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.62",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.62.zip",
- "sha256": "d95d665f0dc90924d7025190eea8b070cc769f1b84b825ee5848fd01ef221b20",
- "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12).",
+ "version": "1.8.0-beta.63",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.63.zip",
+ "sha256": "abf3a134b497459143b458bdd32bce211ccdba613fdd514efff229c078691ef3",
+ "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application.",
  "latest": {
-  "version": "1.8.0-beta.62",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.62.zip",
-  "sha256": "d95d665f0dc90924d7025190eea8b070cc769f1b84b825ee5848fd01ef221b20",
-  "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12)."
+  "version": "1.8.0-beta.63",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.63.zip",
+  "sha256": "abf3a134b497459143b458bdd32bce211ccdba613fdd514efff229c078691ef3",
+  "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.63",
+   "date": "2026-10-15",
+   "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application."
+  },
   {
    "version": "1.8.0-beta.62",
    "date": "2026-10-15",

@@ -6,7 +6,7 @@ return Def.ActorFrame { Def.ActorFrame {
 	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(LZ.hsl(333, 0.2, 0.08)) end },
 	Def.Sprite { OnCommand = function(self)
 		local s = GAMESTATE:GetCurrentSong()
-		local p = s and s:GetBackgroundPath()
+		local p = s and TW.bigPicture(s)
 		if p then self:LoadBackground(p); cover(self); self:diffusealpha(0):linear(0.5):diffusealpha(0.3) end
 	end },
 	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse({ 0, 0, 0, 0.2 }):diffusebottomedge({ 0.05, 0.02, 0.05, 0.6 }) end },

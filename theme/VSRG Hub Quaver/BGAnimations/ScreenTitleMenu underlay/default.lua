@@ -6,7 +6,7 @@ local function randomSong()
 	local songs = SONGMAN:GetAllSongs()
 	for _ = 1, 30 do
 		local s = songs[math.random(1, math.max(1, #songs))]
-		local b = s and s:GetBackgroundPath()
+		local b = s and TW.bigPicture(s)
 		-- (a song whose picture is gone would show as a pink square)
 		if b and b ~= "" and FILEMAN:DoesFileExist(b) then return s end
 	end
@@ -28,7 +28,7 @@ local t = Def.ActorFrame {
 	Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(color("#000000")) end },
 	Def.Sprite {
 		InitCommand = function(self)
-			local p = pick and pick:GetBackgroundPath()
+			local p = pick and TW.bigPicture(pick)
 			if p and p ~= "" then
 				self:LoadBackground(p):scaletocover(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT):diffusealpha(0.22)
 			end
