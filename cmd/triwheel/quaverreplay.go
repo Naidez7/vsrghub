@@ -242,11 +242,17 @@ func quaMD5Index(lib, quaverDir string) map[string]osuHashHit {
 }
 
 // quaverJobs: the Quaver plays as jobs for the game (what importOsuReplays does for osu!)
-func quaverJobs(lib, quaverDir string, cache cacheFile, rep *osuImportReport, progress func(string)) []osuJob {
+func quaverJobs(lib, quaverDir string, cache cacheFile, rep *osuImportReport, fresh func(string) bool, progress func(string)) []osuJob {
 	skip := func(why string) { rep.Skipped["Quaver: "+why]++ }
-	files, _ := filepath.Glob(filepath.Join(quaverDir, "Data", "r", "*.qr"))
+	all, _ := filepath.Glob(filepath.Join(quaverDir, "Data", "r", "*.qr"))
 	if more, _ := filepath.Glob(filepath.Join(quaverDir, "Data", "Replays", "*.qr")); len(more) > 0 {
-		files = append(files, more...)
+		all = append(all, more...)
+	}
+	var files []string
+	for _, f := range all {
+		if fresh(f) {
+			files = append(files, f)
+		}
 	}
 	if len(files) == 0 {
 		return nil

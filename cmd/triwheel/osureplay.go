@@ -447,6 +447,7 @@ type osuImportReport struct {
 	LazerOnly  int            `json:"lazerOnly"`  // lazer plays on maps not in the stable Songs folder
 	DatesFixed int            `json:"datesFixed"` // plays already sent whose date was put right
 	Error      string         `json:"error,omitempty"`
+	NothingNew bool           `json:"nothingNew,omitempty"` // (onlyNew: no replay file since the last look)
 }
 
 // rateOf: the song's speed from the mods (0: not a rate Etterna has)
@@ -570,9 +571,28 @@ func lazerDir() string {
 
 // importOsuReplays reads every mania replay of osu! stable (osuDir) and lazer, judges the ones on
 // charts VSRG Hub converted, and writes them for the game. progress gets a word now and then.
-func importOsuReplays(lib, osuDir, quaverDir, data string, progress func(string)) osuImportReport {
+// onlyNew: only the replay files not looked at before (osu/seen.txt: every file read is noted there,
+// so the plays you make after the first import are picked up on their own at each start).
+func importOsuReplays(lib, osuDir, quaverDir, data string, onlyNew bool, progress func(string)) osuImportReport {
 	rep := osuImportReport{Skipped: map[string]int{}}
 	skip := func(why string) { rep.Skipped[why]++ }
+	seenFiles := loadSeenReplays(data)
+	// (the first look for new plays after the plays were all sent the old way: the replays there
+	// now are taken as seen, not sent again)
+	seedOnly := false
+	if onlyNew && len(seenFiles) == 0 {
+		if _, err := os.Stat(filepath.Join(onlineDir(data), "osu", "done.txt")); err == nil {
+			seedOnly = true
+		}
+	}
+	var newlySeen []string
+	fresh := func(path string) bool {
+		if onlyNew && seenFiles[path] {
+			return false
+		}
+		newlySeen = append(newlySeen, path)
+		return !seedOnly
+	}
 	var files []struct {
 		path   string
 		source string
@@ -594,9 +614,27 @@ func importOsuReplays(lib, osuDir, quaverDir, data string, progress func(string)
 	}
 	var jobs []osuJob
 	if quaverDir != "" {
-		jobs = append(jobs, quaverJobs(lib, quaverDir, cache, &rep, progress)...)
+		jobs = append(jobs, quaverJobs(lib, quaverDir, cache, &rep, fresh, progress)...)
+	}
+	if onlyNew {
+		var kept []struct{ path, source string }
+		for _, f := range files {
+			if fresh(f.path) {
+				kept = append(kept, f)
+			}
+		}
+		files = kept
+	} else {
+		for _, f := range files {
+			fresh(f.path)
+		}
 	}
 	if len(files) == 0 && len(jobs) == 0 {
+		if onlyNew {
+			saveSeenReplays(data, seenFiles, newlySeen)
+			rep.NothingNew = true
+			return rep
+		}
 		rep.Error = "no osu! or Quaver replays were found"
 		if osuDir == "" && quaverDir == "" {
 			rep.Error = "osu! and Quaver aren't set up on the Games page"
@@ -688,13 +726,19 @@ func importOsuReplays(lib, osuDir, quaverDir, data string, progress func(string)
 			Rate: rate, Mods: mods, PlayedAt: rp.Time, J: j})
 	}
 	if len(jobs) == 0 {
+		saveSeenReplays(data, seenFiles, newlySeen)
+		if onlyNew {
+			rep.NothingNew = true
+			return rep
+		}
 		rep.Error = "none of the replays could be rated"
 		return rep
 	}
-	if err := writeJobs(data, jobs); err != nil {
+	if err := writeJobs(data, jobs, onlyNew); err != nil {
 		rep.Error = err.Error()
 		return rep
 	}
+	saveSeenReplays(data, seenFiles, newlySeen)
 	rep.Jobs = len(jobs)
 	// (plays already on the server with the wrong date, from before the dates were read right:
 	// their real dates, straight to the server)
@@ -788,11 +832,51 @@ func (ci *chartIndexT) find(set, file string) (convertedChart, bool) {
 	return c, ok
 }
 
-// writeJobs hands the judged plays to the game: one line each (28 VSRG Hub osu plays.lua)
-func writeJobs(data string, jobs []osuJob) error {
+// the replay files already read (osu/seen.txt, one path a line)
+func loadSeenReplays(data string) map[string]bool {
+	seen := map[string]bool{}
+	b, err := os.ReadFile(filepath.Join(onlineDir(data), "osu", "seen.txt"))
+	if err != nil {
+		return seen
+	}
+	for _, line := range strings.Split(string(b), "\n") {
+		if line = strings.TrimSpace(line); line != "" {
+			seen[line] = true
+		}
+	}
+	return seen
+}
+func saveSeenReplays(data string, seen map[string]bool, more []string) {
+	for _, p := range more {
+		seen[p] = true
+	}
+	list := make([]string, 0, len(seen))
+	for p := range seen {
+		list = append(list, p)
+	}
+	sort.Strings(list)
+	dir := filepath.Join(onlineDir(data), "osu")
+	os.MkdirAll(dir, 0o755)
+	os.WriteFile(filepath.Join(dir, "seen.txt"), []byte(strings.Join(list, "\n")+"\n"), 0o644)
+}
+
+// writeJobs hands the judged plays to the game: one line each (28 VSRG Hub osu plays.lua). add:
+// after the jobs still waiting for the game, instead of in their place.
+func writeJobs(data string, jobs []osuJob, add bool) error {
 	dir := filepath.Join(onlineDir(data), "osu")
 	os.MkdirAll(dir, 0o755)
 	var sb strings.Builder
+	if add {
+		// (the jobs the game hasn't rated yet stay: with done.txt there it has rated them all)
+		if _, err := os.Stat(filepath.Join(dir, "done.txt")); err != nil {
+			if old, err := os.ReadFile(filepath.Join(dir, "jobs.txt")); err == nil {
+				sb.Write(old)
+				if len(old) > 0 && old[len(old)-1] != '\n' {
+					sb.WriteByte('\n')
+				}
+			}
+		}
+	}
 	for _, j := range jobs {
 		offs := make([]string, len(j.J.Offsets))
 		for i, o := range j.J.Offsets {
@@ -804,12 +888,13 @@ func writeJobs(data string, jobs []osuJob) error {
 			c[0], c[1], c[2], c[3], c[4], c[5], j.J.MaxCombo, j.J.Taps, j.J.HoldsMissed,
 			j.PlayedAt.Format("2006-01-02T15:04:05Z"), tsvSafe(j.Mods), strings.Join(offs, ","))
 	}
-	if err := os.WriteFile(filepath.Join(dir, "jobs.txt"), []byte(sb.String()), 0o644); err != nil {
+	tmp := filepath.Join(dir, "jobs.txt.tmp")
+	if err := os.WriteFile(tmp, []byte(sb.String()), 0o644); err != nil {
 		return err
 	}
 	os.Remove(filepath.Join(dir, "done.txt"))
 	os.Remove(filepath.Join(dir, "progress.txt"))
-	return nil
+	return os.Rename(tmp, filepath.Join(dir, "jobs.txt"))
 }
 
 func tsvSafe(s string) string {

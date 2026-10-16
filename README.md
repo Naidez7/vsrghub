@@ -387,6 +387,11 @@ Etterna packs:
 - **Smooth shapes**: the osu! and osu!lazer looks draw their circles, rounded boxes, triangles and lines
   as shapes with a one-pixel soft edge (Etterna has no antialiasing), so the logo, the visualizer,
   buttons and panels stay sharp without jagged edges at any screen size.
+- **Your osu! and Quaver plays on VSRG Hub's rankings**: the launcher reads your osu! stable, osu!lazer
+  and Quaver replays, judges them as Etterna would on the same charts, and the game rates them with
+  Etterna's calculator the next time song select comes up. Online > "Send my osu! / Quaver plays" does
+  them all; after that the plays you make are picked up on their own each time VSRG Hub or the game
+  starts ("Load new plays" looks right away).
 - **An icon**: vsrghub.exe, the desktop shortcut, the launcher and the game's window.
 - **Quaver skins' stage borders** (stage-left-border / stage-right-border) are drawn beside the columns.
 - **7K stages as the skin draws them**: bar-style osu! skins (no receptors, a stage hint line) get their

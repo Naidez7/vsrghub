@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.88",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.88.zip",
- "sha256": "fdaae3f205456e8994edbf2c49ac0a779417158600fb2155f357a335781ef4b9",
- "notes": "- Results: when a play isn't sent to VSRG Hub, the line at the bottom says why (paused or invalid in Etterna, failed, autoplay, practice...) instead of nothing.\n- osu!lazer look, results: the hit offsets' judge switcher no longer runs into the column buttons.",
+ "version": "1.8.0-beta.89",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.89.zip",
+ "sha256": "74e5e3a5eb26174a567463785ec3018abb12602ded6f6b2c43c90fc2b8151ddc",
+ "notes": "- osu! / Quaver plays: after the first send, the plays you make in osu! and Quaver are picked up on their own each time VSRG Hub or the game starts (the game rates them when song select comes up, then they're sent). Online has a \"Load new plays\" button to look right away.",
  "latest": {
-  "version": "1.8.0-beta.88",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.88.zip",
-  "sha256": "fdaae3f205456e8994edbf2c49ac0a779417158600fb2155f357a335781ef4b9",
-  "notes": "- Results: when a play isn't sent to VSRG Hub, the line at the bottom says why (paused or invalid in Etterna, failed, autoplay, practice...) instead of nothing.\n- osu!lazer look, results: the hit offsets' judge switcher no longer runs into the column buttons."
+  "version": "1.8.0-beta.89",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.89.zip",
+  "sha256": "74e5e3a5eb26174a567463785ec3018abb12602ded6f6b2c43c90fc2b8151ddc",
+  "notes": "- osu! / Quaver plays: after the first send, the plays you make in osu! and Quaver are picked up on their own each time VSRG Hub or the game starts (the game rates them when song select comes up, then they're sent). Online has a \"Load new plays\" button to look right away."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.89",
+   "date": "2026-10-15",
+   "notes": "- osu! / Quaver plays: after the first send, the plays you make in osu! and Quaver are picked up on their own each time VSRG Hub or the game starts (the game rates them when song select comes up, then they're sent). Online has a \"Load new plays\" button to look right away."
+  },
   {
    "version": "1.8.0-beta.88",
    "date": "2026-10-15",

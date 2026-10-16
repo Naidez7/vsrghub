@@ -252,6 +252,7 @@ type launch struct {
 	buildOnly           bool
 	args                []string
 	standalone          bool // the launcher on its own, not the copy in Etterna's VSRGHub folder
+	importNew           func() // your new osu! / Quaver plays, looked for in the background (launcher_windows.go)
 }
 
 // start brings the library and theme folder up to date and starts Etterna. progress gets a word

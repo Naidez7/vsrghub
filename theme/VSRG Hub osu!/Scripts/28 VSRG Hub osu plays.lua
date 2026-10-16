@@ -120,6 +120,14 @@ function TW.osuPlaysActor()
 				end
 			end
 			self.i = last
+			if self.i >= #lines then
+				-- (the launcher added plays meanwhile: on with those)
+				pcall(function()
+					local txt = File.Read(ONLINE .. "osu/jobs.txt")
+					local more = split((txt or ""):gsub("\r", ""), "\n")
+					if #more > #lines then self.lines, lines = more, more end
+				end)
+			end
 			if self.i < #lines then
 				if self.i % 80 == 0 then File.Write(ONLINE .. "osu/progress.txt", self.i .. "\t" .. self.sent .. "\n") end
 				self:sleep(0.02):queuecommand("Step")

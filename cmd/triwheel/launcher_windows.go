@@ -18,6 +18,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"unsafe"
 
@@ -30,6 +31,15 @@ var launcherHTML string
 
 //go:embed assets/launcher-icon.png
 var launcherIcon []byte
+
+var importMu sync.Mutex // (one look at the replays at a time)
+
+func plural(n int) string {
+	if n == 1 {
+		return ""
+	}
+	return "s"
+}
 
 func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 	runtime.LockOSThread()
@@ -67,7 +77,11 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 		upd        *onlineUpdate
 		selfMinded bool // (the game runs with the launcher open, which minds it: nothing for main to do)
 	)
+	var windowGone atomic.Bool // (after Terminate nothing runs what's dispatched)
 	eval := func(fn string, args ...any) {
+		if windowGone.Load() {
+			return
+		}
 		parts := make([]string, len(args))
 		for i, a := range args {
 			b, _ := json.Marshal(a)
@@ -292,6 +306,10 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 				eval("onStatus", "Couldn't start the game: "+err.Error(), "err")
 				return
 			}
+			// (your new osu! / Quaver plays, for the game to rate once it's up)
+			if l.importNew != nil {
+				l.importNew()
+			}
 			if l.data != "" && loadState(l.data).KeepOpen {
 				// the launcher stays: it minds the game itself (scores sent, rankings answered, the
 				// tray icon, Discord) and is ready again once the game ends
@@ -322,6 +340,7 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 			game, done = cmd, d
 			mu.Unlock()
 			// the launcher goes away once the game is up
+			windowGone.Store(true)
 			w.Dispatch(func() { hideWindow(hwnd); w.Terminate() })
 		}()
 	})
@@ -869,26 +888,55 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 		}
 	})
 	// your osu! plays: read, judged and handed to the game (osureplay.go)
-	w.Bind("vh_osuImport", func() {
-		go func() {
-			if l.data == "" {
+	// your osu! / Quaver plays: all of them again, or only the new ones (osureplay.go); quiet: on
+	// its own (at start and when the game starts), told only when there is something to tell
+	importReplays := func(onlyNew, quiet bool) {
+		if l.data == "" {
+			if !quiet {
 				eval("onOnline", map[string]any{"kind": "osu", "error": "VSRG Hub isn't installed yet"})
+			}
+			return
+		}
+		if quiet {
+			if s, err := onlineToken(); err != nil || s.Username == "" {
 				return
 			}
-			osuDir, quaverDir := "", ""
-			if d := l.dirs["osu"]; d != nil {
-				osuDir = *d
+			if _, err := os.Stat(filepath.Join(l.data, "Library", "triwheel-cache.json")); err != nil {
+				return
 			}
-			if d := l.dirs["quaver"]; d != nil {
-				quaverDir = *d
-			}
-			rep := importOsuReplays(filepath.Join(l.data, "Library"), osuDir, quaverDir, l.data, func(s string) {
+		}
+		if !importMu.TryLock() {
+			return
+		}
+		defer importMu.Unlock()
+		osuDir, quaverDir := "", ""
+		if d := l.dirs["osu"]; d != nil {
+			osuDir = *d
+		}
+		if d := l.dirs["quaver"]; d != nil {
+			quaverDir = *d
+		}
+		if osuDir == "" && quaverDir == "" && quiet {
+			return
+		}
+		rep := importOsuReplays(filepath.Join(l.data, "Library"), osuDir, quaverDir, l.data, onlyNew, func(s string) {
+			if !quiet {
 				eval("onOnline", map[string]any{"kind": "osu", "progress": s})
-			})
-			eval("onOnline", map[string]any{"kind": "osu", "report": rep})
-			eval("onOnline", accountState())
-		}()
-	})
+			}
+		})
+		if quiet {
+			if rep.Jobs > 0 {
+				eval("onOnline", map[string]any{"kind": "toast", "text": fmt.Sprintf("%d new osu! / Quaver play%s: rated and sent the next time song select comes up in the game", rep.Jobs, plural(rep.Jobs))})
+				eval("onOnline", accountState())
+			}
+			return
+		}
+		eval("onOnline", map[string]any{"kind": "osu", "report": rep})
+		eval("onOnline", accountState())
+	}
+	l.importNew = func() { go importReplays(true, true) }
+	w.Bind("vh_osuImport", func() { go importReplays(false, false) })
+	w.Bind("vh_osuImportNew", func() { go importReplays(true, false) })
 	// "Report a problem": a zip of the logs on the desktop, shown in Explorer (report.go)
 	// your scores as a CSV on the desktop
 	w.Bind("vh_exportScores", func() {
@@ -964,6 +1012,9 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 	w.SetHtml(html)
 	if l.data != "" {
 		go writeMe(l.data) // (your place on the rankings, for the Discord presence)
+	}
+	if l.importNew != nil {
+		l.importNew() // (osu! / Quaver plays made since the last look)
 	}
 	stopPresence := startPresence(l.data, false)
 	w.Run()
