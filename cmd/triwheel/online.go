@@ -635,7 +635,7 @@ func writeMeWith(data string, s *onlineSession, rp map[int]ratingPlace) {
 
 // answerBoard writes board.txt for the chart in want.txt: a first line "chart<TAB>status" (ok,
 // empty, offline), then a line per score: place, name, wife, rate, ssr, marv, perf, great, good, bad,
-// miss, max combo, played at, modifiers (tab-separated)
+// miss, max combo, played at, modifiers, source, score id (tab-separated)
 func answerBoard(data, chart string) {
 	rows, err := onlineChartBoard(chart)
 	status := "ok"
@@ -648,12 +648,70 @@ func answerBoard(data, chart string) {
 	fmt.Fprintf(&sb, "%s\t%s\n", chart, status)
 	clean := func(s string) string { return strings.NewReplacer("\t", " ", "\n", " ", "\r", " ").Replace(s) }
 	for _, r := range rows {
-		fmt.Fprintf(&sb, "%d\t%s\t%.4f\t%.2f\t%.2f\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%s\n", r.Place, clean(r.Username), r.Wife, r.Rate,
-			r.SSROverall, r.Marvelous, r.Perfect, r.Great, r.Good, r.Bad, r.Miss, r.MaxCombo, clean(r.PlayedAt), clean(r.Modifiers))
+		fmt.Fprintf(&sb, "%d\t%s\t%.4f\t%.2f\t%.2f\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%s\t%s\t%d\n", r.Place, clean(r.Username), r.Wife, r.Rate,
+			r.SSROverall, r.Marvelous, r.Perfect, r.Great, r.Good, r.Bad, r.Miss, r.MaxCombo, clean(r.PlayedAt), clean(r.Modifiers), r.Source, r.ScoreID)
 	}
 	tmp := filepath.Join(onlineDir(data), "board.tmp")
 	os.WriteFile(tmp, []byte(sb.String()), 0o644)
 	os.Rename(tmp, filepath.Join(onlineDir(data), "board.txt"))
+}
+
+// answerDetail writes detail/<id>.txt for one score: "id<TAB>status" (ok, offline, none), then a
+// line with the eight skillset ratings, msd, holds ok, holds let go, mines hit, song title, chart
+// name, keys, source, played at, modifiers (tab-separated), then the replay's offsets (ms, commas).
+func answerDetail(data, id string) {
+	type row struct {
+		Overall    float64 `json:"ssr_overall"`
+		Stream     float64 `json:"ssr_stream"`
+		Jumpstream float64 `json:"ssr_jumpstream"`
+		Handstream float64 `json:"ssr_handstream"`
+		Stamina    float64 `json:"ssr_stamina"`
+		Jackspeed  float64 `json:"ssr_jackspeed"`
+		Chordjack  float64 `json:"ssr_chordjack"`
+		Technical  float64 `json:"ssr_technical"`
+		MSD        float64 `json:"msd"`
+		HoldsOK    int     `json:"holds_ok"`
+		HoldsNG    int     `json:"holds_ng"`
+		Mines      int     `json:"mines_hit"`
+		Title      string  `json:"song_title"`
+		ChartName  string  `json:"chart_name"`
+		Keys       int     `json:"keys"`
+		Source     string  `json:"source"`
+		PlayedAt   string  `json:"played_at"`
+		Modifiers  string  `json:"modifiers"`
+	}
+	clean := func(s string) string { return strings.NewReplacer("\t", " ", "\n", " ", "\r", " ").Replace(s) }
+	var rows []row
+	status := "ok"
+	err := onlineCall("GET", "/rest/v1/scores?id=eq."+url.PathEscape(id)+"&select=ssr_overall,ssr_stream,ssr_jumpstream,ssr_handstream,ssr_stamina,ssr_jackspeed,ssr_chordjack,ssr_technical,msd,holds_ok,holds_ng,mines_hit,song_title,chart_name,keys,source,played_at,modifiers", nil, "", &rows)
+	if err != nil {
+		status = "offline"
+	} else if len(rows) == 0 {
+		status = "none"
+	}
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "%s\t%s\n", id, status)
+	if status == "ok" {
+		r := rows[0]
+		fmt.Fprintf(&sb, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%s\t%d\t%s\t%s\t%s\n",
+			r.Overall, r.Stream, r.Jumpstream, r.Handstream, r.Stamina, r.Jackspeed, r.Chordjack, r.Technical, r.MSD,
+			r.HoldsOK, r.HoldsNG, r.Mines, clean(r.Title), clean(r.ChartName), r.Keys, r.Source, clean(r.PlayedAt), clean(r.Modifiers))
+		var reps []struct {
+			Offsets []float64 `json:"offsets"`
+		}
+		if onlineCall("GET", "/rest/v1/replays?score_id=eq."+url.PathEscape(id)+"&select=offsets", nil, "", &reps) == nil && len(reps) > 0 {
+			parts := make([]string, len(reps[0].Offsets))
+			for i, o := range reps[0].Offsets {
+				parts[i] = strconv.FormatFloat(o, 'f', 1, 64)
+			}
+			sb.WriteString(strings.Join(parts, ","))
+		}
+		sb.WriteByte('\n')
+	}
+	os.MkdirAll(filepath.Join(onlineDir(data), "detail"), 0o755)
+	tmp := filepath.Join(onlineDir(data), "detail", id+".tmp")
+	os.WriteFile(tmp, []byte(sb.String()), 0o644)
+	os.Rename(tmp, filepath.Join(onlineDir(data), "detail", id+".txt"))
 }
 
 // startOnlineService runs while the game is up: sends new scores and answers the song select's
@@ -666,6 +724,8 @@ func startOnlineService(data string) func() {
 	os.MkdirAll(filepath.Join(dir, "outbox"), 0o755)
 	os.Remove(filepath.Join(dir, "board.txt"))
 	os.Remove(filepath.Join(dir, "want.txt"))
+	os.Remove(filepath.Join(dir, "wantdetail.txt"))
+	os.RemoveAll(filepath.Join(dir, "detail"))
 	go func() {
 		if s, err := onlineToken(); err != nil {
 			logf("online: not signed in (%v): plays wait in the outbox", err)
@@ -693,7 +753,7 @@ func startOnlineService(data string) func() {
 		}
 	}()
 	go func() {
-		last, lastSend := "", time.Time{}
+		last, lastDetail, lastSend := "", "", time.Time{}
 		tick := time.NewTicker(300 * time.Millisecond)
 		defer tick.Stop()
 		for {
@@ -710,6 +770,16 @@ func startOnlineService(data string) func() {
 					last = w
 					chart, _, _ := strings.Cut(w, "\t")
 					answerBoard(data, chart)
+				}
+			}
+			// (one score's details, for the song select's score card: online/wantdetail.txt holds
+			// the score id and a request number; the answer goes to online/detail/<id>.txt)
+			if b, err := os.ReadFile(filepath.Join(dir, "wantdetail.txt")); err == nil {
+				w := strings.TrimSpace(string(b))
+				if w != "" && w != lastDetail {
+					lastDetail = w
+					id, _, _ := strings.Cut(w, "\t")
+					answerDetail(data, id)
 				}
 			}
 			if time.Since(lastSend) > 4*time.Second {

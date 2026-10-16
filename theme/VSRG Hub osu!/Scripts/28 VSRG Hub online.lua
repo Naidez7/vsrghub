@@ -391,7 +391,7 @@ local function hubScore(f)
 	end
 	local tns = { TapNoteScore_W1 = tonumber(f[6]) or 0, TapNoteScore_W2 = tonumber(f[7]) or 0, TapNoteScore_W3 = tonumber(f[8]) or 0,
 		TapNoteScore_W4 = tonumber(f[9]) or 0, TapNoteScore_W5 = tonumber(f[10]) or 0, TapNoteScore_Miss = tonumber(f[11]) or 0 }
-	local hs = { vhOnline = true, place = tonumber(f[1]), name = f[2] }
+	local hs = { vhOnline = true, place = tonumber(f[1]), name = f[2], source = f[15] or "", id = f[16] or "" }
 	function hs:GetDisplayName() return self.name end
 	function hs:GetWifeScore() return wife end
 	function hs:GetSSRNormPercent() return wife end

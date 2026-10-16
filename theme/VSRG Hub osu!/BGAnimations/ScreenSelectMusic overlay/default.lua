@@ -104,6 +104,7 @@ local function input(event)
 			SCREENMAN:SystemMessage("Options") -- in place of Etterna's "Practice Mode On"
 		end
 	end
+	if TW.hubScoreInput and TW.hubScoreInput(event) then return true end
 	if TW.dialogInput(event) then return true end
 	if TW.listInput(event) then return true end
 	if TW.optionsInput(event) then return true end
@@ -111,7 +112,7 @@ local function input(event)
 	-- the mouse wheel scrolls the song wheel, unless a panel is open
 	if (b == "DeviceButton_mousewheel up" or b == "DeviceButton_mousewheel down") and not TW.altHeld() then
 		local w = wheel()
-		if not w or TW.optionsOpen or TW.list or TW.dropOpen or (panel and panel ~= "Search") then return false end
+		if not w or TW.optionsOpen or TW.list or TW.dropOpen or TW.hubCard or (panel and panel ~= "Search") then return false end
 		-- (over a song's difficulties, when it has more than fit, the wheel scrolls them instead;
 		-- osu! stable's list just scrolls, the picked song staying picked: 29 VSRG Hub stable pick.lua)
 		if not TW.isLazer then
@@ -884,5 +885,6 @@ t[#t + 1] = profilePanel
 t[#t + 1] = TW.optionsPanel()
 t[#t + 1] = TW.listPanel { notes = true }
 t[#t + 1] = TW.dialogPanel()
+t[#t + 1] = TW.hubScorePanel()
 t[#t + 1] = TW.textureKeeper()
 return t

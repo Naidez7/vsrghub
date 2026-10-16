@@ -100,7 +100,7 @@ local board = Def.ActorFrame {
 -- clicking a score opens its results (Etterna's results for that play, from its replay)
 local function openScore(hs, watch)
 	if hs and TW.isHubScore and TW.isHubScore(hs) then
-		SCREENMAN:SystemMessage(string.format("%s: %.2f%% at %.2fx", hs:GetDisplayName(), hs:GetWifeScore() * 100, hs:GetMusicRate()))
+		TW.openHubScore(hs) -- (its card: 29 VSRG Hub score card.lua; no replay, Etterna can't play one it doesn't own)
 		return
 	end
 	if hs and TW.isOnlineScore and TW.isOnlineScore(hs) and TW.openOnlineScore then return TW.openOnlineScore(hs, watch) end

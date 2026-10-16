@@ -558,7 +558,8 @@ end
 -- Start button, so VSRG Hub keeps it too and puts it back on song select (TW.afterScoreView).
 function TW.showScore(hs)
 	if TW.isHubScore and TW.isHubScore(hs) then
-		SCREENMAN:SystemMessage(string.format("%s: %.2f%% at %sx", hs:GetDisplayName(), hs:GetWifeScore() * 100, (string.format("%.2f", hs:GetMusicRate()):gsub("0$", ""))))
+		-- (a score from VSRG Hub's ranking: its card, 29 VSRG Hub score card.lua)
+		if TW.openHubScore then TW.openHubScore(hs) end
 		return true
 	end
 	local top = SCREENMAN:GetTopScreen()

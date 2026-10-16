@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.98",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.98.zip",
- "sha256": "ab7291d6afebced652cbc6323785d9dd4c39e203655ed61feaede2b8cf1c267c",
- "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card).",
+ "version": "1.8.0-beta.99",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.99.zip",
+ "sha256": "a3e82caf242f7d027468db306e52c40f98bdfe157eac9a57d52838051270ae31",
+ "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's.",
  "latest": {
-  "version": "1.8.0-beta.98",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.98.zip",
-  "sha256": "ab7291d6afebced652cbc6323785d9dd4c39e203655ed61feaede2b8cf1c267c",
-  "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
+  "version": "1.8.0-beta.99",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.99.zip",
+  "sha256": "a3e82caf242f7d027468db306e52c40f98bdfe157eac9a57d52838051270ae31",
+  "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.99",
+   "date": "2026-10-16",
+   "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's."
+  },
   {
    "version": "1.8.0-beta.98",
    "date": "2026-10-16",

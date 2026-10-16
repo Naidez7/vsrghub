@@ -105,6 +105,7 @@ local function input(event)
 			SCREENMAN:SystemMessage("Options") -- in place of Etterna's "Practice Mode On"
 		end
 	end
+	if TW.hubScoreInput and TW.hubScoreInput(event) then return true end
 	if TW.listInput(event) then return true end
 	if TW.optionsInput(event) then return true end
 	local b = event.DeviceInput.button
@@ -680,5 +681,6 @@ t[#t + 1] = mm
 t[#t + 1] = QV.optionsPanel()
 t[#t + 1] = QV.windowsDialog()
 t[#t + 1] = TW.listPanel { notes = true }
+t[#t + 1] = TW.hubScorePanel()
 t[#t + 1] = TW.textureKeeper()
 return t

@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.99",
+  "date": "2026-10-16",
+  "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's."
+ },
+ {
   "version": "1.8.0-beta.98",
   "date": "2026-10-16",
   "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
