@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.84",
+  "date": "- osu!lazer look, song list: the MSD pill stays inside the card, and \"[4K] chart name\" starts after the RANKED pill instead of over it.",
+  "notes": ""
+ },
+ {
   "version": "1.8.0-beta.83",
   "date": "- osu!lazer look, song list: the MSD pill no longer cuts its number short, the RANKED pill fits its word, and the grade letter sits in the middle of its bubble.",
   "notes": ""

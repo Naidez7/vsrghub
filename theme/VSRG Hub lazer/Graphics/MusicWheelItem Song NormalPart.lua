@@ -204,7 +204,7 @@ local t = Def.ActorFrame {
 		-- RANKED, "[4K] chart name", "mapped by": the hardest chart
 		Def.ActorFrame {
 			Name = "Diff",
-			InitCommand = function(self) self:xy(TX, -H / 2 + M(44)) end,
+			InitCommand = function(self) self:xy(TX, -H / 2 + M(42)) end,
 			SetCommand = function(self, p) self.p = p; self:playcommand("Fill") end,
 			CurrentRateChangedMessageCommand = function(self) if self.p then self:playcommand("Fill") end end,
 			FillCommand = function(self)
@@ -214,19 +214,21 @@ local t = Def.ActorFrame {
 				if not p.Song then return end
 				local st, m = hardest(p.Song)
 				local by = TW.author(p.Song)
-				c.Name:x(M(52)):settextf("[%dK] %s", TW.keys(st), st and TW.diffName(st) or ""):maxwidth((TEXT_W - M(200)) / c.Name:GetZoom())
-				c.By:x(M(52) + c.Name:GetZoomedWidth() + M(5)):settext(by ~= "" and ("mapped by " .. by) or ""):maxwidth(M(150) / c.By:GetZoom())
+				c.Name:settextf("[%dK] %s", TW.keys(st), st and TW.diffName(st) or ""):maxwidth((TEXT_W - M(200)) / c.Name:GetZoom())
+				c.By:settext(by ~= "" and ("mapped by " .. by) or ""):maxwidth(M(150) / c.By:GetZoom())
 				c.Star:playcommand("Msd", { v = m })
 				-- (the RANKED pill as wide as its word, with the same room on both sides)
 				local rw = c.Ranked:GetZoomedWidth() + M(12)
 				TW.setBox(c.RankedBg, { w = rw })
 				c.Ranked:x(rw / 2)
+				c.Name:x(rw + M(6))
+				c.By:x(rw + M(6) + c.Name:GetZoomedWidth() + M(5))
 			end,
 			TW.box { w = M(46), h = M(13), r = M(4), ay = 0.5, col = ranked } .. { Name = "RankedBg" },
 			LZ.text(M(8), "bold", function(self) self:align(0.5, 0.5):xy(M(23), M(0.5)):settext("RANKED"):diffuse(TW.rgb(30, 50, 10)) end) .. { Name = "Ranked" },
 			LZ.text(M(11), "bold", function(self) self:align(0, 0.5) end) .. { Name = "Name" },
 			LZ.text(M(11), "regular", function(self) self:align(0, 0.5):diffuse(LZ.a(white, 0.85)) end) .. { Name = "By" },
-			LZ.starPill(M(15), function(self) self:y(M(17)) end) .. { Name = "Star" },
+			LZ.starPill(M(13), function(self) self:y(M(13)) end) .. { Name = "Star" },
 		},
 		-- a soft light over the card under the mouse
 		TW.box { w = W, h = H, r = TW.M(8), ay = 0.5, blend = "BlendMode_Add", col = { 1, 1, 1, 0.09 }, col2 = { 1, 1, 1, 0.03 } } .. {

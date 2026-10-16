@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.83",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.83.zip",
- "sha256": "725a751ca4c22539a9534a6e4f00c74dffa4c74d92390f2bcf3c4225c1e211f9",
+ "version": "1.8.0-beta.84",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.84.zip",
+ "sha256": "fb60036a08db854982b04ee9ea82de9f0fb890bad73845f77b63d1b5203fcbbf",
  "notes": "",
  "latest": {
-  "version": "1.8.0-beta.83",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.83.zip",
-  "sha256": "725a751ca4c22539a9534a6e4f00c74dffa4c74d92390f2bcf3c4225c1e211f9",
+  "version": "1.8.0-beta.84",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.84.zip",
+  "sha256": "fb60036a08db854982b04ee9ea82de9f0fb890bad73845f77b63d1b5203fcbbf",
   "notes": ""
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.84",
+   "date": "- osu!lazer look, song list: the MSD pill stays inside the card, and \"[4K] chart name\" starts after the RANKED pill instead of over it.",
+   "notes": ""
+  },
   {
    "version": "1.8.0-beta.83",
    "date": "- osu!lazer look, song list: the MSD pill no longer cuts its number short, the RANKED pill fits its word, and the grade letter sits in the middle of its bubble.",
