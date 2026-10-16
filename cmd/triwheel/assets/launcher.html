@@ -1236,7 +1236,7 @@ function drawActivity(ev) {
 function openReport() {
 	pShown = { id: "#report" };
 	const c = $("pcard");
-	c.innerHTML = `<div class="ph"><div><b>Report a problem</b><small>VSRG Hub puts what's needed to see what happened (its logs and the game's) in a zip on your desktop. Send that zip with your message.</small></div><button class="x" id="p-x">✕</button></div>
+	c.innerHTML = `<div class="ph"><div><b>Report a problem</b><small>VSRG Hub puts what's needed to see what happened (its logs and the game's) in a zip on your desktop, then opens a GitHub issue with your message: attach the zip there (drag it into the text).</small></div><button class="x" id="p-x">✕</button></div>
 		<label class="field"><span>What happened? What were you doing just before?</span><textarea class="in" id="r-text" placeholder="e.g. I picked a song, pressed Enter and the game stayed on the options message"></textarea></label>
 		<div class="formacts"><button class="btn primary" id="r-go">Make the zip</button></div><div class="msg" id="r-msg"></div>`;
 	$("p-x").onclick = closePlayer;
@@ -1248,7 +1248,10 @@ window.onReport = r => {
 	const m = $("r-msg"); if (!m) return;
 	$("r-go").disabled = false;
 	if (r.error) { m.className = "msg err"; m.textContent = "The zip couldn't be made: " + r.error; return; }
-	m.className = "msg ok"; m.textContent = "Saved on your desktop: " + r.path.split(/[\\/]/).pop() + " (it's selected in the window that opened). Send it to whoever helps you with VSRG Hub.";
+	m.className = "msg ok"; m.textContent = "Saved on your desktop: " + r.path.split(/[\\/]/).pop() + " (it's selected in the window that opened). A GitHub issue opened in your browser: drag the zip into it and post it.";
+	const text = ($("r-text") ? $("r-text").value : "").trim();
+	const body = (text || "(what happened)") + "\n\n---\nVSRG Hub " + (S && S.installed ? S.installed : "") + " · the report zip from the desktop is attached below.";
+	window.vh_open("https://github.com/Naidez7/vsrghub/issues/new?title=" + encodeURIComponent("Problem: " + (text.split("\n")[0] || "").slice(0, 60)) + "&body=" + encodeURIComponent(body));
 };
 // admins: the scores worth a look (unverified, very high accuracy, taken off)
 function openSuspicious() {

@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.94",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.94.zip",
- "sha256": "41075115209229e2bb1084ef245f8c592e7c826dfd512b625ed9d1cc47633e84",
- "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K.",
+ "version": "1.8.0-beta.95",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.95.zip",
+ "sha256": "81542004e255fab0b2fef6a0f5346f16f51857edbf119b93b7be8079ae43233f",
+ "notes": "- Report a problem: after the zip, a GitHub issue opens in your browser with your message filled in; drag the zip into it and post.",
  "latest": {
-  "version": "1.8.0-beta.94",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.94.zip",
-  "sha256": "41075115209229e2bb1084ef245f8c592e7c826dfd512b625ed9d1cc47633e84",
-  "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
+  "version": "1.8.0-beta.95",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.95.zip",
+  "sha256": "81542004e255fab0b2fef6a0f5346f16f51857edbf119b93b7be8079ae43233f",
+  "notes": "- Report a problem: after the zip, a GitHub issue opens in your browser with your message filled in; drag the zip into it and post."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.95",
+   "date": "2026-10-16",
+   "notes": "- Report a problem: after the zip, a GitHub issue opens in your browser with your message filled in; drag the zip into it and post."
+  },
   {
    "version": "1.8.0-beta.94",
    "date": "2026-10-16",

@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.95",
+  "date": "2026-10-16",
+  "notes": "- Report a problem: after the zip, a GitHub issue opens in your browser with your message filled in; drag the zip into it and post."
+ },
+ {
   "version": "1.8.0-beta.94",
   "date": "2026-10-16",
   "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
