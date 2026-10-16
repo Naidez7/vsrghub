@@ -200,12 +200,17 @@ function TW.offsetPlot(p)
 	-- header: title, judge switcher with the rescored Wife%, column filter
 	f[#f + 1] = text(13 * s, true, function(self) self:align(0, 0.5):xy(X + 8 * s, Y + headH / 2):settext("Hit offsets"):diffuse(accent) end)
 	local jx = X + 120 * s
+	-- (the filter chips are right aligned: the judge's text keeps clear of them on a narrow plot)
+	local nChips = 3 + cols
+	local chipW = math.min(30 * s, (W * 0.5) / nChips)
+	local chipsX = X + W - 8 * s - chipW * nChips
+	local judgeMax = chipsX - 6 * s - 24 * s - (jx + 12 * s)
 	f[#f + 1] = text(12 * s, true, function(self) self:align(0.5, 0.5):xy(jx, Y + headH / 2):settext("<") end)
 	f[#f + 1] = hit(18 * s, headH, jx, Y + headH / 2, function() setJudge(-1) end)
 	f[#f + 1] = text(12 * s, true, function(self) self:align(0, 0.5):xy(jx + 12 * s, Y + headH / 2) end) .. {
 		OnCommand = function(self) self:playcommand("Set") end, TWPlotChangedMessageCommand = function(self) self:playcommand("Set") end,
 		SetCommand = function(self)
-			self:settextf("%s  %.2f%%", judgeLabel(), rescored())
+			self:settextf("%s  %.2f%%", judgeLabel(), rescored()):maxwidth(math.max(40 * s, judgeMax) / self:GetZoom())
 			self:diffuse(state.judge and color("#FFDD55") or color("#FFFFFF"))
 			local nx = self:GetParent():GetChild("JNext")
 			if nx then nx:x(self:GetX() + self:GetZoomedWidth() + 10 * s) end
@@ -219,8 +224,8 @@ function TW.offsetPlot(p)
 	-- filter chips, right aligned: All, L, R, 1..n; each column chip shows its miss count
 	local chips = { { 0, "All" }, { -1, "L" }, { -2, "R" } }
 	for c = 1, cols do chips[#chips + 1] = { c, tostring(c) } end
-	local cw = math.min(30 * s, (W * 0.5) / #chips)
-	local cx0 = X + W - 8 * s - cw * #chips
+	local cw = chipW
+	local cx0 = chipsX
 	local missBy = {}
 	for c = 1, cols do missBy[c] = stats(function(cc) return cc == c - 1 end) end
 	for i, ch in ipairs(chips) do

@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.88",
+  "date": "2026-10-15",
+  "notes": "- Results: when a play isn't sent to VSRG Hub, the line at the bottom says why (paused or invalid in Etterna, failed, autoplay, practice...) instead of nothing.\n- osu!lazer look, results: the hit offsets' judge switcher no longer runs into the column buttons."
+ },
+ {
   "version": "1.8.0-beta.87",
   "date": "2026-10-15",
   "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder)."

@@ -176,29 +176,35 @@ local function scoreJSON(hs, steps, song, d, failed)
 end
 -- (a score counts when Etterna counts it for its rating: valid, not failed, 4K or 7K. A failed play
 -- of the day's challenge is sent too, marked failed: it goes on the day's board and nowhere else)
+-- counts(hs, steps) -> sent, failed, why (why: the reason it isn't sent, for the results screen)
 local function counts(hs, steps)
-	if not try(function() return hs:GetEtternaValid() end, true) or try(function() return hs:GetChordCohesion() end, false) then return false end
+	if not try(function() return hs:GetEtternaValid() end, true) then return false, false, "Etterna marks this play invalid (paused, or a mod that doesn't count)" end
+	if try(function() return hs:GetChordCohesion() end, false) then return false, false, "played with chord cohesion on" end
 	local keys = TW.keys(steps)
-	if keys ~= 4 and keys ~= 7 then return false end
+	if keys ~= 4 and keys ~= 7 then return false, false, "only 4K and 7K plays are ranked" end
 	if try(function() return hs:GetWifeGrade() end, "") == "Grade_Failed" then
 		local d = TW.daily and TW.daily(keys)
-		return d ~= nil and d.chart == hs:GetChartKey(), true
+		if d ~= nil and d.chart == hs:GetChartKey() then return true, true end
+		return false, true, "failed plays aren't sent"
 	end
 	return true, false
 end
 
+-- (TW.hubSkipped: why the play on the results screen wasn't sent, for the results screen's line;
+-- nil for a play that was, or a score only looked at again)
 function TW.exportScore()
+	TW.hubSkipped = nil
 	pcall(function()
 		if TW.rateBeforeView then return end -- (a score looked at again from song select)
-		if TW.inPractice and TW.inPractice() then return end
+		if TW.inPractice and TW.inPractice() then TW.hubSkipped = "practice mode" return end
 		local pc = GAMESTATE:GetPlayerState():GetPlayerController()
-		if pc == "PlayerController_Autoplay" or pc == "PlayerController_Cpu" then return end
+		if pc == "PlayerController_Autoplay" or pc == "PlayerController_Cpu" then TW.hubSkipped = "autoplay" return end
 		local hs = TW.resultsScore and TW.resultsScore()
-		if not hs then return end
+		if not hs then TW.hubSkipped = "Etterna didn't save this play" return end
 		local steps = GAMESTATE:GetCurrentSteps()
-		if not steps or steps:GetChartKey() ~= hs:GetChartKey() then return end
-		local ok, failed = counts(hs, steps)
-		if not ok then return end
+		if not steps or steps:GetChartKey() ~= hs:GetChartKey() then TW.hubSkipped = "the chart changed" return end
+		local ok, failed, why = counts(hs, steps)
+		if not ok then TW.hubSkipped = why or "not a ranked play" return end
 		local d = (not failed) and TW.accData and TW.accData() or nil
 		local json, key = scoreJSON(hs, steps, GAMESTATE:GetCurrentSong(), d, failed)
 		File.Write(ONLINE .. "outbox/" .. key .. ".json", json)
@@ -290,7 +296,15 @@ function TW.hubResultLine(x, y, textFn)
 		StartCommand = function(self)
 			self.key = TW.hubWaiting
 			TW.hubWaiting = nil
-			if not self.key or not TW.hubMe() then return end
+			if not TW.hubMe() then return end
+			if not self.key then
+				-- (not sent: say why, so a missing play is no mystery)
+				if TW.hubSkipped then
+					self:GetChild("T"):settext("Not sent to VSRG Hub: " .. TW.hubSkipped)
+					self:linear(0.2):diffusealpha(1)
+				end
+				return
+			end
 			self.t0 = GetTimeSinceStart()
 			self:GetChild("T"):settext("Sending your play to VSRG Hub's ranking...")
 			self:linear(0.2):diffusealpha(1):queuecommand("Poll")
