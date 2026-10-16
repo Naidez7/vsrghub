@@ -320,7 +320,9 @@ language sql stable security definer set search_path = public as $$
 			and (at_rate is null or abs(s.rate - at_rate) < 0.001)
 		order by s.user_id, (case when at_rate is null then s.ssr_overall else s.wife end) desc
 	)
-	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc),
+	-- (Etterna's calculator stops raising a play's rating past about 97%: plays tied on rating go
+	-- by accuracy, then the earlier one first)
+	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc, b.wife desc, b.played_at),
 		p.username, b.user_id, b.wife, b.rate, b.ssr_overall, b.marvelous, b.perfect, b.great,
 		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at, b.source, b.id
 	from best b join public.profiles p on p.id = b.user_id
@@ -847,7 +849,7 @@ grant execute on function public.fix_played_at(jsonb) to authenticated;
 do $$ declare u uuid; begin
 	for u in select distinct user_id from public.scores where keys = 7 loop perform public.vh_refresh_rating(u, 7::smallint); end loop;
 end $$;
-insert into public.vh_meta (key, value) values ('schema_version', '19')
+insert into public.vh_meta (key, value) values ('schema_version', '20')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

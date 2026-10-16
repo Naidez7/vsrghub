@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.102",
+  "date": "2026-10-16",
+  "notes": "- Scoreboard order: plays tied on rating (Etterna's calculator stops raising a play's rating past about 97%) go by accuracy, then the earlier one first, on the server (update 20) and in the game's Sort."
+ },
+ {
   "version": "1.8.0-beta.101",
   "date": "2026-10-16",
   "notes": "- Song select scoreboard, every look and scope: a Sort control (Rating, Accuracy, Combo, Newest); the places follow the order. In osu! it's the pill right of the rate, in lazer the Sort pill next to Rate, in Quaver the box left of RANKING. Click goes on, right click back.\n- Quaver look: the main menu plays a random song, as Quaver's does, and song select opens on it (the osu! looks already did).\n- The scoreboard's wheel scrolling stays off while the map preview is shown."

@@ -41,7 +41,7 @@ const (
 var onlineClient = &http.Client{Timeout: 15 * time.Second}
 
 // wantServerVersion: the server/supabase/v2.sql this program expects (its schema_version)
-const wantServerVersion = 19
+const wantServerVersion = 20
 
 // onlineServerVersion: the version of v2.sql the server has run (0 when it never has, -1 offline)
 func onlineServerVersion() int {

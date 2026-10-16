@@ -34,9 +34,15 @@ function TW.sortBoard(list)
 	local how = TW.boardSorts[TW.boardSort][2]
 	local out = {}
 	for i, hs in ipairs(list) do out[i] = hs end
-	local keys = {}
-	for _, hs in ipairs(out) do keys[hs] = scoreKeyOf(hs, how) end
-	table.sort(out, function(a, b) return keys[a] > keys[b] end)
+	-- (ties: Etterna's calculator stops raising a play's rating past about 97%, so plays tied on
+	-- rating go by accuracy, then the earlier one first)
+	local keys, acc, when = {}, {}, {}
+	for _, hs in ipairs(out) do keys[hs] = scoreKeyOf(hs, how); acc[hs] = scoreKeyOf(hs, "acc"); when[hs] = scoreKeyOf(hs, "date") end
+	table.sort(out, function(a, b)
+		if keys[a] ~= keys[b] then return keys[a] > keys[b] end
+		if acc[a] ~= acc[b] then return acc[a] > acc[b] end
+		return tostring(when[a]) < tostring(when[b])
+	end)
 	return out
 end
 
