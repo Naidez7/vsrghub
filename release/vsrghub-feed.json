@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.86",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.86.zip",
- "sha256": "035461029f715a2ff4be592e6573a0691fcbce1de148b9eafc01cf9d23aaafd2",
- "notes": "- What's new: betas 82 to 85 had their notes missing (their files lacked the date line); they're there now.",
+ "version": "1.8.0-beta.87",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.87.zip",
+ "sha256": "8694e2f18608b0acd667391351a2fb1e9eaa126ef54f816fa4d51d7ca4ac59e0",
+ "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder).",
  "latest": {
-  "version": "1.8.0-beta.86",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.86.zip",
-  "sha256": "035461029f715a2ff4be592e6573a0691fcbce1de148b9eafc01cf9d23aaafd2",
-  "notes": "- What's new: betas 82 to 85 had their notes missing (their files lacked the date line); they're there now."
+  "version": "1.8.0-beta.87",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.87.zip",
+  "sha256": "8694e2f18608b0acd667391351a2fb1e9eaa126ef54f816fa4d51d7ca4ac59e0",
+  "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.87",
+   "date": "2026-10-15",
+   "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder)."
+  },
   {
    "version": "1.8.0-beta.86",
    "date": "2026-10-15",

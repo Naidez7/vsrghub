@@ -59,6 +59,15 @@ func makeThumbs(lib string, groups []string) {
 				continue
 			}
 			dir := filepath.Join(lib, g, s.Name())
+			if _, err := os.Stat(filepath.Join(dir, s.Name()+".sm")); err != nil {
+				// (a song gone from the game it came from: its chart is gone, so its pictures go too,
+				// and the folder when nothing else is left in it)
+				os.Remove(filepath.Join(dir, thumbName))
+				os.Remove(filepath.Join(dir, thumbNone))
+				os.Remove(filepath.Join(dir, bigName))
+				os.Remove(dir)
+				continue
+			}
 			bg := smBackground(filepath.Join(dir, s.Name()+".sm"))
 			if bg == "" {
 				continue

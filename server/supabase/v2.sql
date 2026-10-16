@@ -28,6 +28,8 @@ $$;
 grant execute on function public.server_version() to anon, authenticated;
 alter table public.scores add column if not exists verified boolean not null default false;
 alter table public.scores add column if not exists notes int not null default 0;
+-- a failed play of the day's challenge (sent only for that): on the day's board, marked, and never counted anywhere
+alter table public.scores add column if not exists failed boolean not null default false;
 alter table public.scores add column if not exists removed_by uuid;
 
 -- (the scores sent before this update were already counted: they stay so)
@@ -174,10 +176,12 @@ declare
 	ok boolean := false;
 	known public.charts;
 	sid bigint;
+	failed boolean := coalesce((s->>'failed')::boolean, false);
 begin
+	if failed then offs := null; end if; -- (a failed play: kept without its replay, never verified or counted)
 	judged := coalesce((s->>'marvelous')::int, 0) + coalesce((s->>'perfect')::int, 0) + coalesce((s->>'great')::int, 0)
 		+ coalesce((s->>'good')::int, 0) + coalesce((s->>'bad')::int, 0) + coalesce((s->>'miss')::int, 0);
-	if jsonb_typeof(s->'offsets') = 'array' then
+	if jsonb_typeof(s->'offsets') = 'array' and not failed then
 		select array_agg(x::real) into offs from jsonb_array_elements_text(s->'offsets') as x;
 	end if;
 	if offs is not null then
@@ -202,7 +206,7 @@ begin
 		ssr_overall, ssr_stream, ssr_jumpstream, ssr_handstream, ssr_stamina, ssr_jackspeed,
 		ssr_chordjack, ssr_technical, msd, marvelous, perfect, great, good, bad, miss, holds_ok,
 		holds_ng, mines_hit, max_combo, modifiers, song_title, song_artist, chart_name, played_at,
-		has_replay, verified, notes, source)
+		has_replay, verified, notes, source, failed, valid)
 	values (uid, s->>'score_key', s->>'chart_key', k, (s->>'rate')::real, wife,
 		coalesce((s->>'ssr_overall')::real, 0), coalesce((s->>'ssr_stream')::real, 0),
 		coalesce((s->>'ssr_jumpstream')::real, 0), coalesce((s->>'ssr_handstream')::real, 0),
@@ -217,7 +221,7 @@ begin
 		left(coalesce(s->>'modifiers', ''), 200), left(coalesce(s->>'song_title', ''), 200),
 		left(coalesce(s->>'song_artist', ''), 200), left(coalesce(s->>'chart_name', ''), 100),
 		(s->>'played_at')::timestamptz, offs is not null, ok, taps,
-		case when s->>'source' in ('osu', 'lazer', 'quaver') then s->>'source' else 'etterna' end)
+		case when s->>'source' in ('osu', 'lazer', 'quaver') then s->>'source' else 'etterna' end, failed, not failed)
 	on conflict (user_id, score_key) do nothing
 	returning id into sid;
 	if sid is null then return null; end if;
@@ -401,20 +405,22 @@ end
 $$;
 grant execute on function public.daily_chart(date, smallint) to anon, authenticated;
 
-create or replace function public.daily_board(day date, k smallint default 4)
+-- (a player's failed attempts count only when they have no pass that day: those come last, marked)
+drop function if exists public.daily_board(date, smallint);
+create function public.daily_board(day date, k smallint default 4)
 returns table(place bigint, user_id uuid, username text, avatar int, avatar_ext text, wife real, rate real, ssr_overall real,
-	max_combo int, played_at timestamptz, source text, score_id bigint)
+	max_combo int, played_at timestamptz, source text, score_id bigint, failed boolean)
 language sql volatile security definer set search_path = public as $$
 	with d as (select chart_key from public.daily_chart(day, k)),
 	best as (
-		select distinct on (s.user_id) s.user_id, s.wife, s.rate, s.ssr_overall, s.max_combo, s.played_at, s.source, s.id
+		select distinct on (s.user_id) s.user_id, s.wife, s.rate, s.ssr_overall, s.max_combo, s.played_at, s.source, s.id, s.failed
 		from public.scores s join d on d.chart_key = s.chart_key join public.profiles p on p.id = s.user_id
-		where s.valid and not p.banned and s.played_at >= day::timestamptz and s.played_at < (day + 1)::timestamptz
-		order by s.user_id, s.ssr_overall desc, s.wife desc)
-	select row_number() over (order by b.ssr_overall desc, b.wife desc), b.user_id, p.username, p.avatar, p.avatar_ext,
-		b.wife, b.rate, b.ssr_overall, b.max_combo, b.played_at, b.source, b.id
+		where (s.valid or s.failed) and not p.banned and s.played_at >= day::timestamptz and s.played_at < (day + 1)::timestamptz
+		order by s.user_id, s.failed, s.ssr_overall desc, s.wife desc)
+	select row_number() over (order by b.failed, b.ssr_overall desc, b.wife desc), b.user_id, p.username, p.avatar, p.avatar_ext,
+		b.wife, b.rate, b.ssr_overall, b.max_combo, b.played_at, b.source, b.id, b.failed
 	from best b join public.profiles p on p.id = b.user_id
-	order by b.ssr_overall desc, b.wife desc
+	order by b.failed, b.ssr_overall desc, b.wife desc
 	limit 100
 $$;
 grant execute on function public.daily_board(date, smallint) to anon, authenticated;
@@ -422,7 +428,7 @@ grant execute on function public.daily_board(date, smallint) to anon, authentica
 -- the last days' challenges and who won them
 create or replace function public.daily_history(days int default 14, k smallint default 4)
 returns table(day date, chart_key text, song_title text, chart_name text, msd real, winner text, winner_ssr real, players bigint)
-language plpgsql stable security definer set search_path = public as $$
+language plpgsql volatile security definer set search_path = public as $$
 declare
 	d date;
 begin
@@ -430,8 +436,8 @@ begin
 		d := (now() at time zone 'UTC')::date - (i - 1);
 		return query
 		select d, c.chart_key, c.song_title, c.chart_name, c.msd,
-			(select b.username from public.daily_board(d, k) b where b.place = 1),
-			(select b.ssr_overall from public.daily_board(d, k) b where b.place = 1),
+			(select b.username from public.daily_board(d, k) b where b.place = 1 and not b.failed),
+			(select b.ssr_overall from public.daily_board(d, k) b where b.place = 1 and not b.failed),
 			(select count(*) from public.daily_board(d, k))
 		from public.daily_chart(d, k) c;
 	end loop;
@@ -832,7 +838,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '17')
+insert into public.vh_meta (key, value) values ('schema_version', '18')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

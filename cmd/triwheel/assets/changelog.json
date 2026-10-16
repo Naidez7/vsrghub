@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.87",
+  "date": "2026-10-15",
+  "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder)."
+ },
+ {
   "version": "1.8.0-beta.86",
   "date": "2026-10-15",
   "notes": "- What's new: betas 82 to 85 had their notes missing (their files lacked the date line); they're there now."

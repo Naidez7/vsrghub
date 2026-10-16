@@ -76,3 +76,6 @@ table.rk tr.clickable { cursor: pointer; } table.rk tr.clickable:hover td { back
 .play.best { border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.05); } .play.top { border-color: rgba(255,92,158,.45); background: rgba(255,92,158,.07); }
 .star { color: #ffd27a; font-size: 13px; } .star.top { color: #ff5c9e; text-shadow: 0 0 8px rgba(255,92,158,.6); }
 .pager { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; color: var(--dim); font-size: 13px; }
+
+.play.failed { opacity: .6; }
+.play .tag.fail { margin-left: 8px; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: rgba(255,92,92,.15); color: #ff7b7b; vertical-align: 1px; }

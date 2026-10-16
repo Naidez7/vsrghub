@@ -139,7 +139,7 @@ local function try(f, d)
 end
 -- a score as VSRG Hub's server takes it (its replay's offsets with it, so the server can check the
 -- accuracy: d is { dvt = offsets, totalTaps, holdsMissed, minesHit }, or nil without a replay)
-local function scoreJSON(hs, steps, song, d)
+local function scoreJSON(hs, steps, song, d, failed)
 	local keys = TW.keys(steps)
 	local rate = hs:GetMusicRate()
 	local wife = hs:GetWifeScore()
@@ -154,6 +154,7 @@ local function scoreJSON(hs, steps, song, d)
 		holds_ng = try(function() return hs:GetHoldNoteScore("HoldNoteScore_LetGo") end, 0),
 		mines_hit = try(function() return hs:GetTapNoteScore("TapNoteScore_HitMine") end, 0),
 	}
+	if failed then s.failed = true end
 	local d8 = try(function() return hs:GetDate() end, "")
 	if d8 ~= "" then
 		-- (Etterna's date is the PC's local time: with its offset from UTC)
@@ -173,12 +174,17 @@ local function scoreJSON(hs, steps, song, d)
 	end
 	return json, s.score_key
 end
--- (a score counts when Etterna counts it for its rating: valid, not failed, 4K or 7K)
+-- (a score counts when Etterna counts it for its rating: valid, not failed, 4K or 7K. A failed play
+-- of the day's challenge is sent too, marked failed: it goes on the day's board and nowhere else)
 local function counts(hs, steps)
 	if not try(function() return hs:GetEtternaValid() end, true) or try(function() return hs:GetChordCohesion() end, false) then return false end
-	if try(function() return hs:GetWifeGrade() end, "") == "Grade_Failed" then return false end
 	local keys = TW.keys(steps)
-	return keys == 4 or keys == 7
+	if keys ~= 4 and keys ~= 7 then return false end
+	if try(function() return hs:GetWifeGrade() end, "") == "Grade_Failed" then
+		local d = TW.daily and TW.daily(keys)
+		return d ~= nil and d.chart == hs:GetChartKey(), true
+	end
+	return true, false
 end
 
 function TW.exportScore()
@@ -191,9 +197,10 @@ function TW.exportScore()
 		if not hs then return end
 		local steps = GAMESTATE:GetCurrentSteps()
 		if not steps or steps:GetChartKey() ~= hs:GetChartKey() then return end
-		if not counts(hs, steps) then return end
-		local d = TW.accData and TW.accData() or nil
-		local json, key = scoreJSON(hs, steps, GAMESTATE:GetCurrentSong(), d)
+		local ok, failed = counts(hs, steps)
+		if not ok then return end
+		local d = (not failed) and TW.accData and TW.accData() or nil
+		local json, key = scoreJSON(hs, steps, GAMESTATE:GetCurrentSong(), d, failed)
 		File.Write(ONLINE .. "outbox/" .. key .. ".json", json)
 		TW.hubWaiting = key
 	end)
@@ -246,7 +253,8 @@ function TW.backfillActor()
 								for _, sar in pairs(byRate) do
 									local best
 									for _, hs in ipairs(sar:GetScores() or {}) do
-										if counts(hs, steps) and (not best or hs:GetWifeScore() > best:GetWifeScore()) then best = hs end
+										local ok, failed = counts(hs, steps)
+										if ok and not failed and (not best or hs:GetWifeScore() > best:GetWifeScore()) then best = hs end
 									end
 									if best then
 										local json, key = scoreJSON(best, steps, song, replayData(best))

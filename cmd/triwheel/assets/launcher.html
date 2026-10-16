@@ -276,6 +276,8 @@ input.in:focus { border-color: rgba(255,92,158,.6); }
 .feed .play .t a, .play .t .who-link { color: var(--text); font-weight: 700; cursor: pointer; }
 .play.clickable:hover, .feed .play:hover { border-color: rgba(255,92,158,.35); }
 .play.best { border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.05); }
+.play.failed { opacity: .6; }
+.play .tag.fail { margin-left: 8px; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: rgba(255,92,92,.15); color: #ff7b7b; vertical-align: 1px; }
 .play.top { border-color: rgba(255,92,158,.45); background: rgba(255,92,158,.07); }
 .star { color: #ffd27a; font-size: 13px; }
 .star.top { color: #ff5c9e; text-shadow: 0 0 8px rgba(255,92,158,.6); }
@@ -1172,10 +1174,10 @@ function drawDaily(ev) {
 	b.innerHTML = `<div class="era" style="margin:14px 0 8px">Today's ${K}K chart · ${Math.floor(left / 3600)}h ${Math.floor(left % 3600 / 60)}m left${feedKeys === 0 ? " · pick 4K or 7K beside the tabs" : ""}</div>
 		<div class="play"><span class="t"><b>${esc(c.song_title || "?")}</b> <small>${esc(c.song_artist || "")}${c.chart_name ? " · " + esc(c.chart_name) : ""} · ${K}K · MSD ${(+c.msd).toFixed(2)} · played by ${c.players} player${c.players === 1 ? "" : "s"} all-time</small></span>
 		<span class="s"><button class="btn small" id="daily-play">Play it</button></span>
-		<span class="d">${mine ? `You're #${mine.place} today with ${(+mine.ssr_overall).toFixed(2)}` : "No play of yours today yet"} · ${board.length} player${board.length === 1 ? "" : "s"} so far today</span>
+		<span class="d">${mine ? `${mine.failed ? "You failed it today: pass it to get a place" : `You're #${mine.place} today with ${(+mine.ssr_overall).toFixed(2)}`}` : "No play of yours today yet"} · ${board.length} player${board.length === 1 ? "" : "s"} so far today</span>
 		<span class="a"><a class="dim" href="#" id="daily-chart">All-time board ›</a></span></div>
 		<div class="era" style="margin:14px 0 8px">Today's board</div>` +
-		(board.slice(0, 10).map(r => `<div class="play ${r.user_id === me ? "best" : ""}" style="cursor:pointer" data-u="${esc(r.user_id)}"><span class="t"><span class="rank">${r.place}</span>${srcDot(r.source)}<b>${esc(r.username)}</b> <small>${(+r.rate).toFixed(2).replace(/0$/, "")}x · ${r.max_combo}x combo</small></span><span class="s">${(+r.ssr_overall).toFixed(2)}</span><span class="d">${ago(r.played_at)}</span><span class="a"><b>${(+r.wife).toFixed(2)}%</b></span></div>`).join("") || `<div class="empty">Nobody has played it today. Be the first!</div>`) +
+		(board.slice(0, 10).map(r => `<div class="play ${r.user_id === me ? "best" : ""} ${r.failed ? "failed" : ""}" style="cursor:pointer" data-u="${esc(r.user_id)}"><span class="t"><span class="rank">${r.failed ? "—" : r.place}</span>${srcDot(r.source)}<b>${esc(r.username)}</b> <small>${(+r.rate).toFixed(2).replace(/0$/, "")}x · ${r.max_combo}x combo</small>${r.failed ? `<span class="tag fail" title="Failed the chart: on the board, counted for nothing">FAILED</span>` : ""}</span><span class="s">${r.failed ? "" : (+r.ssr_overall).toFixed(2)}</span><span class="d">${ago(r.played_at)}</span><span class="a"><b>${(+r.wife).toFixed(2)}%</b></span></div>`).join("") || `<div class="empty">Nobody has played it today. Be the first!</div>`) +
 		`<div class="era" style="margin:14px 0 8px">The last days</div>` +
 		((d.history || []).slice(1).map(h => `<div class="adrow"><div class="t">${fmtDate(h.day)} <small>· ${esc(h.song_title || "?")}${h.chart_name ? " · " + esc(h.chart_name) : ""} · MSD ${(+h.msd).toFixed(2)}</small></div><div class="acts dim">${h.winner ? `<span class="star">★</span> ${esc(h.winner)} ${(+h.winner_ssr).toFixed(2)} · ${h.players} player${h.players === 1 ? "" : "s"}` : "nobody played it"}</div></div>`).join("") || `<div class="empty">The first day.</div>`);
 	$("daily-play").onclick = async () => { const running = await window.vh_dailyPlay(c.chart_key); toast(running ? "Song select will jump to it (open it, or go back to it)" : "Press Play: song select opens on today's chart"); };
