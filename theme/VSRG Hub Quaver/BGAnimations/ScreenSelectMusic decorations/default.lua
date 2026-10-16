@@ -105,9 +105,14 @@ local t = Def.ActorFrame {
 	QVLeftMessageCommand = function(self, p) self:visible(p.name == "Leaderboard") end,
 }
 root[#root + 1] = t
-local function fillBoard(root, list, status, pb)
+-- (more scores than rows: the mouse wheel over the board scrolls them, TW.boardScroll)
+local boardOff = 0
+local function fillBoard(root, list, status, pb, keepOff)
 	local board = root:GetChild("Board")
-	for i = 1, ROWS do board:GetChild("Row" .. i):playcommand("Fill", { hs = list[i], n = i }) end
+	root.boardArgs = { list, status, pb }
+	if not keepOff then boardOff = 0 end
+	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
+	for i = 1, ROWS do board:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
 	local msg = ({
 		ok = "", loading = "Loading the online leaderboard...", unranked = "This map isn't ranked online",
 		login = "Log in to EtternaOnline to see the online leaderboard (click)", none = "",
@@ -131,7 +136,20 @@ t[#t + 1] = Def.Actor {
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
 	LogOutMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
-	OnCommand = function(self) self:queuecommand("Board") end,
+	OnCommand = function(self)
+		self:queuecommand("Board")
+		local root = self:GetParent()
+		TW.boardScroll = function(dir)
+			local a = root.boardArgs
+			if not a or #a[1] <= ROWS then return false end
+			local mx, my = INPUTFILTER:GetMouseX(), INPUTFILTER:GetMouseY()
+			if mx < X0 or mx > X0 + W or my < M(155) or my > M(155) + ROWS * RH then return false end
+			boardOff = boardOff + dir
+			fillBoard(root, a[1], a[2], a[3], true)
+			return true
+		end
+	end,
+	OffCommand = function(self) TW.boardScroll = nil end,
 	BoardCommand = function(self)
 		-- (the same chart again, e.g. the game's song put back to the picked one after a scroll: the
 		-- board stays as it is instead of loading over)

@@ -25,8 +25,13 @@ local function allScores()
 	table.sort(list, function(a, b) return a:GetWifeScore() > b:GetWifeScore() end)
 	return list
 end
-local function fillBoard(self, list, status, pb)
-	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[i], n = i }) end
+-- (more scores than rows: the mouse wheel over the board scrolls them, TW.boardScroll)
+local boardOff = 0
+local function fillBoard(self, list, status, pb, keepOff)
+	self.boardArgs = { list, status, pb }
+	if not keepOff then boardOff = 0 end
+	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
+	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
 	self:GetChild("PB"):playcommand("Fill", { hs = pb })
 	local msg = ({
 		loading = "Loading the online ranking...", login = "Log in to EtternaOnline to see the online ranking (click)",
@@ -51,7 +56,20 @@ local board = Def.ActorFrame {
 	TWRankSourceMessageCommand = function(self) self:queuecommand("Board") end,
 	LoginMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
 	LogOutMessageCommand = function(self) self.boardSig = nil; self:queuecommand("Board") end,
-	OnCommand = function(self) self:queuecommand("Board") end,
+	OnCommand = function(self)
+		self:queuecommand("Board")
+		local frame = self
+		TW.boardScroll = function(dir)
+			local a = frame.boardArgs
+			if not a or #a[1] <= ROWS then return false end
+			local mx, my = INPUTFILTER:GetMouseX(), INPUTFILTER:GetMouseY()
+			if mx < M(6) or mx > M(421) or my < M(161) or my > M(161 + (ROWS - 1) * 56 + 54) then return false end
+			boardOff = boardOff + dir
+			fillBoard(frame, a[1], a[2], a[3], true)
+			return true
+		end
+	end,
+	OffCommand = function(self) TW.boardScroll = nil end,
 	BoardCommand = function(self)
 		-- (the same chart again, e.g. the game's song put back to the picked one after a scroll:
 		-- the board stays as it is instead of loading over)

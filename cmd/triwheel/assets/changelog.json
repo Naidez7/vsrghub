@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.100",
+  "date": "2026-10-16",
+  "notes": "- Song select scoreboard (every look): with more scores than fit, the mouse wheel over the board scrolls the scores instead of the song list."
+ },
+ {
   "version": "1.8.0-beta.99",
   "date": "2026-10-16",
   "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's."

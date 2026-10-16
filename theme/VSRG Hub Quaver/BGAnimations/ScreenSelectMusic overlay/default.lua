@@ -118,6 +118,8 @@ local function input(event)
 		return not event.DeviceInput.is_mouse or b:find("mousewheel") ~= nil
 	end
 	if (b == "DeviceButton_mousewheel up" or b == "DeviceButton_mousewheel down") and not TW.altHeld() then
+		-- (over the scoreboard: it scrolls, not the song list)
+		if event.type == "InputEventType_FirstPress" and TW.boardScroll and TW.boardScroll(b == "DeviceButton_mousewheel up" and -1 or 1) then return true end
 		local w = wheel()
 		if not w or TW.optionsOpen or TW.list or (panel and panel ~= "Search") then return false end
 		-- (as Quaver's list: the wheel scrolls it, the picked map staying picked until you click

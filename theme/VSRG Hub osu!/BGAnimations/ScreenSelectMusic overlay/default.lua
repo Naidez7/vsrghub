@@ -111,6 +111,8 @@ local function input(event)
 	local b = event.DeviceInput.button
 	-- the mouse wheel scrolls the song wheel, unless a panel is open
 	if (b == "DeviceButton_mousewheel up" or b == "DeviceButton_mousewheel down") and not TW.altHeld() then
+		-- (over the scoreboard: it scrolls, not the song list)
+		if event.type == "InputEventType_FirstPress" and TW.boardScroll and TW.boardScroll(b == "DeviceButton_mousewheel up" and -1 or 1) then return true end
 		local w = wheel()
 		if not w or TW.optionsOpen or TW.list or TW.dropOpen or TW.hubCard or (panel and panel ~= "Search") then return false end
 		-- (over a song's difficulties, when it has more than fit, the wheel scrolls them instead;
