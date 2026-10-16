@@ -339,6 +339,7 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 				stopOnline()
 				d()
 				logf("Etterna exited")
+				startPresence(l.data, false) // (the launcher's own presence again)
 				mu.Lock()
 				game, selfMinded = nil, false
 				mu.Unlock()

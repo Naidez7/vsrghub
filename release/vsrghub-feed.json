@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.90",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.90.zip",
- "sha256": "63458699189e8283787fb1bd2d67167bb3789aa900217a59f88ca24621259744",
- "notes": "- Options > \"Ranking notices\": off hides who passed you and who took a #1 from you (the Online page, the toasts and the game). \"hide\" on the box does the same.",
+ "version": "1.8.0-beta.91",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.91.zip",
+ "sha256": "a1affea19923174c4e51c31a50b1e49d2f9a938275be629149ed36082549911a",
+ "notes": "- Discord: with the launcher kept open, the game's presence (what you're playing) replaces the launcher's while the game runs; before, Discord kept showing the launcher's.",
  "latest": {
-  "version": "1.8.0-beta.90",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.90.zip",
-  "sha256": "63458699189e8283787fb1bd2d67167bb3789aa900217a59f88ca24621259744",
-  "notes": "- Options > \"Ranking notices\": off hides who passed you and who took a #1 from you (the Online page, the toasts and the game). \"hide\" on the box does the same."
+  "version": "1.8.0-beta.91",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.91.zip",
+  "sha256": "a1affea19923174c4e51c31a50b1e49d2f9a938275be629149ed36082549911a",
+  "notes": "- Discord: with the launcher kept open, the game's presence (what you're playing) replaces the launcher's while the game runs; before, Discord kept showing the launcher's."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.91",
+   "date": "2026-10-16",
+   "notes": "- Discord: with the launcher kept open, the game's presence (what you're playing) replaces the launcher's while the game runs; before, Discord kept showing the launcher's."
+  },
   {
    "version": "1.8.0-beta.90",
    "date": "2026-10-16",

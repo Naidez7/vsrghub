@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.91",
+  "date": "2026-10-16",
+  "notes": "- Discord: with the launcher kept open, the game's presence (what you're playing) replaces the launcher's while the game runs; before, Discord kept showing the launcher's."
+ },
+ {
   "version": "1.8.0-beta.90",
   "date": "2026-10-16",
   "notes": "- Options > \"Ranking notices\": off hides who passed you and who took a #1 from you (the Online page, the toasts and the game). \"hide\" on the box does the same."

@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -126,10 +127,29 @@ func presenceOf(line string, since int64) map[string]any {
 
 // startPresence keeps Discord told while the game runs (inGame), or while the launcher is open; the
 // returned function stops it (and clears the presence).
+// (one presence at a time: the game's replaces the launcher's while the game runs, or Discord
+// keeps showing whichever connected first)
+var presenceMu sync.Mutex
+var presenceCur chan struct{}
+
 func startPresence(data string, inGame bool) func() {
 	stop := make(chan struct{})
 	if data == "" || discordAppID == "" || loadState(data).DiscordOff {
 		return func() {}
+	}
+	presenceMu.Lock()
+	if presenceCur != nil {
+		close(presenceCur)
+	}
+	presenceCur = stop
+	presenceMu.Unlock()
+	stopIt := func() {
+		presenceMu.Lock()
+		defer presenceMu.Unlock()
+		if presenceCur == stop {
+			close(stop)
+			presenceCur = nil
+		}
 	}
 	go func() {
 		var c *discordConn
@@ -192,5 +212,5 @@ func startPresence(data string, inGame bool) func() {
 			last = line
 		}
 	}()
-	return func() { close(stop) }
+	return stopIt
 }
