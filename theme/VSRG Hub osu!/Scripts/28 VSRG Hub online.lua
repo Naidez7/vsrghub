@@ -453,7 +453,9 @@ function TW.hubRanking(steps, done, actor)
 	local ck = steps:GetChartKey()
 	asked = asked + 1
 	local n = asked
-	pcall(function() File.Write(ONLINE .. "want.txt", ck .. "\t" .. n .. "\n") end)
+	-- (the order asked for: each player's best play by it, the launcher's answerBoard)
+	local how = TW.boardSorts and TW.boardSorts[TW.boardSort][2] or "ssr"
+	pcall(function() File.Write(ONLINE .. "want.txt", ck .. "\t" .. n .. "\t" .. how .. "\n") end)
 	call({}, "loading")
 	local t0 = GetTimeSinceStart()
 	-- (the answer is read back a few times a second until it comes, for at most 6 seconds)

@@ -41,7 +41,7 @@ const (
 var onlineClient = &http.Client{Timeout: 15 * time.Second}
 
 // wantServerVersion: the server/supabase/v2.sql this program expects (its schema_version)
-const wantServerVersion = 20
+const wantServerVersion = 21
 
 // onlineServerVersion: the version of v2.sql the server has run (0 when it never has, -1 offline)
 func onlineServerVersion() int {
@@ -390,9 +390,13 @@ type boardRow struct {
 	ScoreID    int64   `json:"score_id"`
 }
 
-func onlineChartBoard(chart string) ([]boardRow, error) {
+// how: "ssr", "acc", "combo" or "date" (each player's best play by that, in that order)
+func onlineChartBoard(chart, how string) ([]boardRow, error) {
 	var out []boardRow
-	err := onlineCall("POST", "/rest/v1/rpc/chart_leaderboard", map[string]any{"chart": chart, "max_rows": 50}, "", &out)
+	if how == "" {
+		how = "ssr"
+	}
+	err := onlineCall("POST", "/rest/v1/rpc/chart_leaderboard", map[string]any{"chart": chart, "max_rows": 50, "how": how}, "", &out)
 	return out, err
 }
 
@@ -633,11 +637,11 @@ func writeMeWith(data string, s *onlineSession, rp map[int]ratingPlace) {
 		s.Username, rp[4].rating, rp[7].rating, rp[4].place, rp[7].place)), 0o644)
 }
 
-// answerBoard writes board.txt for the chart in want.txt: a first line "chart<TAB>status" (ok,
+// answerBoard writes board.txt for the chart in want.txt ("chart<TAB>request number<TAB>how"): a first line "chart<TAB>status" (ok,
 // empty, offline), then a line per score: place, name, wife, rate, ssr, marv, perf, great, good, bad,
 // miss, max combo, played at, modifiers, source, score id (tab-separated)
-func answerBoard(data, chart string) {
-	rows, err := onlineChartBoard(chart)
+func answerBoard(data, chart, how string) {
+	rows, err := onlineChartBoard(chart, how)
 	status := "ok"
 	if err != nil {
 		status = "offline"
@@ -768,8 +772,12 @@ func startOnlineService(data string) func() {
 				w := strings.TrimSpace(string(b))
 				if w != "" && w != last {
 					last = w
-					chart, _, _ := strings.Cut(w, "\t")
-					answerBoard(data, chart)
+					f := strings.Split(w, "\t")
+					how := ""
+					if len(f) > 2 {
+						how = f[2]
+					}
+					answerBoard(data, f[0], how)
 				}
 			}
 			// (one score's details, for the song select's score card: online/wantdetail.txt holds

@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.102",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.102.zip",
- "sha256": "d40fd49f46ccdcce5f1b147f93a157176d6296ccb917ecdd019d3f834cfcfae7",
- "notes": "- Scoreboard order: plays tied on rating (Etterna's calculator stops raising a play's rating past about 97%) go by accuracy, then the earlier one first, on the server (update 20) and in the game's Sort.",
+ "version": "1.8.0-beta.103",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.103.zip",
+ "sha256": "580761ded280000ef9567657c5364b7c76e62974b157b8af8a1e05ef713f5470",
+ "notes": "- Scoreboard Sort, VSRG Hub scope: each player's row is their best play by the chosen order (best accuracy, best combo, latest...), asked from the server again on each change (update 21); before, only the rows already there were reordered. Ties on accuracy go to the higher-rated play (the higher rate). EtternaOnline's board only has one play per player, so there it reorders.",
  "latest": {
-  "version": "1.8.0-beta.102",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.102.zip",
-  "sha256": "d40fd49f46ccdcce5f1b147f93a157176d6296ccb917ecdd019d3f834cfcfae7",
-  "notes": "- Scoreboard order: plays tied on rating (Etterna's calculator stops raising a play's rating past about 97%) go by accuracy, then the earlier one first, on the server (update 20) and in the game's Sort."
+  "version": "1.8.0-beta.103",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.103.zip",
+  "sha256": "580761ded280000ef9567657c5364b7c76e62974b157b8af8a1e05ef713f5470",
+  "notes": "- Scoreboard Sort, VSRG Hub scope: each player's row is their best play by the chosen order (best accuracy, best combo, latest...), asked from the server again on each change (update 21); before, only the rows already there were reordered. Ties on accuracy go to the higher-rated play (the higher rate). EtternaOnline's board only has one play per player, so there it reorders."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.103",
+   "date": "2026-10-16",
+   "notes": "- Scoreboard Sort, VSRG Hub scope: each player's row is their best play by the chosen order (best accuracy, best combo, latest...), asked from the server again on each change (update 21); before, only the rows already there were reordered. Ties on accuracy go to the higher-rated play (the higher rate). EtternaOnline's board only has one play per player, so there it reorders."
+  },
   {
    "version": "1.8.0-beta.102",
    "date": "2026-10-16",

@@ -306,29 +306,41 @@ begin
 end $$;
 grant execute on function public.submit_scores(jsonb) to authenticated;
 
+-- one play per player, the best by `how`: "ssr" (its rating; ties by accuracy, then the earlier
+-- one: Etterna's calculator stops raising a play's rating past about 97%), "acc" (accuracy; ties
+-- by rating, so the higher rate wins), "combo" (max combo; ties by accuracy), "date" (the latest)
 drop function if exists public.chart_leaderboard(text, real, int);
+drop function if exists public.chart_leaderboard(text, real, int, text);
 create function public.chart_leaderboard(chart text, at_rate real default null,
-	max_rows int default 50)
+	max_rows int default 50, how text default 'ssr')
 returns table (place bigint, username text, user_id uuid, wife real, rate real, ssr_overall real,
 	marvelous int, perfect int, great int, good int, bad int, miss int, max_combo int,
 	modifiers text, played_at timestamptz, source text, score_id bigint)
 language sql stable security definer set search_path = public as $$
-	with best as (
-		select distinct on (s.user_id) s.*
+	with ranked as (
+		select s.*,
+			(case when at_rate is not null or how = 'acc' then s.wife
+				when how = 'combo' then s.max_combo::real
+				when how = 'date' then extract(epoch from s.played_at)::real
+				else s.ssr_overall end) as k1,
+			(case when how = 'acc' or how = 'date' then s.ssr_overall else s.wife end) as k2,
+			(case when how = 'date' then 0::double precision else -extract(epoch from s.played_at) end) as k3
 		from public.scores s join public.profiles p on p.id = s.user_id
 		where s.chart_key = chart and s.valid and s.verified and not p.banned
 			and (at_rate is null or abs(s.rate - at_rate) < 0.001)
-		order by s.user_id, (case when at_rate is null then s.ssr_overall else s.wife end) desc
+	),
+	best as (
+		select distinct on (r.user_id) r.* from ranked r
+		order by r.user_id, r.k1 desc, r.k2 desc, r.k3 desc
 	)
-	-- (Etterna's calculator stops raising a play's rating past about 97%: plays tied on rating go
-	-- by accuracy, then the earlier one first)
-	select row_number() over (order by (case when at_rate is null then b.ssr_overall else b.wife end) desc, b.wife desc, b.played_at),
+	select row_number() over (order by b.k1 desc, b.k2 desc, b.k3 desc),
 		p.username, b.user_id, b.wife, b.rate, b.ssr_overall, b.marvelous, b.perfect, b.great,
 		b.good, b.bad, b.miss, b.max_combo, b.modifiers, b.played_at, b.source, b.id
 	from best b join public.profiles p on p.id = b.user_id
 	order by 1
 	limit least(greatest(max_rows, 1), 200)
 $$;
+grant execute on function public.chart_leaderboard(text, real, int, text) to anon, authenticated;
 
 create or replace function public.top_scores(player uuid, k smallint default 4, max_rows int default 25)
 returns setof public.scores
@@ -849,7 +861,7 @@ grant execute on function public.fix_played_at(jsonb) to authenticated;
 do $$ declare u uuid; begin
 	for u in select distinct user_id from public.scores where keys = 7 loop perform public.vh_refresh_rating(u, 7::smallint); end loop;
 end $$;
-insert into public.vh_meta (key, value) values ('schema_version', '20')
+insert into public.vh_meta (key, value) values ('schema_version', '21')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

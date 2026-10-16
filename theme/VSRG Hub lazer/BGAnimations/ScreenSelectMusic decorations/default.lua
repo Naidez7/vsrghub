@@ -77,6 +77,7 @@ local board = Def.ActorFrame {
 	end,
 	OffCommand = function(self) TW.boardScroll = nil end,
 	TWBoardSortMessageCommand = function(self)
+		if TW.rankSource == "hub" then self.boardSig = nil; self:queuecommand("Board") return end
 		local a = self.boardArgs
 		if a then fillBoard(self, a[1], a[2], a[3], a[4]) end
 	end,

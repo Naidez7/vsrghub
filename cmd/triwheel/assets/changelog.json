@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.103",
+  "date": "2026-10-16",
+  "notes": "- Scoreboard Sort, VSRG Hub scope: each player's row is their best play by the chosen order (best accuracy, best combo, latest...), asked from the server again on each change (update 21); before, only the rows already there were reordered. Ties on accuracy go to the higher-rated play (the higher rate). EtternaOnline's board only has one play per player, so there it reorders."
+ },
+ {
   "version": "1.8.0-beta.102",
   "date": "2026-10-16",
   "notes": "- Scoreboard order: plays tied on rating (Etterna's calculator stops raising a play's rating past about 97%) go by accuracy, then the earlier one first, on the server (update 20) and in the game's Sort."
