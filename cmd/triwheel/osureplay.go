@@ -667,8 +667,8 @@ func importOsuReplays(lib, osuDir, quaverDir, data string, onlyNew bool, progres
 	charts := chartIndex(lib, "osu!", songsDir, scanOsuSet, cache)
 	seen := map[string]bool{}
 	for i, f := range files {
-		if i%200 == 0 {
-			progress(fmt.Sprintf("Reading replays: %d of %d", i, len(files)))
+		if i%20 == 0 {
+			progress(fmt.Sprintf("Reading osu! replays: %d of %d (each is judged against its map)", i, len(files)))
 		}
 		rp, err := readOSR(f.path)
 		if err != nil {

@@ -67,6 +67,8 @@ end
 -- leaving the menu: the music stops (song select plays its own)
 function TW.menuMusicStop()
 	menu.playing = false
+	-- (song select opens on the song that was playing, as osu!'s does)
+	if menu.song then TW.menuSongPending = menu.song end
 	SOUND:StopMusic()
 end
 function TW.menuMusicTitle()

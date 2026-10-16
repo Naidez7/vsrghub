@@ -263,8 +263,8 @@ func quaverJobs(lib, quaverDir string, cache cacheFile, rep *osuImportReport, fr
 	var jobs []osuJob
 	seen := map[string]bool{}
 	for i, f := range files {
-		if i%200 == 0 {
-			progress(fmt.Sprintf("Reading Quaver replays: %d of %d", i, len(files)))
+		if i%20 == 0 {
+			progress(fmt.Sprintf("Reading Quaver replays: %d of %d (each is judged against its map)", i, len(files)))
 		}
 		rp, err := readQR(f)
 		if err != nil {
