@@ -3,6 +3,8 @@
 Etterna's song wheel with your own Quaver, Qwilight and osu! libraries in it, dressed in your osu! skin.
 (Formerly TriWheel.)
 
+Rankings, profiles and the daily challenge are also on the web: https://naidez7.github.io/vsrghub/
+
 Only Etterna is needed. Quaver, Qwilight and osu! are optional: whichever of them you have adds its
 songs (and, for osu! and Quaver, its skins); the ones you don't have are simply left out.
 

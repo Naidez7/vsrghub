@@ -444,6 +444,7 @@ table.rk tr.clickable:hover td { background: rgba(255,255,255,.05); }
 <div class="toast" id="toast"></div>
 
 <script>
+const WEB = "https://naidez7.github.io/vsrghub/"; // the rankings on the web (docs/ on GitHub Pages)
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const LOOKS = [
@@ -850,13 +851,14 @@ function drawAccount(busyNow) {
 			${a.motd ? `<div class="motd"><div class="k">MESSAGE FROM THE ADMINS</div>${esc(a.motd)}</div>` : ""}
 			${noticesBox()}
 			${a.serverBehind !== undefined ? `<div class="msg err">The server is behind this launcher (it has update ${a.serverBehind}, this needs ${a.serverWant}): the owner has to run server/supabase/v2.sql in Supabase's SQL editor. Until then some things here won't work.</div>` : ""}
-			<div class="formacts"><button class="btn small" id="o-reload">Refresh</button>${a.waiting ? `<button class="btn small" id="o-send">Send now</button>` : ""}${!a.backfill ? `<button class="btn small" id="o-old">Send my older plays</button>` : ""}${!a.osu || a.osu.startsWith("done") ? `<button class="btn small" id="o-osu">${a.osu ? "Send my osu! / Quaver plays again" : "Send my osu! / Quaver plays"}</button>` : ""}<button class="btn small ghost" id="o-csv" title="Every score of yours as a spreadsheet file, on your desktop">Export scores</button>${a.admin ? `<button class="btn small" id="o-sus">Scores to check</button><button class="btn small" id="o-admin">Admin tools</button>` : ""}<button class="btn ghost small" id="o-out">Sign out</button></div>${msg}`;
+			<div class="formacts"><button class="btn small" id="o-reload">Refresh</button>${a.waiting ? `<button class="btn small" id="o-send">Send now</button>` : ""}${!a.backfill ? `<button class="btn small" id="o-old">Send my older plays</button>` : ""}${!a.osu || a.osu.startsWith("done") ? `<button class="btn small" id="o-osu">${a.osu ? "Send my osu! / Quaver plays again" : "Send my osu! / Quaver plays"}</button>` : ""}<button class="btn small ghost" id="o-csv" title="Every score of yours as a spreadsheet file, on your desktop">Export scores</button><button class="btn small ghost" id="o-web" title="Your profile on the web (vsrghub on GitHub Pages), to share">My profile on the web</button>${a.admin ? `<button class="btn small" id="o-sus">Scores to check</button><button class="btn small" id="o-admin">Admin tools</button>` : ""}<button class="btn ghost small" id="o-out">Sign out</button></div>${msg}`;
 		if ($("o-send")) $("o-send").onclick = () => { acctBusy("Sending..."); window.vh_sendScores(); };
 		if ($("o-old")) $("o-old").onclick = () => window.vh_backfill();
 		if ($("o-osu")) $("o-osu").onclick = () => { osuState = { progress: "Looking for your osu! replays..." }; drawAccount(); window.vh_osuImport(); };
 		if ($("o-sus")) $("o-sus").onclick = openSuspicious;
 		if ($("o-admin")) $("o-admin").onclick = openAdmin;
 		if ($("o-csv")) $("o-csv").onclick = () => { toast("Getting your scores..."); window.vh_exportScores(); };
+		if ($("o-web")) $("o-web").onclick = () => window.vh_open(WEB + "player.html?id=" + encodeURIComponent(a.userId || ""));
 		$("o-out").onclick = () => { acctBusy("Signing out..."); window.vh_signOut(); };
 		$("o-me").onclick = () => { if (a.userId) openPlayer(a.userId); };
 		$("o-pic").onclick = () => window.vh_setPicture(false);
