@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.93",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.93.zip",
- "sha256": "b3a43b20a7c87f362902abdf5cbe01f1f881cc3129a0b0bd8e43e2e6d00477cd",
- "notes": "- Your osu! / Quaver plays become local scores in Etterna too: once the game has rated one, the launcher writes it into your Etterna profile with its replay (before the game starts, with a backup of the profile in Save/VSRGHub/backup), so it shows on the local ranking, your profile, its results and its replay. Plays sent before this update get there with \"Send my osu! / Quaver plays again\".",
+ "version": "1.8.0-beta.94",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.94.zip",
+ "sha256": "41075115209229e2bb1084ef245f8c592e7c826dfd512b625ed9d1cc47633e84",
+ "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K.",
  "latest": {
-  "version": "1.8.0-beta.93",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.93.zip",
-  "sha256": "b3a43b20a7c87f362902abdf5cbe01f1f881cc3129a0b0bd8e43e2e6d00477cd",
-  "notes": "- Your osu! / Quaver plays become local scores in Etterna too: once the game has rated one, the launcher writes it into your Etterna profile with its replay (before the game starts, with a backup of the profile in Save/VSRGHub/backup), so it shows on the local ranking, your profile, its results and its replay. Plays sent before this update get there with \"Send my osu! / Quaver plays again\"."
+  "version": "1.8.0-beta.94",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.94.zip",
+  "sha256": "41075115209229e2bb1084ef245f8c592e7c826dfd512b625ed9d1cc47633e84",
+  "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.94",
+   "date": "2026-10-16",
+   "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
+  },
   {
    "version": "1.8.0-beta.93",
    "date": "2026-10-16",

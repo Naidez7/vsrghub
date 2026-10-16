@@ -52,11 +52,14 @@ async function history(id, k) {
 	for (let i = 0; i < list.length;) {
 		const d = day(list[i]), today = [];
 		for (; i < list.length && day(list[i]) === d; i++) { const q = list[i], key = q.chart_key + "@" + (+q.rate).toFixed(2); const b = best.get(key); if (!b || q.ssr_overall > b.ssr_overall) best.set(key, q); today.push(q); }
-		let total = 0; for (let j = 0; j < n; j++) total += aggregate([...best.values()].map(q => +q[names[j]] || 0));
+		// (as the server: 4K the mean of the skillsets, 7K the aggregate of the plays' overall ratings)
+		let rating = 0;
+		if (k === 7) rating = aggregate([...best.values()].map(q => +q.ssr_overall || 0));
+		else { for (let j = 0; j < n; j++) rating += aggregate([...best.values()].map(q => +q[names[j]] || 0)); rating /= n; }
 		// (the day's three best plays, one per chart, for the big chart's hover)
 		const seen = new Set(), top = [];
 		for (const q of today.slice().sort((a, b) => b.ssr_overall - a.ssr_overall)) { if (seen.has(q.chart_key)) continue; seen.add(q.chart_key); top.push(q); if (top.length === 3) break; }
-		out.push({ day: d, rating: Math.round(total / n * 100) / 100, n: today.length, plays: top });
+		out.push({ day: d, rating: Math.round(rating * 100) / 100, n: today.length, plays: top });
 	}
 	return out;
 }

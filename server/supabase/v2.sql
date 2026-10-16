@@ -144,10 +144,15 @@ begin
 		public.vh_aggregate(array_agg(ssr_jackspeed)), public.vh_aggregate(array_agg(ssr_chordjack)),
 		public.vh_aggregate(array_agg(ssr_technical)), count(*), now()
 	into r from best;
-	-- (Etterna's calculator doesn't rate Technical for 7K: it gives every 7K chart the same 0.18, so
-	-- the 7K overall is the mean of the six skillsets it does rate)
+	-- 4K: Etterna's player rating, the mean of the skillsets. 7K: Etterna's calculator is the 4K one
+	-- adapted (Technical is a constant, jacks hardly exist in 7K charts) and the mean of its skillsets
+	-- sits far under the plays themselves, so the 7K rating is the aggregate of the best plays'
+	-- overall ratings, the same aggregation Etterna uses within each skillset
 	if k = 7 then
-		r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack) / 6.0;
+		select public.vh_aggregate(array_agg(b.ssr_overall)) into r.overall
+		from (select distinct on (chart_key, rate) ssr_overall from public.scores
+			where user_id = uid and keys = k and valid and verified
+			order by chart_key, rate, ssr_overall desc) b;
 	else
 		r.overall := (r.stream + r.jumpstream + r.handstream + r.stamina + r.jackspeed + r.chordjack + r.technical) / 7.0;
 	end if;
@@ -838,7 +843,11 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '18')
+-- (the 7K ratings worked out again with the new rule)
+do $$ declare u uuid; begin
+	for u in select distinct user_id from public.scores where keys = 7 loop perform public.vh_refresh_rating(u, 7::smallint); end loop;
+end $$;
+insert into public.vh_meta (key, value) values ('schema_version', '19')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

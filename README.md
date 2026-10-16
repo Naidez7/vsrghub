@@ -387,6 +387,12 @@ Etterna packs:
 - **Smooth shapes**: the osu! and osu!lazer looks draw their circles, rounded boxes, triangles and lines
   as shapes with a one-pixel soft edge (Etterna has no antialiasing), so the logo, the visualizer,
   buttons and panels stay sharp without jagged edges at any screen size.
+- **How the VSRG Hub rating is worked out**: each play's ratings are Etterna's (its calculator, on
+  the same charts). 4K: Etterna's player rating, the mean of the seven skillsets, each the aggregate
+  of your best plays in it. 7K: Etterna's 7K calculator is the 4K one adapted (Technical is a
+  constant there, jacks hardly exist in 7K charts), and the mean of its skillsets sits far under the
+  plays themselves, so the 7K rating is the aggregate of your best plays' overall ratings instead
+  (the same aggregation Etterna uses within a skillset); the 7K skillsets are still shown.
 - **Your osu! and Quaver plays on VSRG Hub's rankings**: the launcher reads your osu! stable, osu!lazer
   and Quaver replays, judges them as Etterna would on the same charts, and the game rates them with
   Etterna's calculator the next time song select comes up. Online > "Send my osu! / Quaver plays" does

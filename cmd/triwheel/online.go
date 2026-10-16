@@ -41,7 +41,7 @@ const (
 var onlineClient = &http.Client{Timeout: 15 * time.Second}
 
 // wantServerVersion: the server/supabase/v2.sql this program expects (its schema_version)
-const wantServerVersion = 18
+const wantServerVersion = 19
 
 // onlineServerVersion: the version of v2.sql the server has run (0 when it never has, -1 offline)
 func onlineServerVersion() int {
@@ -1017,15 +1017,22 @@ func onlineHistory(id string, keys int) ([]historyPoint, error) {
 				sk[j] = append(sk[j], v)
 			}
 		}
-		// (7K: Etterna's calculator doesn't rate Technical there, so the overall is the mean of six)
-		total, n := 0.0, 7
+		// (as the server's vh_refresh_rating: 4K the mean of the skillsets, 7K the aggregate of the
+		// plays' overall ratings)
+		rating := 0.0
 		if keys == 7 {
-			n = 6
+			var ov []float64
+			for _, b := range best {
+				ov = append(ov, b.Overall)
+			}
+			rating = etternaAggregate(ov)
+		} else {
+			for j := 0; j < 7; j++ {
+				rating += etternaAggregate(sk[j])
+			}
+			rating /= 7
 		}
-		for j := 0; j < n; j++ {
-			total += etternaAggregate(sk[j])
-		}
-		out = append(out, historyPoint{Day: d, Rating: math.Round(total/float64(n)*100) / 100, Plays: top, N: len(today)})
+		out = append(out, historyPoint{Day: d, Rating: math.Round(rating*100) / 100, Plays: top, N: len(today)})
 	}
 	return out, nil
 }

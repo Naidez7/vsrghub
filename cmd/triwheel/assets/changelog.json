@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.94",
+  "date": "2026-10-16",
+  "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
+ },
+ {
   "version": "1.8.0-beta.93",
   "date": "2026-10-16",
   "notes": "- Your osu! / Quaver plays become local scores in Etterna too: once the game has rated one, the launcher writes it into your Etterna profile with its replay (before the game starts, with a backup of the profile in Save/VSRGHub/backup), so it shows on the local ranking, your profile, its results and its replay. Plays sent before this update get there with \"Send my osu! / Quaver plays again\"."
