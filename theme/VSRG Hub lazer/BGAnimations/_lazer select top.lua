@@ -51,8 +51,8 @@ local wedge = Def.ActorFrame {
 				self.shown = p
 				self:LoadBackground(p)
 			end
-			self:visible(true):scaletocover(M(330), WY + M(4), WX + WW - M(10), WY + WH - M(4))
-			self:fadeleft(0.6)
+			self:visible(true):scaletocover(M(330), WY + M(4), WX + WW - M(22), WY + WH - M(4))
+			self:fadeleft(0.6):skewx(-LZ.SHEAR)
 			-- (a new song's picture fades in)
 			if fresh then self:stoptweening():diffusealpha(0):linear(0.35):diffusealpha(0.35) end
 			-- (cut to the wedge's height: a picture taller than wide spills over)
@@ -68,7 +68,10 @@ wedge[#wedge + 1] = Def.ActorFrame {
 	InfoCommand = function(self)
 		local st = GAMESTATE:GetCurrentSteps()
 		local c = self:GetChildren()
-		local x = M(54)
+		local rw = c.Ranked:GetZoomedWidth() + M(14)
+		TW.setBox(c.RankedBg, { w = rw })
+		c.Ranked:x(rw / 2)
+		local x = rw + M(6)
 		c.Keys:visible(st ~= nil):x(x + M(8)):settext(st and (TW.keys(st) .. "K") or "")
 		c.KeysBg:visible(st ~= nil):x(x)
 		TW.setBox(c.KeysBg, { w = c.Keys:GetZoomedWidth() + M(16) })
@@ -80,7 +83,7 @@ wedge[#wedge + 1] = Def.ActorFrame {
 		TW.setBox(c.RateBg, { w = c.Rate:GetZoomedWidth() + M(16) })
 	end,
 	TW.box { w = M(48), h = M(15), r = M(5), ay = 0.5, col = TW.rgb(179, 255, 102) } .. { Name = "RankedBg" },
-	LZ.text(M(8.5), "bold", function(self) self:align(0.5, 0.5):x(M(24)):settext("RANKED"):diffuse(TW.rgb(30, 50, 10)) end),
+	LZ.text(M(8.5), "bold", function(self) self:align(0.5, 0.5):xy(M(24), M(0.5)):settext("RANKED"):diffuse(TW.rgb(30, 50, 10)) end) .. { Name = "Ranked" },
 	TW.box { w = M(30), h = M(15), r = M(5), ay = 0.5, col = LZ.pink } .. { Name = "KeysBg" },
 	LZ.text(M(8.5), "bold", function(self) self:align(0, 0.5):diffuse(TW.rgb(40, 20, 30)) end) .. { Name = "Keys" },
 	TW.box { w = M(30), h = M(15), r = M(5), ay = 0.5, col = LZ.purpleDark } .. { Name = "RateBg" },

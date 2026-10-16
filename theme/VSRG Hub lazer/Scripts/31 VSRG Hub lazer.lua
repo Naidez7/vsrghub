@@ -142,6 +142,21 @@ function LZ.starPill(h, init)
 	}
 end
 
+-- A picture filling a w x h box without stretching: scaled to cover it and cut to it (Etterna's
+-- scaletoclipped squeezes a picture up to 15% rather than cut it). The sprite is centred (align
+-- 0.5, 0.5) on the box's middle.
+function LZ.cover(sprite, w, h)
+	local tex = sprite:GetTexture()
+	if not tex then return end
+	local tw, th = tex:GetSourceWidth(), tex:GetSourceHeight()
+	if not tw or not th or tw < 1 or th < 1 then return end
+	local k = math.max(w / tw, h / th)
+	local sw, sh = tw * k, th * k
+	sprite:zoomto(sw, sh)
+	local cx, cy = math.max(0, (sw - w) / sw / 2), math.max(0, (sh - h) / sh / 2)
+	sprite:cropleft(cx):cropright(cx):croptop(cy):cropbottom(cy)
+end
+
 -- A slanted panel (lazer's wedge, footer buttons, scores): w x h, top-left at the actor's position.
 function LZ.panel(spec)
 	spec.shear = spec.shear == nil and LZ.SHEAR or spec.shear

@@ -94,7 +94,7 @@ local t = Def.ActorFrame {
 		-- the song's picture, faded in from the right (loaded once the wheel stops on it)
 		Def.Sprite {
 			Name = "Thumb",
-			InitCommand = function(self) self:align(1, 0.5):x(W - M(4)):visible(false) end,
+			InitCommand = function(self) self:align(0.5, 0.5):x(W - M(4) - W * 0.25):visible(false) end,
 			-- (no tweens in here: see TW.ianim)
 			LoadCommand = function(self, p)
 				local f = self:GetParent():GetParent()
@@ -115,7 +115,8 @@ local t = Def.ActorFrame {
 				self:LoadFromCached("Background", self.want)
 				self.shown = self.want
 				TW.keepTexture(self)
-				self:scaletoclipped(W * 0.5, H - M(4)):fadeleft(0.7)
+				LZ.cover(self, W * 0.5, H - M(4))
+				self:fadeleft(0.7)
 				self:visible(true)
 				TW.ianim(self:GetParent():GetParent(), self, "alpha", self.focus and 0.9 or 0.6, 0.2, "lin", 0, 0)
 			end,
@@ -228,7 +229,7 @@ local t = Def.ActorFrame {
 			LZ.text(M(8), "bold", function(self) self:align(0.5, 0.5):xy(M(23), M(0.5)):settext("RANKED"):diffuse(TW.rgb(30, 50, 10)) end) .. { Name = "Ranked" },
 			LZ.text(M(11), "bold", function(self) self:align(0, 0.5) end) .. { Name = "Name" },
 			LZ.text(M(11), "regular", function(self) self:align(0, 0.5):diffuse(LZ.a(white, 0.85)) end) .. { Name = "By" },
-			LZ.starPill(M(13), function(self) self:y(M(13)) end) .. { Name = "Star" },
+			LZ.starPill(M(13), function(self) self:y(M(14.5)) end) .. { Name = "Star" },
 		},
 		-- a soft light over the card under the mouse
 		TW.box { w = W, h = H, r = TW.M(8), ay = 0.5, blend = "BlendMode_Add", col = { 1, 1, 1, 0.09 }, col2 = { 1, 1, 1, 0.03 } } .. {
