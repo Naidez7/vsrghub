@@ -391,7 +391,9 @@ Etterna packs:
   and Quaver replays, judges them as Etterna would on the same charts, and the game rates them with
   Etterna's calculator the next time song select comes up. Online > "Send my osu! / Quaver plays" does
   them all; after that the plays you make are picked up on their own each time VSRG Hub or the game
-  starts ("Load new plays" looks right away).
+  starts ("Load new plays" looks right away). Once rated, each play is also written into your Etterna
+  profile as a local score, with its replay: it shows on the local ranking and your profile, its
+  results open, and its replay plays. (The profile file is copied to Save/VSRGHub/backup first.)
 - **An icon**: vsrghub.exe, the desktop shortcut, the launcher and the game's window.
 - **Quaver skins' stage borders** (stage-left-border / stage-right-border) are drawn beside the columns.
 - **7K stages as the skin draws them**: bar-style osu! skins (no receptors, a stage hint line) get their

@@ -252,7 +252,8 @@ type launch struct {
 	buildOnly           bool
 	args                []string
 	standalone          bool // the launcher on its own, not the copy in Etterna's VSRGHub folder
-	importNew           func() // your new osu! / Quaver plays, looked for in the background (launcher_windows.go)
+	importNew           func()             // your new osu! / Quaver plays, looked for in the background (launcher_windows.go)
+	beforeGame          func(func(string)) // run before Etterna starts, with the game closed (launcher_windows.go)
 }
 
 // start brings the library and theme folder up to date and starts Etterna. progress gets a word
@@ -286,6 +287,11 @@ func (l *launch) start(progress func(string)) (*exec.Cmd, func(), error) {
 	exe := filepath.Join(etterna, "Program", "Etterna.exe")
 	if _, err := os.Stat(exe); err != nil {
 		return nil, nil, fmt.Errorf("Etterna.exe not found at %s", exe)
+	}
+	// (your new osu! / Quaver plays handed to the game, and the rated ones written to the Etterna
+	// profile: before the game reads it)
+	if l.beforeGame != nil {
+		l.beforeGame(progress)
 	}
 	progress("Starting Etterna")
 	env := os.Environ()

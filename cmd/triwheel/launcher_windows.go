@@ -318,10 +318,6 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 				eval("onStatus", "Couldn't start the game: "+err.Error(), "err")
 				return
 			}
-			// (your new osu! / Quaver plays, for the game to rate once it's up)
-			if l.importNew != nil {
-				l.importNew()
-			}
 			if l.data != "" && loadState(l.data).KeepOpen {
 				// the launcher stays: it minds the game itself (scores sent, rankings answered, the
 				// tray icon, Discord) and is ready again once the game ends
@@ -918,9 +914,7 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 				return
 			}
 		}
-		if !importMu.TryLock() {
-			return
-		}
+		importMu.Lock()
 		defer importMu.Unlock()
 		osuDir, quaverDir := "", ""
 		if d := l.dirs["osu"]; d != nil {
@@ -947,7 +941,25 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 		eval("onOnline", map[string]any{"kind": "osu", "report": rep})
 		eval("onOnline", accountState())
 	}
-	l.importNew = func() { go importReplays(true, true) }
+	l.importNew = func() {
+		go func() {
+			importReplays(true, true)
+			if n, err := injectLocalScores(l.etterna, l.data); err != nil {
+				logf("local scores: %v", err)
+			} else if n > 0 {
+				eval("onOnline", map[string]any{"kind": "toast", "text": fmt.Sprintf("%d osu! / Quaver play%s added to your local scores in Etterna", n, plural(n))})
+			}
+		}()
+	}
+	l.beforeGame = func(progress func(string)) {
+		progress("Looking for new osu! / Quaver plays")
+		importReplays(true, true)
+		if n, err := injectLocalScores(l.etterna, l.data); err != nil {
+			logf("local scores: %v", err)
+		} else if n > 0 {
+			logf("local scores: %d written before the game starts", n)
+		}
+	}
 	w.Bind("vh_osuImport", func() { go importReplays(false, false) })
 	w.Bind("vh_osuImportNew", func() { go importReplays(true, false) })
 	// "Report a problem": a zip of the logs on the desktop, shown in Explorer (report.go)

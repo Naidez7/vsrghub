@@ -278,7 +278,16 @@ type judged struct {
 	Taps        int
 	HoldsMissed int
 	MaxCombo    int
-	Wife        float64 // percent
+	Wife        float64     // percent
+	Hits        []replayHit // one per judged note, in Offsets' order (for Etterna's replay file)
+	Dropped     [][2]int    // the holds let go: row, track
+}
+
+// a judged note as Etterna's replay keeps it
+type replayHit struct {
+	Row, Track int
+	Hold       bool // a hold's head (Etterna's TapNoteType_HoldHead)
+	Offset     float64 // ms (1000: missed)
 }
 
 // judgeReplay: the presses (per column, audio-time ms) against the chart's kept notes. rate scales
@@ -364,17 +373,21 @@ func judgeReplay(notes []quaHit, keys int, frames []osrFrame, rate float64, mirr
 				pi++
 			}
 			out.Taps++
+			isHold := n.EndTime > n.StartTime
 			if math.IsNaN(hit) {
 				out.Offsets = append(out.Offsets, 1000)
+				out.Hits = append(out.Hits, replayHit{n.Row, c, isHold, 1000})
 				out.Counts[5]++
 				evs = append(evs, ev{n.StartTime, true})
-				if n.EndTime > n.StartTime {
+				if isHold {
 					out.HoldsMissed++
+					out.Dropped = append(out.Dropped, [2]int{n.Row, c})
 				}
 				continue
 			}
 			ms := (hit - n.StartTime) / rate
 			out.Offsets = append(out.Offsets, ms)
+			out.Hits = append(out.Hits, replayHit{n.Row, c, isHold, ms})
 			a := math.Abs(ms)
 			k := 5
 			for i, w := range j4Windows {
@@ -398,6 +411,7 @@ func judgeReplay(notes []quaHit, keys int, frames []osrFrame, rate float64, mirr
 				}
 				if !okHold {
 					out.HoldsMissed++
+					out.Dropped = append(out.Dropped, [2]int{n.Row, c})
 				}
 			}
 		}
@@ -888,6 +902,11 @@ func writeJobs(data string, jobs []osuJob, add bool) error {
 			c[0], c[1], c[2], c[3], c[4], c[5], j.J.MaxCombo, j.J.Taps, j.J.HoldsMissed,
 			j.PlayedAt.Format("2006-01-02T15:04:05Z"), tsvSafe(j.Mods), strings.Join(offs, ","))
 	}
+	// (each play's hits as Etterna's replay file, for the play to be a local score too: localscores.go)
+	os.MkdirAll(filepath.Join(dir, "replays"), 0o755)
+	for _, j := range jobs {
+		os.WriteFile(filepath.Join(dir, "replays", j.Key), []byte(etternaReplay(j.J)), 0o644)
+	}
 	tmp := filepath.Join(dir, "jobs.txt.tmp")
 	if err := os.WriteFile(tmp, []byte(sb.String()), 0o644); err != nil {
 		return err
@@ -899,4 +918,26 @@ func writeJobs(data string, jobs []osuJob, add bool) error {
 
 func tsvSafe(s string) string {
 	return strings.NewReplacer("\t", " ", "\n", " ", "\r", " ").Replace(s)
+}
+
+// etternaReplay: the judged hits as Etterna writes a replay (Save/ReplaysV2/<score key>): a line per
+// note "row offset track [type]" (the offset in seconds, 1 for a miss; type 2 for a hold's head),
+// then "H row track" for each hold let go.
+func etternaReplay(j judged) string {
+	var sb strings.Builder
+	for _, h := range j.Hits {
+		off := h.Offset / 1000
+		if h.Offset >= 1000 {
+			off = 1
+		}
+		fmt.Fprintf(&sb, "%d %.6f %d", h.Row, off, h.Track)
+		if h.Hold {
+			sb.WriteString(" 2")
+		}
+		sb.WriteByte('\n')
+	}
+	for _, d := range j.Dropped {
+		fmt.Fprintf(&sb, "H %d %d\n", d[0], d[1])
+	}
+	return sb.String()
 }

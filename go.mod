@@ -11,4 +11,6 @@ require (
 
 require github.com/ulikunitz/xz v0.5.12
 
+require github.com/beevik/etree v1.4.1 // indirect
+
 replace github.com/jchv/go-webview2 => ./third_party/go-webview2

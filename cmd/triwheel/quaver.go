@@ -24,6 +24,7 @@ type quaHit struct {
 	StartTime float64 `yaml:"StartTime"`
 	Lane      int     `yaml:"Lane"`
 	EndTime   float64 `yaml:"EndTime"`
+	Row       int     `yaml:"-"` // the note's row in the chart written (Etterna's note row: 48 a beat)
 }
 
 type quaMap struct {
@@ -229,6 +230,7 @@ func buildChart(q *quaMap, mode ModeRow, t *timing) *smChart {
 				busyUntil = row
 				h.EndTime = 0
 			}
+			h.Row = row
 			c.kept = append(c.kept, h)
 			c.notes++
 		}

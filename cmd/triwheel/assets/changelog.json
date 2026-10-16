@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.93",
+  "date": "2026-10-16",
+  "notes": "- Your osu! / Quaver plays become local scores in Etterna too: once the game has rated one, the launcher writes it into your Etterna profile with its replay (before the game starts, with a backup of the profile in Save/VSRGHub/backup), so it shows on the local ranking, your profile, its results and its replay. Plays sent before this update get there with \"Send my osu! / Quaver plays again\"."
+ },
+ {
   "version": "1.8.0-beta.92",
   "date": "2026-10-16",
   "notes": "- osu!lazer look, song select: the cards' pictures are cut to fit instead of squeezed; the wedge's picture is slanted with the wedge (its corner stuck out by the pattern ratings); the RANKED pill fits its word; the selected card's pills have air between them."
