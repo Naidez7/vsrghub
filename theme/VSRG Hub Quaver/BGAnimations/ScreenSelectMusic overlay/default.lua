@@ -280,6 +280,13 @@ local t = Def.ActorFrame {
 		if TW.settings.resumeChart and TW.settings.resumeChart ~= "" then self:sleep(0.1):queuecommand("Resume") end
 		-- back from a score's results: your rate again (Etterna showed them at the score's)
 		TW.afterScoreView()
+		-- from the main menu: the song that was playing there
+		if TW.menuSongPending then
+			local s = TW.menuSongPending
+			TW.menuSongPending = nil
+			local resuming = TW.settings.resumeChart and TW.settings.resumeChart ~= ""
+			if GAMESTATE:GetCurrentSong() ~= s and not resuming then self:sleep(0.1):queuecommand("MenuSong") end
+		end
 		-- "Watch replay" on the results: started once song select is up again
 		if TW.pendingReplay then self:sleep(0.4):queuecommand("PendingReplay") end
 		-- back from a replay: Etterna puts your own rate back as the replay's screen goes away, after
@@ -287,6 +294,11 @@ local t = Def.ActorFrame {
 		if TW.replayStarted then TW.replayStarted = false; self:sleep(0.3):queuecommand("RateBack") end
 	end,
 	ResumeCommand = function() TW.restoreSelection(wheel()) end,
+	MenuSongCommand = function(self)
+		local s = TW.menu and TW.menu.song
+		local w = wheel()
+		if s and w then pcall(function() w:SelectSong(s) end) end
+	end,
 	PendingReplayCommand = function() TW.startPendingReplay() end,
 	RateBackCommand = function() TW.afterReplay() end,
 	CollectionCommand = function(self) if TW.collection then TW.applyCollection(TW.collection) end end,

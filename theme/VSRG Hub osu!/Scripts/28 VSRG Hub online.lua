@@ -9,6 +9,37 @@ function TW.setRankSource(src)
 	TW.saveSetting("rankSource", TW.rankSource)
 	MESSAGEMAN:Broadcast("TWRankSource")
 end
+-- how the scoreboard is ordered (every scope): by the play's rating, its accuracy, its combo or
+-- its date. TW.sortBoard(list) gives the list in that order (the places follow it).
+TW.boardSorts = { { "Rating", "ssr" }, { "Accuracy", "acc" }, { "Combo", "combo" }, { "Newest", "date" } }
+TW.boardSort = 1
+for i, s in ipairs(TW.boardSorts) do if TW.settings and TW.settings.boardSort == s[2] then TW.boardSort = i end end
+function TW.setBoardSort(i)
+	TW.boardSort = (i - 1) % #TW.boardSorts + 1
+	TW.saveSetting("boardSort", TW.boardSorts[TW.boardSort][2])
+	MESSAGEMAN:Broadcast("TWBoardSort")
+end
+function TW.boardSortName() return TW.boardSorts[TW.boardSort][1] end
+local function scoreKeyOf(hs, how)
+	local v = 0
+	pcall(function()
+		if how == "acc" then v = hs:GetWifeScore()
+		elseif how == "combo" then v = hs:GetMaxCombo()
+		elseif how == "date" then v = tostring(hs:GetDate() or "")
+		else v = (type(hs) == "table" and hs.vhOnline) and hs:GetSkillsetSSR() or hs:GetSkillsetSSR("Overall") end
+	end)
+	return v or 0
+end
+function TW.sortBoard(list)
+	local how = TW.boardSorts[TW.boardSort][2]
+	local out = {}
+	for i, hs in ipairs(list) do out[i] = hs end
+	local keys = {}
+	for _, hs in ipairs(out) do keys[hs] = scoreKeyOf(hs, how) end
+	table.sort(out, function(a, b) return keys[a] > keys[b] end)
+	return out
+end
+
 function TW.loggedIn()
 	local ok, on = pcall(function() return DLMAN:IsLoggedIn() end)
 	return ok and on

@@ -275,10 +275,14 @@ local function valuePill(x, w, label, value, onLeft, onRight)
 		},
 	}
 end
-tabRow[#tabRow + 1] = valuePill(M(190), M(190), "Scope", function() return scopes[scopeIndex()][1] end,
+tabRow[#tabRow + 1] = valuePill(M(190), M(172), "Scope", function() return scopes[scopeIndex()][1] end,
 	function() setScope(scopeIndex() % #scopes + 1) end, function() setScope((scopeIndex() - 2) % #scopes + 1) end)
-tabRow[#tabRow + 1] = valuePill(M(392), M(150), "Rate", function() return getCurRateDisplayString(true) end,
+tabRow[#tabRow + 1] = valuePill(M(370), M(118), "Rate", function() return getCurRateDisplayString(true) end,
 	function() ChangeMusicRate(nil, { Name = "PrevRate" }) end, function() ChangeMusicRate(nil, { Name = "NextRate" }) end)
+-- (the scoreboard's order: by rating, accuracy, combo or date; right click goes back)
+tabRow[#tabRow + 1] = valuePill(M(496), M(164), "Sort", function() return TW.boardSortName() end,
+	function() TW.setBoardSort(TW.boardSort + 1) end, function() TW.setBoardSort(TW.boardSort - 1) end) .. {
+	TWBoardSortMessageCommand = function(self) self:playcommand("Val") end }
 t[#t + 1] = tabRow
 
 -- ------------------------------------------------------------------------------------------------

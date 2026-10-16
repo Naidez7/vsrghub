@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.100",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.100.zip",
- "sha256": "ed30e917708cd8af4b7c30f7816e50f54c90ab6e54890cbf8eb2df3097ebdce9",
- "notes": "- Song select scoreboard (every look): with more scores than fit, the mouse wheel over the board scrolls the scores instead of the song list.",
+ "version": "1.8.0-beta.101",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.101.zip",
+ "sha256": "7cc8924c9d0cfbdbfb37ca21c449f08d7f0d5b382630c7be380cfbf72f3359ca",
+ "notes": "- Song select scoreboard, every look and scope: a Sort control (Rating, Accuracy, Combo, Newest); the places follow the order. In osu! it's the pill right of the rate, in lazer the Sort pill next to Rate, in Quaver the box left of RANKING. Click goes on, right click back.\n- Quaver look: the main menu plays a random song, as Quaver's does, and song select opens on it (the osu! looks already did).\n- The scoreboard's wheel scrolling stays off while the map preview is shown.",
  "latest": {
-  "version": "1.8.0-beta.100",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.100.zip",
-  "sha256": "ed30e917708cd8af4b7c30f7816e50f54c90ab6e54890cbf8eb2df3097ebdce9",
-  "notes": "- Song select scoreboard (every look): with more scores than fit, the mouse wheel over the board scrolls the scores instead of the song list."
+  "version": "1.8.0-beta.101",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.101.zip",
+  "sha256": "7cc8924c9d0cfbdbfb37ca21c449f08d7f0d5b382630c7be380cfbf72f3359ca",
+  "notes": "- Song select scoreboard, every look and scope: a Sort control (Rating, Accuracy, Combo, Newest); the places follow the order. In osu! it's the pill right of the rate, in lazer the Sort pill next to Rate, in Quaver the box left of RANKING. Click goes on, right click back.\n- Quaver look: the main menu plays a random song, as Quaver's does, and song select opens on it (the osu! looks already did).\n- The scoreboard's wheel scrolling stays off while the map preview is shown."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.101",
+   "date": "2026-10-16",
+   "notes": "- Song select scoreboard, every look and scope: a Sort control (Rating, Accuracy, Combo, Newest); the places follow the order. In osu! it's the pill right of the rate, in lazer the Sort pill next to Rate, in Quaver the box left of RANKING. Click goes on, right click back.\n- Quaver look: the main menu plays a random song, as Quaver's does, and song select opens on it (the osu! looks already did).\n- The scoreboard's wheel scrolling stays off while the map preview is shown."
+  },
   {
    "version": "1.8.0-beta.100",
    "date": "2026-10-16",

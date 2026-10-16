@@ -424,6 +424,28 @@ t[#t + 1] = Def.ActorFrame {
 					end
 				end
 			}
+		},
+		-- the scoreboard's order (rating, accuracy, combo, newest), on a pill right of the rate:
+		-- click goes on, right click back
+		Def.ActorFrame {
+			InitCommand = function(self) self:x(RW + M(68)) end,
+			TW.box { w = M(86), h = RH, r = RH / 2, ay = 0.5, col = { 0, 0, 0, 0.55 } } .. { Name = "SortBg" },
+			TW.box { w = M(86), h = RH, r = RH / 2, ay = 0.5, tex = "ring", stroke = M(1.5), col = { 1, 1, 1, 0.9 } },
+			TW.icon("sort", M(11), function(self) self:x(M(14)):diffusealpha(0.9) end),
+			TW.text(M(12), true, function(self) self:align(0, 0.5):x(M(24)) end) .. {
+				OnCommand = function(self) self:playcommand("SortName") end,
+				TWBoardSortMessageCommand = function(self) self:playcommand("SortName") end,
+				SortNameCommand = function(self) self:settext(TW.boardSortName and TW.boardSortName() or ""):maxwidth(M(58) / self:GetZoom()) end,
+			},
+			UIElements.QuadButton(1, 1) .. {
+				InitCommand = function(self) self:align(0, 0.5):zoomto(M(86), RH):diffusealpha(0) end,
+				MouseOverCommand = function(self) TW.setBox(self:GetParent():GetChild("SortBg"), { col = { 0.25, 0.25, 0.3, 0.7 } }) end,
+				MouseOutCommand = function(self) TW.setBox(self:GetParent():GetChild("SortBg"), { col = { 0, 0, 0, 0.55 } }) end,
+				MouseDownCommand = function(self, params)
+					if params.event == "DeviceButton_left mouse button" then TW.setBoardSort(TW.boardSort + 1)
+					elseif params.event == "DeviceButton_right mouse button" then TW.setBoardSort(TW.boardSort - 1) end
+				end
+			}
 		}
 	}
 t[#t + 1] = dropList("group", 948, 1152, groupItems)

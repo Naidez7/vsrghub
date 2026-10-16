@@ -110,6 +110,7 @@ local boardOff = 0
 local function fillBoard(root, list, status, pb, keepOff)
 	local board = root:GetChild("Board")
 	root.boardArgs = { list, status, pb }
+	list = TW.sortBoard(list)
 	if not keepOff then boardOff = 0 end
 	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
 	for i = 1, ROWS do board:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
@@ -150,6 +151,10 @@ t[#t + 1] = Def.Actor {
 		end
 	end,
 	OffCommand = function(self) TW.boardScroll = nil end,
+	TWBoardSortMessageCommand = function(self)
+		local a = self:GetParent().boardArgs
+		if a then fillBoard(self:GetParent(), a[1], a[2], a[3]) end
+	end,
 	BoardCommand = function(self)
 		-- (the same chart again, e.g. the game's song put back to the picked one after a scroll: the
 		-- board stays as it is instead of loading over)
@@ -189,6 +194,16 @@ t[#t + 1] = Def.Actor {
 }
 t[#t + 1] = Def.ActorFrame {
 	QV.t(M(19), true, function(self) self:align(0, 0.5):xy(X0, M(136)):settext("LEADERBOARD") end),
+	-- the scoreboard's order (rating, accuracy, combo, newest): click goes on, right click back
+	Def.Quad { Name = "SortBg", InitCommand = function(self) self:align(0, 0.5):xy(X0 + M(150), M(136)):zoomto(M(90), M(24)):diffuse(TW.rgb(25, 25, 25)) end },
+	QV.t(M(13.5), true, function(self) self:align(0, 0.5):xy(X0 + M(160), M(136)):diffuse(TW.rgb(6, 202, 250)) end) .. {
+		OnCommand = function(self) self:playcommand("SortName") end,
+		TWBoardSortMessageCommand = function(self) self:playcommand("SortName") end,
+		SortNameCommand = function(self) self:settext(TW.boardSortName and TW.boardSortName() or ""):maxwidth(M(72) / self:GetZoom()) end,
+	},
+	TW.button(M(90), M(24), function() TW.setBoardSort(TW.boardSort + 1) end, function(self, on)
+		self:GetParent():GetChild("SortBg"):diffuse(on and TW.rgb(50, 50, 50) or TW.rgb(25, 25, 25))
+	end, function() TW.setBoardSort(TW.boardSort - 1) end) .. { InitCommand = function(self) self:align(0, 0.5):xy(X0 + M(150), M(136)):zoomto(M(90), M(24)):diffusealpha(0) end },
 	QV.t(M(14), true, function(self) self:align(0, 0.5):xy(X0 + M(247), M(136)):settext("RANKING:") end),
 	Def.Quad { Name = "SrcBg", InitCommand = function(self) self:align(0, 0.5):xy(X0 + M(333), M(136)):zoomto(M(94), M(24)):diffuse(TW.rgb(25, 25, 25)) end },
 	QV.t(M(13.5), true, function(self) self:align(0, 0.5):xy(X0 + M(343), M(136)):diffuse(TW.rgb(6, 202, 250)) end) .. {

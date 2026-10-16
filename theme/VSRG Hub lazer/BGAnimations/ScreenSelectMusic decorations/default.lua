@@ -34,6 +34,8 @@ end
 local boardOff = 0
 local function fillBoard(self, list, status, pb, pbPlace, keepOff)
 	self.boardArgs = { list, status, pb, pbPlace }
+	list = TW.sortBoard(list)
+	if pb then for i, hs in ipairs(list) do if hs == pb then pbPlace = i end end end
 	if not keepOff then boardOff = 0 end
 	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
 	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
@@ -65,7 +67,7 @@ local board = Def.ActorFrame {
 		local frame = self
 		TW.boardScroll = function(dir)
 			local a = frame.boardArgs
-			if not a or #a[1] <= ROWS then return false end
+			if not a or #a[1] <= ROWS or TW.osuLeft == "Preview" then return false end
 			local mx, my = INPUTFILTER:GetMouseX(), INPUTFILTER:GetMouseY()
 			if mx < X0 or mx > X0 + PANEL_W or my < Y0 or my > Y0 + (ROWS - 1) * STEP + RH then return false end
 			boardOff = boardOff + dir
@@ -74,6 +76,10 @@ local board = Def.ActorFrame {
 		end
 	end,
 	OffCommand = function(self) TW.boardScroll = nil end,
+	TWBoardSortMessageCommand = function(self)
+		local a = self.boardArgs
+		if a then fillBoard(self, a[1], a[2], a[3], a[4]) end
+	end,
 	BoardCommand = function(self)
 		-- (the same chart again, e.g. the game's song put back to the picked one after a scroll: the
 		-- board stays as it is instead of loading over)
