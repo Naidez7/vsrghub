@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.97",
+  "date": "2026-10-16",
+  "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
+ },
+ {
   "version": "1.8.0-beta.96",
   "date": "2026-10-16",
   "notes": "- osu! and osu!lazer looks: song select opens on the song the main menu was playing, as osu!'s does (the menu's song is a random one each time).\n- \"Send my osu! / Quaver plays\": the progress line moves every 20 replays instead of every 200 (each replay is judged against its map, so it looked stuck)."

@@ -415,15 +415,16 @@ function LZ.footerButton(spec)
 		LZ.panel { w = w, h = h, col = LZ.a(LZ.bg3, 0.96), col2 = LZ.a(LZ.bg4, 0.96) } .. { Name = "Bg" },
 		LZ.panel { w = w, h = h, blend = "BlendMode_Add", col = LZ.a(col, 0.0), col2 = LZ.a(col, 0.6) } .. { Name = "Glow", InitCommand = function(self) self:diffusealpha(0) end },
 		-- (the line along the bottom in the button's colour)
-		LZ.panel { w = w - M(24), h = M(4), r = M(2), shear = 0, col = LZ.a(col, 0.6), init = function(self) self:xy(M(12), h - M(8)) end } .. { Name = "Line" },
-		TW.icon(spec.icon, M(16), function(self) self:xy(w / 2 + M(2), h * 0.36) end) .. { Name = "Icon" },
-		LZ.text(M(12.5), "bold", function(self) self:align(0.5, 0.5):xy(w / 2, h * 0.7):settext(spec.label) end) .. { Name = "Label" },
+		-- (icon, label, then the line, with air between: the label's descenders stayed on the line)
+		LZ.panel { w = w - M(24), h = M(3.5), r = M(1.75), shear = 0, col = LZ.a(col, 0.6), init = function(self) self:xy(M(12), h - M(7)) end } .. { Name = "Line" },
+		TW.icon(spec.icon, M(15), function(self) self:xy(w / 2 + M(2), h * 0.3) end) .. { Name = "Icon" },
+		LZ.text(M(12), "bold", function(self) self:align(0.5, 0.5):xy(w / 2, h * 0.62):settext(spec.label) end) .. { Name = "Label" },
 		spec.key and LZ.text(M(8.5), "regular", function(self) self:align(1, 0):xy(w - M(10), M(4)):settext(spec.key):diffuse(LZ.a(col, 0.9)) end) or Def.Actor {},
 		TW.button(w, h, function() if spec.onClick then spec.onClick() end end, function(self, on)
 			local p = self:GetParent()
 			p:GetChild("Glow"):stoptweening():linear(0.1):diffusealpha(on and 0.3 or 0)
 			TW.setBox(p:GetChild("Line"), { col = on and col or LZ.a(col, 0.6) })
-			p:GetChild("Icon"):stoptweening():decelerate(0.1):zoomto(M(on and 18 or 16), M(on and 18 or 16))
+			p:GetChild("Icon"):stoptweening():decelerate(0.1):zoomto(M(on and 17 or 15), M(on and 17 or 15))
 		end) .. { InitCommand = function(self) self:align(0, 0):zoomto(w, h):diffusealpha(0) end },
 	}
 end

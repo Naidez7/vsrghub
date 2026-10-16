@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.96",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.96.zip",
- "sha256": "f0b0f6206554806305b060a681adbabb500a9a3229f8f941f6ce6bca862db895",
- "notes": "- osu! and osu!lazer looks: song select opens on the song the main menu was playing, as osu!'s does (the menu's song is a random one each time).\n- \"Send my osu! / Quaver plays\": the progress line moves every 20 replays instead of every 200 (each replay is judged against its map, so it looked stuck).",
+ "version": "1.8.0-beta.97",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.97.zip",
+ "sha256": "78ec0ccb649ec641f84743adf4d49963a7f46e07476e97fff4a0b7250ea83e2e",
+ "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out.",
  "latest": {
-  "version": "1.8.0-beta.96",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.96.zip",
-  "sha256": "f0b0f6206554806305b060a681adbabb500a9a3229f8f941f6ce6bca862db895",
-  "notes": "- osu! and osu!lazer looks: song select opens on the song the main menu was playing, as osu!'s does (the menu's song is a random one each time).\n- \"Send my osu! / Quaver plays\": the progress line moves every 20 replays instead of every 200 (each replay is judged against its map, so it looked stuck)."
+  "version": "1.8.0-beta.97",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.97.zip",
+  "sha256": "78ec0ccb649ec641f84743adf4d49963a7f46e07476e97fff4a0b7250ea83e2e",
+  "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.97",
+   "date": "2026-10-16",
+   "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
+  },
   {
    "version": "1.8.0-beta.96",
    "date": "2026-10-16",
