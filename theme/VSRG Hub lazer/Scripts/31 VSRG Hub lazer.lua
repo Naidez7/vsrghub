@@ -130,9 +130,10 @@ function LZ.starPill(h, init)
 			local c = self:GetChildren()
 			c.V:settextf("%.2f", v):diffuse(LZ.starText(v))
 			c.S:diffuse(LZ.starText(v))
-			local w = h * 1.4 + c.V:GetZoomedWidth()
+			-- (room before the star, the number, and the same room after it)
+			local w = h * 1.8 + c.V:GetZoomedWidth()
 			TW.setBox(c.Bg, { w = w, col = LZ.starColour(v) })
-			c.V:x(h * 1.0)
+			c.V:x(h * 1.05)
 			self.w = w
 		end,
 		TW.box { w = h * 3, h = h, r = h / 2, ay = 0.5 } .. { Name = "Bg" },

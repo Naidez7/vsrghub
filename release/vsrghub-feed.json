@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.82",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.82.zip",
- "sha256": "bad137c842ceb54e9629d32f5eb2a8e3fe5153025da3195e9486f2ed928966c6",
+ "version": "1.8.0-beta.83",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.83.zip",
+ "sha256": "725a751ca4c22539a9534a6e4f00c74dffa4c74d92390f2bcf3c4225c1e211f9",
  "notes": "",
  "latest": {
-  "version": "1.8.0-beta.82",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.82.zip",
-  "sha256": "bad137c842ceb54e9629d32f5eb2a8e3fe5153025da3195e9486f2ed928966c6",
+  "version": "1.8.0-beta.83",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.83.zip",
+  "sha256": "725a751ca4c22539a9534a6e4f00c74dffa4c74d92390f2bcf3c4225c1e211f9",
   "notes": ""
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.83",
+   "date": "- osu!lazer look, song list: the MSD pill no longer cuts its number short, the RANKED pill fits its word, and the grade letter sits in the middle of its bubble.",
+   "notes": ""
+  },
   {
    "version": "1.8.0-beta.82",
    "date": "- The rankings are on the web now: https://naidez7.github.io/vsrghub/ (rankings, profiles, the daily challenge). Online has a \"My profile on the web\" button, for sharing yours.",
