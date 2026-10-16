@@ -710,6 +710,7 @@ function drawOptions() {
 		h += optRow("VSRG Hub's folder", esc(S.etterna) + "\\VSRGHub", `<button class="btn small" id="o-hub">Open</button>`);
 	}
 	h += optRow("Log", "What VSRG Hub did last time (for reporting problems)", `<button class="btn small" id="o-log">Open</button>`);
+	h += optRow("Ranking notices", "Who passed you, who took a #1 from you: on the Online page, as toasts, and in the game", `<button class="tog ${S.notices ? "on" : ""}" data-k="notices"></button>`);
 	h += optRow("Keep the launcher open while playing", "Off closes the launcher once the game is up (it comes back when you open it again)", `<button class="tog ${S.keepOpen ? "on" : ""}" data-k="keepOpen"></button>`);
 	if (S.discord && S.discord.ready) h += optRow("Discord", "Show what you're playing as your Discord activity while the game runs", `<button class="tog ${S.discord.on ? "on" : ""}" data-k="discord"></button>`);
 	h += optRow("Falling arrows on the Play page", "Off saves the graphics card on a slow PC (the launcher only; the game isn't touched)", `<button class="tog ${stageOn() ? "on" : ""}" data-k="stage"></button>`);
@@ -719,7 +720,7 @@ function drawOptions() {
 	$("optsbody").querySelectorAll(".seg").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => {
 		g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); setOpt(g.dataset.k, b.dataset.v);
 	}));
-	$("optsbody").querySelectorAll(".tog").forEach(t => t.onclick = () => { t.classList.toggle("on"); if (t.dataset.k === "keepOpen") { S.keepOpen = t.classList.contains("on"); window.vh_setKeepOpen(S.keepOpen); return; } if (t.dataset.k === "discord") { S.discord.on = t.classList.contains("on"); window.vh_setDiscord(S.discord.on); return; } if (t.dataset.k === "stage") { try { localStorage.setItem("stage", t.classList.contains("on") ? "1" : "0"); } catch (e) {} return; } setOpt(t.dataset.k, t.classList.contains("on")); });
+	$("optsbody").querySelectorAll(".tog").forEach(t => t.onclick = () => { t.classList.toggle("on"); if (t.dataset.k === "keepOpen") { S.keepOpen = t.classList.contains("on"); window.vh_setKeepOpen(S.keepOpen); return; } if (t.dataset.k === "discord") { S.discord.on = t.classList.contains("on"); window.vh_setDiscord(S.discord.on); return; } if (t.dataset.k === "notices") { S.notices = t.classList.contains("on"); window.vh_setNotices(S.notices); if (!S.notices) { notices = []; drawAccount(); } return; } if (t.dataset.k === "stage") { try { localStorage.setItem("stage", t.classList.contains("on") ? "1" : "0"); } catch (e) {} return; } setOpt(t.dataset.k, t.classList.contains("on")); });
 	const on = (id, f) => { const e = $(id); if (e) e.onclick = f; };
 	on("o-short", async () => { if (await window.vh_shortcut()) { S.shortcut = true; drawOptions(); toast("Shortcut added to your desktop"); } });
 	on("o-launcher", () => window.vh_open("launcher"));
@@ -862,6 +863,7 @@ function drawAccount(busyNow) {
 		if ($("o-sus")) $("o-sus").onclick = openSuspicious;
 		if ($("o-admin")) $("o-admin").onclick = openAdmin;
 		if ($("o-csv")) $("o-csv").onclick = () => { toast("Getting your scores..."); window.vh_exportScores(); };
+		if ($("nt-off")) $("nt-off").onclick = (e) => { e.preventDefault(); if (S) S.notices = false; notices = []; window.vh_setNotices(false); drawAccount(); toast("Ranking notices off (Options turns them back on)"); };
 		if ($("o-web")) $("o-web").onclick = () => window.vh_open(WEB + "player.html?id=" + encodeURIComponent(a.userId || ""));
 		$("o-out").onclick = () => { acctBusy("Signing out..."); window.vh_signOut(); };
 		$("o-me").onclick = () => { if (a.userId) openPlayer(a.userId); };
@@ -917,7 +919,7 @@ $("rkfind").oninput = () => { rkFound = null; drawRankings(); clearTimeout(rkFin
 let notices = [];
 function noticesBox() {
 	if (!notices.length) return "";
-	return `<div class="notices"><div class="k">RANKING CHANGES</div>${notices.slice(0, 6).map(n => `<div class="nt"><span>${esc(n.text)}</span><small>${ago(n.when)}</small></div>`).join("")}</div>`;
+	return `<div class="notices"><div class="k">RANKING CHANGES <a class="dim" href="#" id="nt-off" style="float:right;font-weight:400;text-transform:none;letter-spacing:0" title="Turn the notices off (Options turns them back on)">hide</a></div>${notices.slice(0, 6).map(n => `<div class="nt"><span>${esc(n.text)}</span><small>${ago(n.when)}</small></div>`).join("")}</div>`;
 }
 function loadRankings() { $("rkbody").innerHTML = `<div class="empty">Loading...</div>`; window.vh_rankings(rkKeys, rkSkill); }
 document.querySelectorAll("#rkkeys button").forEach(b => b.onclick = () => {

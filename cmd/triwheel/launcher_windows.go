@@ -180,6 +180,7 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 			st["options"] = launcherOptions(l.etterna)
 			st["discord"] = map[string]any{"on": !loadState(l.data).DiscordOff, "ready": discordAppID != ""}
 			st["keepOpen"] = loadState(l.data).KeepOpen
+			st["notices"] = !loadState(l.data).NoticesOff
 		}
 		sizes, rates, cur, curRate := displayModes()
 		st["displays"] = map[string]any{"sizes": sizes, "rates": rates, "current": cur, "currentRate": curRate}
@@ -267,6 +268,17 @@ func runLauncher(l *launch) (*exec.Cmd, func(), bool) {
 		st := loadState(l.data)
 		st.KeepOpen = on
 		saveState(l.data, st)
+	})
+	w.Bind("vh_setNotices", func(on bool) {
+		if l.data == "" {
+			return
+		}
+		st := loadState(l.data)
+		st.NoticesOff = !on
+		saveState(l.data, st)
+		if !on {
+			eval("onOnline", map[string]any{"kind": "notices", "list": []notice{}})
+		}
 	})
 	w.Bind("vh_setDiscord", func(on bool) {
 		if l.data == "" {

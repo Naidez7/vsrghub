@@ -134,6 +134,12 @@ func checkNotices(data string, game bool) []notice {
 	for i := range out {
 		out[i].When = now
 	}
+	// (turned off on the Options page: the rankings are still followed, so turning them on again
+	// doesn't bring a flood, but nothing is kept or shown)
+	off := loadState(data).NoticesOff
+	if off {
+		out, st.List = nil, nil
+	}
 	st.List = append(append([]notice{}, out...), st.List...)
 	if len(st.List) > 40 {
 		st.List = st.List[:40]

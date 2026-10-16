@@ -568,6 +568,7 @@ type twState struct {
 	EtternaTheme string `json:"etternaTheme"`
 	DiscordOff   bool   `json:"discordOff"` // (the Discord presence turned off on the Options page)
 	KeepOpen     bool   `json:"keepOpen"`   // (the launcher stays open while the game runs: Options page)
+	NoticesOff   bool   `json:"noticesOff"` // (the ranking notices turned off: Options page)
 }
 
 func loadState(root string) twState {
