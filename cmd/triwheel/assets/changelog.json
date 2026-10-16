@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.85",
+  "date": "- Daily challenge: the day's chart is kept once picked (server update 17: it could change during the day as people's play counts changed).",
+  "notes": ""
+ },
+ {
   "version": "1.8.0-beta.84",
   "date": "- osu!lazer look, song list: the MSD pill stays inside the card, and \"[4K] chart name\" starts after the RANKED pill instead of over it.",
   "notes": ""

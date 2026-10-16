@@ -368,24 +368,43 @@ grant execute on function public.lost_firsts(uuid, timestamptz) to anon, authent
 -- charts people have played at 1.0x (MSD 8 to 28, the ones more players know first), by a
 -- hash of the day; the day's board is everyone's best on it played that day (UTC)
 
-create or replace function public.daily_chart(day date, k smallint default 4)
+-- (the day's pick is kept once made: the charts' player counts change through the day, and a
+-- pick made from them alone could change with them)
+create table if not exists public.daily_picks (
+	day date not null, k smallint not null, chart_key text not null, primary key (day, k));
+alter table public.daily_picks enable row level security;
+revoke all on public.daily_picks from anon, authenticated;
+drop function if exists public.daily_chart(date, smallint);
+create function public.daily_chart(day date, k smallint default 4)
 returns table(chart_key text, song_title text, song_artist text, chart_name text, msd real, players bigint)
-language sql stable security definer set search_path = public as $$
-	select c.chart_key, c.song_title, c.song_artist, c.chart_name, c.msd, c.n
-	from (select s.chart_key, max(s.song_title) as song_title, max(s.song_artist) as song_artist, max(s.chart_name) as chart_name,
-			max(s.msd) as msd, count(distinct s.user_id) as n
+language plpgsql volatile security definer set search_path = public as $$
+declare ck text;
+begin
+	select p.chart_key into ck from public.daily_picks p where p.day = daily_chart.day and p.k = daily_chart.k;
+	if ck is null then
+		select c.chart_key into ck
+		from (select s.chart_key, count(distinct s.user_id) as n
+			from public.scores s join public.profiles p on p.id = s.user_id
+			where s.valid and not p.banned and s.keys = daily_chart.k and abs(s.rate - 1) < 0.001 and s.msd between 8 and 28
+			group by s.chart_key) c
+		order by least(c.n, 3) desc, md5(daily_chart.day::text || c.chart_key)
+		limit 1;
+		if ck is null then return; end if;
+		insert into public.daily_picks (day, k, chart_key) values (daily_chart.day, daily_chart.k, ck) on conflict do nothing;
+		select p.chart_key into ck from public.daily_picks p where p.day = daily_chart.day and p.k = daily_chart.k;
+	end if;
+	return query select s.chart_key, max(s.song_title), max(s.song_artist), max(s.chart_name), max(s.msd), count(distinct s.user_id)
 		from public.scores s join public.profiles p on p.id = s.user_id
-		where s.valid and not p.banned and s.keys = k and abs(s.rate - 1) < 0.001 and s.msd between 8 and 28
-		group by s.chart_key) c
-	order by least(c.n, 3) desc, md5(day::text || c.chart_key)
-	limit 1
+		where s.chart_key = ck and s.valid and not p.banned
+		group by s.chart_key;
+end
 $$;
 grant execute on function public.daily_chart(date, smallint) to anon, authenticated;
 
 create or replace function public.daily_board(day date, k smallint default 4)
 returns table(place bigint, user_id uuid, username text, avatar int, avatar_ext text, wife real, rate real, ssr_overall real,
 	max_combo int, played_at timestamptz, source text, score_id bigint)
-language sql stable security definer set search_path = public as $$
+language sql volatile security definer set search_path = public as $$
 	with d as (select chart_key from public.daily_chart(day, k)),
 	best as (
 		select distinct on (s.user_id) s.user_id, s.wife, s.rate, s.ssr_overall, s.max_combo, s.played_at, s.source, s.id
@@ -424,7 +443,7 @@ grant execute on function public.daily_history(int, smallint) to anon, authentic
 -- plays made in one month only (played_at, UTC), so every month starts from nothing
 create or replace function public.rankings_month(k smallint default 4, month date default null, max_rows int default 100)
 returns table (place bigint, username text, user_id uuid, avatar int, avatar_ext text, rating real, plays bigint)
-language sql stable security definer set search_path = public as $$
+language sql volatile security definer set search_path = public as $$
 	with m as (select date_trunc('month', coalesce(month, (now() at time zone 'UTC')::date))::date as m0),
 	best as (
 		select distinct on (s.user_id, s.chart_key, s.rate) s.user_id, s.ssr_stream, s.ssr_jumpstream, s.ssr_handstream,
@@ -813,7 +832,7 @@ revoke all on function public.fix_played_at(jsonb) from public, anon;
 grant execute on function public.fix_played_at(jsonb) to authenticated;
 
 -- this script's version (the launcher expects it: cmd/triwheel/online.go, wantServerVersion)
-insert into public.vh_meta (key, value) values ('schema_version', '16')
+insert into public.vh_meta (key, value) values ('schema_version', '17')
 on conflict (key) do update set value = excluded.value;
 
 -- To make yourself an admin, run once (with your player name):

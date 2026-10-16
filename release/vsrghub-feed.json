@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.84",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.84.zip",
- "sha256": "fb60036a08db854982b04ee9ea82de9f0fb890bad73845f77b63d1b5203fcbbf",
+ "version": "1.8.0-beta.85",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.85.zip",
+ "sha256": "1b151b9e21269f2ba50a92c34a827f7835224cc15f773bc282fd4cd4fa8a6ca0",
  "notes": "",
  "latest": {
-  "version": "1.8.0-beta.84",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.84.zip",
-  "sha256": "fb60036a08db854982b04ee9ea82de9f0fb890bad73845f77b63d1b5203fcbbf",
+  "version": "1.8.0-beta.85",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.85.zip",
+  "sha256": "1b151b9e21269f2ba50a92c34a827f7835224cc15f773bc282fd4cd4fa8a6ca0",
   "notes": ""
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.85",
+   "date": "- Daily challenge: the day's chart is kept once picked (server update 17: it could change during the day as people's play counts changed).",
+   "notes": ""
+  },
   {
    "version": "1.8.0-beta.84",
    "date": "- osu!lazer look, song list: the MSD pill stays inside the card, and \"[4K] chart name\" starts after the RANKED pill instead of over it.",
