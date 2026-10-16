@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.0-beta.97",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.97.zip",
- "sha256": "78ec0ccb649ec641f84743adf4d49963a7f46e07476e97fff4a0b7250ea83e2e",
- "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out.",
+ "version": "1.8.0-beta.98",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.98.zip",
+ "sha256": "ab7291d6afebced652cbc6323785d9dd4c39e203655ed61feaede2b8cf1c267c",
+ "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card).",
  "latest": {
-  "version": "1.8.0-beta.97",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.97.zip",
-  "sha256": "78ec0ccb649ec641f84743adf4d49963a7f46e07476e97fff4a0b7250ea83e2e",
-  "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
+  "version": "1.8.0-beta.98",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.0-beta.98.zip",
+  "sha256": "ab7291d6afebced652cbc6323785d9dd4c39e203655ed61feaede2b8cf1c267c",
+  "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
  },
  "changelog": [
+  {
+   "version": "1.8.0-beta.98",
+   "date": "2026-10-16",
+   "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
+  },
   {
    "version": "1.8.0-beta.97",
    "date": "2026-10-16",

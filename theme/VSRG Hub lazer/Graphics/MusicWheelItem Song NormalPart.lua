@@ -172,14 +172,14 @@ local t = Def.ActorFrame {
 			Name = "Title",
 			SetCommand = function(self, p)
 				if p.Song then
-					self:zoom(self.z0):settext(p.Song:GetDisplayMainTitle()):xy(TX, -H / 2 + M(13)):maxwidth(TEXT_W / self:GetZoom())
+					self:zoom(self.z0):settext(p.Song:GetDisplayMainTitle()):xy(TX, -H / 2 + M(11.5)):maxwidth(TEXT_W / self:GetZoom())
 				else
 					self:settext(p.Text or ""):xy(M(52), 0):zoom(self.z0 * 18 / 15):maxwidth((TEXT_W - M(60)) / self:GetZoom())
 				end
 				self:diffuse(white)
 			end,
 		},
-		LZ.text(M(11), "regular", function(self) self:align(0, 0.5):xy(TX, -H / 2 + M(28)) end) .. {
+		LZ.text(M(11), "regular", function(self) self:align(0, 0.5):xy(TX, -H / 2 + M(29.5)) end) .. {
 			Name = "Sub",
 			SetCommand = function(self, p)
 				if not p.Song then self:settext("") return end

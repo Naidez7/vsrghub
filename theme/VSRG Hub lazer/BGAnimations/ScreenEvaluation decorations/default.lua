@@ -74,10 +74,10 @@ local card = Def.ActorFrame {
 	end),
 	-- the song
 	LZ.text(M(17), "bold", function(self)
-		self:align(0.5, 0.5):y(CT + M(62)):maxwidth((CW - M(40)) / self:GetZoom()):settext(song and song:GetDisplayMainTitle() or "")
+		self:align(0.5, 0.5):y(CT + M(60)):maxwidth((CW - M(40)) / self:GetZoom()):settext(song and song:GetDisplayMainTitle() or "")
 	end),
 	LZ.text(M(12.5), "regular", function(self)
-		self:align(0.5, 0.5):y(CT + M(82)):diffuse(LZ.content2):maxwidth((CW - M(40)) / self:GetZoom()):settext(song and song:GetDisplayArtist() or "")
+		self:align(0.5, 0.5):y(CT + M(84)):diffuse(LZ.content2):maxwidth((CW - M(40)) / self:GetZoom()):settext(song and song:GetDisplayArtist() or "")
 	end),
 }
 

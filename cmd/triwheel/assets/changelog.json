@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.98",
+  "date": "2026-10-16",
+  "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
+ },
+ {
   "version": "1.8.0-beta.97",
   "date": "2026-10-16",
   "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
