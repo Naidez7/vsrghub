@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.6",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.6.zip",
- "sha256": "4f02d47b009709e9e119259da571ba40ec624c380f84b34b5adec13a1e24b5dd",
- "notes": "- Main menu music: watched while the menu is up; when nothing plays though it should (back from song select with Esc left it silent), it's started again within half a second.",
+ "version": "1.8.7",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.7.zip",
+ "sha256": "186aeda424945fc89bd79ddcd65eccedf9ae33dc608ec1c1f1b6162612aafe00",
+ "notes": "- Main menu: the first song really is the one you last played (on the menu nobody has joined yet, so the profile is now looked up by its id); song select then opens on it.",
  "latest": {
-  "version": "1.8.6",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.6.zip",
-  "sha256": "4f02d47b009709e9e119259da571ba40ec624c380f84b34b5adec13a1e24b5dd",
-  "notes": "- Main menu music: watched while the menu is up; when nothing plays though it should (back from song select with Esc left it silent), it's started again within half a second."
+  "version": "1.8.7",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.7.zip",
+  "sha256": "186aeda424945fc89bd79ddcd65eccedf9ae33dc608ec1c1f1b6162612aafe00",
+  "notes": "- Main menu: the first song really is the one you last played (on the menu nobody has joined yet, so the profile is now looked up by its id); song select then opens on it."
  },
  "changelog": [
+  {
+   "version": "1.8.7",
+   "date": "2026-10-17",
+   "notes": "- Main menu: the first song really is the one you last played (on the menu nobody has joined yet, so the profile is now looked up by its id); song select then opens on it."
+  },
   {
    "version": "1.8.6",
    "date": "2026-10-17",

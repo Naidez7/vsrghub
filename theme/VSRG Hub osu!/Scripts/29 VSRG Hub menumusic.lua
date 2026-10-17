@@ -37,7 +37,15 @@ end
 local function firstSong()
 	local s
 	pcall(function() s = GAMESTATE:GetCurrentSong() end)
+	-- (on the main menu nobody has joined yet, so the player's profile is looked up by its id)
 	if not s then pcall(function() s = PROFILEMAN:GetProfile(PLAYER_1):GetLastPlayedSong() end) end
+	if not s then
+		pcall(function()
+			local id = PREFSMAN:GetPreference("DefaultLocalProfileIDP1")
+			local lp = id and id ~= "" and PROFILEMAN:GetLocalProfile(id)
+			if lp then s = lp:GetLastPlayedSong() end
+		end)
+	end
 	if s and TW.playable and #TW.playable(s) == 0 then s = nil end
 	local ok, path = pcall(function() return s and s:GetMusicPath() end)
 	if not (ok and path and path ~= "" and FILEMAN:DoesFileExist(path)) then s = nil end
