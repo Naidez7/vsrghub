@@ -497,6 +497,7 @@ local skill = 1 -- top plays: which skillset ranks them
 local SHORT = { "Overall", "Stream", "JS", "HS", "Stamina", "Jack", "CJ", "Tech" }
 local regions = {}
 local page -- the frame
+local rerender -- (set further down: the page drawn again)
 local TABS = { { "overview", "Overview" }, { "top", "Top plays" }, { "recent", "Recent plays" }, { "most", "Most played" } }
 -- your plays here (local) or on EtternaOnline (online: anyone's, and the rankings)
 local source = "local"
@@ -1012,6 +1013,43 @@ t.RenderCommand = function(self)
 		pcall(function() taps = p:GetTotalTapsAndHolds() end)
 		c.Sub:settext(string.format("Local profile  ·  %s in game  ·  %s arrows smashed", fmtTime(total), fmtInt(taps)))
 	end
+	-- your own profile: click the name to rename it, the picture to pick another (from the game's
+	-- Assets/Avatars folder). The VSRG Hub looks' input box and list do the asking; they're drawn
+	-- in the screen, under this page (the system layer), so the page closes and comes back after.
+	if not online and p and TW and TW.openInput and TW.openList then
+		region(X0 + PAD + 138 * u, 44 * u, X0 + PAD + 138 * u + W * 0.5, 92 * u, function()
+			TWCloseProfile()
+			TW.openInput { title = "Profile name", value = name ~= "Guest" and name or "", hint = "The name on your profile and your scores",
+				onDone = function(text)
+					text = (text or ""):gsub("^%s+", ""):gsub("%s+$", "")
+					if text ~= "" then pcall(function() p:RenameProfile(text) end) end
+					TWOpenProfile()
+				end }
+		end)
+		region(X0 + PAD, 28 * u, X0 + PAD + 112 * u, 140 * u, function()
+			TWCloseProfile()
+			local items = {}
+			local dir = assetFolders and assetFolders.avatar or "Assets/Avatars/"
+			local files = {}
+			pcall(function() files = FILEMAN:GetDirListing(dir) or {} end)
+			for _, f in ipairs(files) do
+				local ext = f:lower():sub(-4)
+				if ext == ".png" or ext == ".jpg" or f:lower():sub(-5) == ".jpeg" then items[#items + 1] = { label = f, value = dir .. f } end
+			end
+			local cur = try(function() return getAvatarPath(PLAYER_1) end, "")
+			TW.openList { title = "Profile picture  (pictures in Etterna's Assets/Avatars folder)", items = items, current = cur,
+				onPick = function(path)
+					pcall(function()
+						local guid = p:GetGUID()
+						assetsConfig:get_data().avatar[guid] = path
+						assetsConfig:set_dirty()
+						assetsConfig:save()
+						setAvatarUpdateStatus(PLAYER_1, true)
+					end)
+					TWOpenProfile()
+				end }
+		end)
+	end
 	local onlineText = ""
 	if not online then
 		pcall(function()
@@ -1192,7 +1230,7 @@ t.RenderCommand = function(self)
 		local tiles = {
 			{ mode .. " plays", fmtInt(M.plays) }, { mode .. " charts played", fmtInt(M.chartCount) },
 			{ mode .. " average accuracy", string.format("%.2f%%", M.acc) }, { mode .. " best play", M.best and string.format("%.2f", M.best.ssr) or "-" },
-			{ "4K play time", fmtTime(D["4K"].secs) }, { "7K play time", fmtTime(D["7K"].secs) },
+			{ mode .. " play time", fmtTime(D[mode].secs) }, { (mode == "4K" and "7K" or "4K") .. " play time", fmtTime(D[mode == "4K" and "7K" or "4K"].secs) },
 			{ "Sessions", fmtInt(try(function() return p:GetTotalSessions() end, 0)) }, { "Total play time", fmtTime(D["4K"].secs + D["7K"].secs) },
 		}
 		if online then
@@ -1280,7 +1318,7 @@ function TWCloseProfile()
 	loginForm = nil
 	MESSAGEMAN:Broadcast("TWProfileClose")
 end
-local function rerender() if page then page:playcommand("Render") end end
+rerender = function() if page then page:playcommand("Render") end end
 -- the profile page with the login box open (the looks' options and VSRG Hub's menu: EtternaOnline)
 function TWProfileLogin()
 	if not open then TWOpenProfile() end
