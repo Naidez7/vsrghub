@@ -86,7 +86,9 @@ function TW.stableCentre() return TW.M(376) end
 function TW.stableWheelItem(self, offset)
 	local dy = offset * TW.stableGeom().ah
 	self:x(TW.stableX(0, 0)):y(dy)
-	self:diffusealpha(TW.stableFade(TW.stableCentre() + dy))
+	-- (the open song's difficulties move the panels, by several places with a low difficulty
+	-- picked: each panel fades itself for where it ends up, TW.wheelShift, so the item doesn't)
+	self:diffusealpha(TW.wheelAbsFade and 1 or TW.stableFade(TW.stableCentre() + dy))
 end
 function TW.stableCurveX(y)
 	return TW.stableX(TW.stableCurve(y - TW.stableCentre()), 0) - TW.stableX(0, 0)

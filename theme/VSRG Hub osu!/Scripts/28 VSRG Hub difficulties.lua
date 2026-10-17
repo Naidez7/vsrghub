@@ -188,6 +188,10 @@ function TW.wheelShift(self, unit)
 		local c = TW.wheelCentre or 0
 		local base, want = fade(c + iy), fade(c + iy + y)
 		local f = base > 0.001 and math.max(0, math.min(1, want / base)) or 1
+		-- (a look whose items don't fade themselves (TW.wheelAbsFade): the panel's fade is the whole
+		-- fade. Otherwise a panel moved far from its item's place inherits the item's fade for a
+		-- place it isn't at: nothing can bring back a panel whose item is at the list's edge)
+		if TW.wheelAbsFade then f = math.max(0, math.min(1, want)) end
 		if math.abs(f - (self.twFade or 1)) > 0.001 then
 			self.twFade = f
 			self:diffusealpha((self.twOwnAlpha or 1) * f)

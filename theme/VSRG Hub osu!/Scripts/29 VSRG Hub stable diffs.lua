@@ -260,6 +260,7 @@ function TW.stableDiffRows(spec)
 			TW.wheelFade = TW.stableFade
 			TW.wheelCentre = TW.stableCentre()
 			TW.wheelCurve = TW.stableCurveX
+			TW.wheelAbsFade = true
 			TW.everyFrame(self)
 			TW.browsing, TW.pickY = false, 0
 			TW.pick = { song = GAMESTATE:GetCurrentSong(), steps = GAMESTATE:GetCurrentSteps() }
@@ -341,7 +342,7 @@ function TW.stableDiffRows(spec)
 		TWSortChangedMessageCommand = function() TW.browsing = false end,
 		OffCommand = function()
 			TW.diffGap, TW.diffLift, TW.wheelFade, TW.wheelCurve, TW.diffOpenSong = 0, 0, nil, nil, nil
-			TW.diffMinCharts = nil
+			TW.diffMinCharts, TW.wheelAbsFade = nil, nil
 			TW.browsing, TW.pickY = false, 0
 		end,
 	}
