@@ -51,9 +51,32 @@ local function firstSong()
 	if not (ok and path and path ~= "" and FILEMAN:DoesFileExist(path)) then s = nil end
 	return s
 end
+local function musicPathOf(song)
+	local ok, p = pcall(function() return song and song:GetMusicPath() or "" end)
+	return ok and (p or "") or ""
+end
 function TW.menuMusicStart()
 	if menu.song and not menu.paused and menu.playing then return end
 	menu.playing = true
+	-- back from song select with music still going (the menu's own song, or the one picked there):
+	-- it goes on as it is, as osu!'s does, instead of starting over
+	local playing = ""
+	pcall(function() playing = SOUND:GetMusicPath() or "" end)
+	if playing ~= "" and not menu.paused then
+		local cur = GAMESTATE:GetCurrentSong()
+		local keep = (menu.song and musicPathOf(menu.song):lower() == playing:lower()) and menu.song
+			or (cur and musicPathOf(cur):lower() == playing:lower()) and cur or nil
+		if keep then
+			if keep ~= menu.song then
+				menu.song, menu.start, menu.startedAt, menu.len = keep, 0, GetTimeSinceStart(), 600
+				pcall(function() menu.start = math.max(0, keep:GetSampleStart()) end)
+				pcall(function() menu.len = math.max(5, keep:MusicLengthSeconds() - menu.start) end)
+				menu.history[#menu.history + 1] = keep
+			end
+			MESSAGEMAN:Broadcast("TWMenuMusic")
+			return
+		end
+	end
 	local s = menu.song or firstSong() or pickSong()
 	if s then menu.history[#menu.history + 1] = s end
 	play(s)

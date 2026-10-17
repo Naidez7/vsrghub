@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.8",
+  "date": "2026-10-17",
+  "notes": "- Back to the main menu with Esc: the music goes on as it is (the menu's song, or the one picked on song select), as osu!'s does, instead of starting over."
+ },
+ {
   "version": "1.8.7",
   "date": "2026-10-17",
   "notes": "- Main menu: the first song really is the one you last played (on the menu nobody has joined yet, so the profile is now looked up by its id); song select then opens on it."
