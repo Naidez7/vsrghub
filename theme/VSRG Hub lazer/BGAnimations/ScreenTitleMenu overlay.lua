@@ -151,10 +151,11 @@ local t = Def.ActorFrame {
 		-- on the next frame, after it has set that lock)
 		self:queuecommand("Unlock")
 		self:sleep(0.05):queuecommand("Theme")
-		-- (a moment later: Etterna's own screen music handling has run by then, so it can't silence ours)
-		self:sleep(0.2):queuecommand("MenuMusic")
+
 	end,
-	MenuMusicCommand = function(self) TW.menuMusicStart() end,
+	-- (the menu's music, a moment after the screen is up: Etterna's own screen music handling has run
+	-- by then, so it can't silence ours; its own actor, so a tween stop on this frame can't drop it)
+	Def.Actor { OnCommand = function(self) self:sleep(0.25):queuecommand("MenuMusic") end, MenuMusicCommand = function() TW.menuMusicStart() end },
 	UnlockCommand = function(self)
 		local top = SCREENMAN:GetTopScreen()
 		if top and top.lockinput then top:lockinput(0) end

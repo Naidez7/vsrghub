@@ -285,8 +285,8 @@ local t = Def.ActorFrame {
 		if TW.menuSongPending then
 			local s = TW.menuSongPending
 			TW.menuSongPending = nil
-			local resuming = TW.settings.resumeChart and TW.settings.resumeChart ~= ""
-			if GAMESTATE:GetCurrentSong() ~= s and not resuming then self:sleep(0.1):queuecommand("MenuSong") end
+			if TW.settings.resumeChart and TW.settings.resumeChart ~= "" then TW.saveSetting("resumeChart", "") end
+			if GAMESTATE:GetCurrentSong() ~= s then self:sleep(0.1):queuecommand("MenuSong") end
 		end
 		-- "Watch replay" on the results: started once song select is up again
 		if TW.pendingReplay then self:sleep(0.4):queuecommand("PendingReplay") end

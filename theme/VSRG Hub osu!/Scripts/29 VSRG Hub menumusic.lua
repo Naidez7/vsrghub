@@ -32,10 +32,21 @@ local function play(song)
 	MESSAGEMAN:Broadcast("TWMenuMusic")
 end
 
+-- the first song of a session: the one you last played (song select opens on it, as it always did);
+-- random ones after that
+local function firstSong()
+	local s
+	pcall(function() s = GAMESTATE:GetCurrentSong() end)
+	if not s then pcall(function() s = PROFILEMAN:GetProfile(PLAYER_1):GetLastPlayedSong() end) end
+	if s and TW.playable and #TW.playable(s) == 0 then s = nil end
+	local ok, path = pcall(function() return s and s:GetMusicPath() end)
+	if not (ok and path and path ~= "" and FILEMAN:DoesFileExist(path)) then s = nil end
+	return s
+end
 function TW.menuMusicStart()
 	if menu.song and not menu.paused and menu.playing then return end
 	menu.playing = true
-	local s = menu.song or pickSong()
+	local s = menu.song or firstSong() or pickSong()
 	if s then menu.history[#menu.history + 1] = s end
 	play(s)
 end
