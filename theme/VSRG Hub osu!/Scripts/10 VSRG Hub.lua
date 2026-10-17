@@ -117,6 +117,11 @@ function TW.useSkin(folder)
 		TW_SKIN = nil
 	end
 end
+-- The first time, the interface takes the skin osu! has on and keeps it: changing osu!'s skin later
+-- doesn't change VSRG Hub's (Options > Interface skin does; "Follows osu!" there follows it again).
+if TW.settings.interfaceSkin == nil and TW_OSU_SKIN and TW_OSU_SKIN ~= "" and TW_SKINS and TW_SKINS[TW_OSU_SKIN] then
+	TW.saveSetting("interfaceSkin", TW_OSU_SKIN)
+end
 TW.useSkin(TW.settings.interfaceSkin)
 function TW.useInterfaceSkin()
 	TW.useSkin(TW.settings.interfaceSkin)

@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.11",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.11.zip",
- "sha256": "c77bb08c166caf73cc0a45874532c7e94fad1c664bc690a1ca0daf3b98de2d2d",
- "notes": "- **What's new, retold**: the 105 betas of 1.8.0 are now shown as the versions they amounted to, 1.7.12 to 1.7.32, each with its own notes, after TriWheel 1.7.11 and before 1.8.0. If you have one of those betas, its 1.7.x is marked as yours.",
+ "version": "1.8.12",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.12.zip",
+ "sha256": "7e164fe53ede26810b3ee3d5559906f2be47fa609401fec2ae073dd4d59fdb55",
+ "notes": "- **Your skin stays yours.** The first time, VSRG Hub takes the skin osu! has on for its interface, pointer and notes, and from then on keeps it: changing your skin in osu! no longer changes it in VSRG Hub. Options > Interface skin and the noteskins choose; \"Follows osu!\" there makes the interface follow osu!'s skin again, if you want that.",
  "latest": {
-  "version": "1.8.11",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.11.zip",
-  "sha256": "c77bb08c166caf73cc0a45874532c7e94fad1c664bc690a1ca0daf3b98de2d2d",
-  "notes": "- **What's new, retold**: the 105 betas of 1.8.0 are now shown as the versions they amounted to, 1.7.12 to 1.7.32, each with its own notes, after TriWheel 1.7.11 and before 1.8.0. If you have one of those betas, its 1.7.x is marked as yours."
+  "version": "1.8.12",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.12.zip",
+  "sha256": "7e164fe53ede26810b3ee3d5559906f2be47fa609401fec2ae073dd4d59fdb55",
+  "notes": "- **Your skin stays yours.** The first time, VSRG Hub takes the skin osu! has on for its interface, pointer and notes, and from then on keeps it: changing your skin in osu! no longer changes it in VSRG Hub. Options > Interface skin and the noteskins choose; \"Follows osu!\" there makes the interface follow osu!'s skin again, if you want that."
  },
  "changelog": [
+  {
+   "version": "1.8.12",
+   "date": "2026-10-17",
+   "notes": "- **Your skin stays yours.** The first time, VSRG Hub takes the skin osu! has on for its interface, pointer and notes, and from then on keeps it: changing your skin in osu! no longer changes it in VSRG Hub. Options > Interface skin and the noteskins choose; \"Follows osu!\" there makes the interface follow osu!'s skin again, if you want that."
+  },
   {
    "version": "1.8.11",
    "date": "2026-10-17",

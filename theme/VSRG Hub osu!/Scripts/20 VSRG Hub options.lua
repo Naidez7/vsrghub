@@ -85,10 +85,10 @@ function TW.syncNoteskin()
 		if TW_OSU_CHANGED then TW.saveSetting("osuSeen_" .. g, TW_OSU_SKIN or "") end
 		return
 	end
-	-- (a new skin picked in osu! brings its notes once: not again after a theme switch reloads VSRG Hub)
-	local osuNew = TW_OSU_CHANGED and TW.settings["osuSeen_" .. g] ~= TW_OSU_SKIN
+	-- (your osu! skin's notes come only while no noteskin is saved for this key mode: the first time.
+	-- Once one is, changing osu!'s skin leaves it alone)
 	if TW_OSU_CHANGED then TW.saveSetting("osuSeen_" .. g, TW_OSU_SKIN or "") end
-	if osuNew and fromOsu and not (TW.notesPicked and TW.notesPicked[g]) then want = fromOsu
+	if picked == nil and fromOsu then want = fromOsu
 	elseif picked and picked ~= "" and TW.realNoteskin(picked) then want = picked
 	else want = fromOsu end
 	if want and TW.realNoteskin(want) then TW.setNoteskin(want, g)
