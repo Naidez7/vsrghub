@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.3",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.3.zip",
- "sha256": "1a696e05abb75f733fb09ab594b8ef7f907b6002656c1fc466cad772112dae8b",
- "notes": "- Play to song select: Etterna's \"Loading Profiles...\" moment is skipped (no band, no second's wait), and the song select really opens on the menu's song: the menu now picks songs playable in the key mode you're in (a 7K-only song couldn't be selected in 4K, so song select stayed where it was).\n- 1.8.2 had the osu! and Quaver looks' main-menu settings in the wrong section of metrics.ini; put right.",
+ "version": "1.8.4",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.4.zip",
+ "sha256": "2106bb2f35988cbf12945b365e002cec8dce75cfe7e959f89dd80da27610ea40",
+ "notes": "- Map preview: changing the rate while it plays goes on from the same place at the new rate, instead of starting the song over.",
  "latest": {
-  "version": "1.8.3",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.3.zip",
-  "sha256": "1a696e05abb75f733fb09ab594b8ef7f907b6002656c1fc466cad772112dae8b",
-  "notes": "- Play to song select: Etterna's \"Loading Profiles...\" moment is skipped (no band, no second's wait), and the song select really opens on the menu's song: the menu now picks songs playable in the key mode you're in (a 7K-only song couldn't be selected in 4K, so song select stayed where it was).\n- 1.8.2 had the osu! and Quaver looks' main-menu settings in the wrong section of metrics.ini; put right."
+  "version": "1.8.4",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.4.zip",
+  "sha256": "2106bb2f35988cbf12945b365e002cec8dce75cfe7e959f89dd80da27610ea40",
+  "notes": "- Map preview: changing the rate while it plays goes on from the same place at the new rate, instead of starting the song over."
  },
  "changelog": [
+  {
+   "version": "1.8.4",
+   "date": "2026-10-17",
+   "notes": "- Map preview: changing the rate while it plays goes on from the same place at the new rate, instead of starting the song over."
+  },
   {
    "version": "1.8.3",
    "date": "2026-10-17",

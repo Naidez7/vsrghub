@@ -183,11 +183,26 @@ function TW.mapPreview(o)
 	-- Mirror, Full LN or Inverse turned on or off while it is open
 	f.TWModsChangedMessageCommand = function(self) if isOpen() then self:playcommand("Load"); self:playcommand("Set") end end
 	f.TWLnModChangedMessageCommand = function(self) if isOpen() then self:playcommand("Load"); self:playcommand("Set") end end
-	f.CurrentRateChangedMessageCommand = function(self) if isOpen() then self:playcommand("Fill"); self:playcommand("Set") end end
+	-- a rate change restarts the music (Etterna's, or the osu! look's own preview): the preview goes on
+	-- from where it was, at the new rate
+	local rateSeek = nil
+	f.CurrentRateChangedMessageCommand = function(self)
+		if not isOpen() then return end
+		local top, span = SCREENMAN:GetTopScreen(), TW.previewSongSpan()
+		local pos = (top and top.GetSampleMusicPosition) and top:GetSampleMusicPosition() or 0
+		if span and span > 0 and pos > 0 then rateSeek = { p = math.max(0, math.min(1, pos / span)), t = GetTimeSinceStart() } end
+		self:playcommand("Fill"); self:playcommand("Set")
+	end
+	f.RateSeekCommand = function(self) self:playcommand("Seek") end
 	f.PlayingSampleMusicMessageCommand = function(self)
 		-- (Etterna's own short sample started: the whole song is played again)
 		if not extending then extendedFor = nil end
 		extendPreview()
+		if rateSeek and GetTimeSinceStart() - rateSeek.t < 2 then
+			pendingSeek = rateSeek.p
+			rateSeek = nil
+			self:stoptweening():sleep(0.15):queuecommand("RateSeek")
+		end
 	end
 	f.CurrentSongChangedMessageCommand = function(self) extendedFor = nil end
 
