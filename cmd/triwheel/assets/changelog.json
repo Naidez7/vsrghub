@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.6",
+  "date": "2026-10-17",
+  "notes": "- Main menu music: watched while the menu is up; when nothing plays though it should (back from song select with Esc left it silent), it's started again within half a second."
+ },
+ {
   "version": "1.8.5",
   "date": "2026-10-17",
   "notes": "- Main menu: the first song of a session is the one you last played (song select opens on it, as it always did); random ones after that. The menu's song wins over a chart left to pick again from a look switch.\n- Main menu music started by its own small actor, so nothing on the menu can drop the start (coming back from song select left it silent)."

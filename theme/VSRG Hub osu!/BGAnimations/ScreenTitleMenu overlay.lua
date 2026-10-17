@@ -129,6 +129,7 @@ local t = Def.ActorFrame {
 	-- (the menu's music, a moment after the screen is up: Etterna's own screen music handling has run
 	-- by then, so it can't silence ours; its own actor, so a tween stop on this frame can't drop it)
 	Def.Actor { OnCommand = function(self) self:sleep(0.25):queuecommand("MenuMusic") end, MenuMusicCommand = function() TW.menuMusicStart() end },
+	TW.menuMusicWatcher(), -- (started again when it isn't playing though it should)
 	UnlockCommand = function(self)
 		local top = SCREENMAN:GetTopScreen()
 		if top and top.lockinput then top:lockinput(0) end

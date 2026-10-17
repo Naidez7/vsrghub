@@ -50,6 +50,27 @@ function TW.menuMusicStart()
 	if s then menu.history[#menu.history + 1] = s end
 	play(s)
 end
+-- The menu's music watched while the menu is up (TW.menuMusicWatcher, an actor in the menu): when
+-- nothing plays though it should (whatever stopped it: a screen change's stop landing late, a
+-- failed start), it is started again. SOUND:GetMusicPath() is the file playing, "" for none.
+local lastLook = 0
+function TW.menuMusicWatcher()
+	return Def.ActorFrame {
+		InitCommand = function(self)
+			self:SetUpdateFunction(function()
+				local now = GetTimeSinceStart()
+				if now - lastLook < 0.5 then return end
+				lastLook = now
+				if not menu.playing or menu.paused or not menu.song then return end
+				local playing, want = "", ""
+				pcall(function() playing = SOUND:GetMusicPath() or "" end)
+				pcall(function() want = menu.song:GetMusicPath() or "" end)
+				-- (only when nothing at all plays: another file playing is Etterna's own doing, left alone)
+				if want ~= "" and playing == "" then play(menu.song) end
+			end)
+		end,
+	}
+end
 function TW.menuMusicNext()
 	local s = pickSong()
 	if s then menu.history[#menu.history + 1] = s; play(s) end
