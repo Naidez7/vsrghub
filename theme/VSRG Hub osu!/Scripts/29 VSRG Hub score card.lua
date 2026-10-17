@@ -251,6 +251,6 @@ function TW.hubScorePanel()
 	t[#t + 1] = TW.text(M(12), true, function(self) self:align(0.5, 0.5):xy(X + W - M(85), Y + H - M(39)):settext("Close") end)
 	t[#t + 1] = TW.button(M(110), M(34), function() TW.closeHubScore() end) .. {
 		InitCommand = function(self) self:align(1, 1):xy(X + W - M(30), Y + H - M(22)):zoomto(M(110), M(34)):diffusealpha(0) end }
-	t[#t + 1] = TW.text(M(9.5), false, function(self) self:align(0, 0.5):xy(X + M(30), Y + H - M(39)):diffuse(dim):settext("Esc closes  ·  Replays can't be played for VSRG Hub scores: Etterna only plays its own and EtternaOnline's") end)
+	t[#t + 1] = TW.text(M(9.5), false, function(self) self:align(0, 0.5):xy(X + M(30), Y + H - M(39)):diffuse(dim):settext("Esc closes  ·  No replay here: Etterna only plays its own and EtternaOnline's"):maxwidth(M(560) / self:GetZoom()) end)
 	return t
 end

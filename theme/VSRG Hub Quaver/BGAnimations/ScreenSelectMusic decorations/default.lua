@@ -113,7 +113,7 @@ local function fillBoard(root, list, status, pb, keepOff)
 	list = TW.sortBoard(list)
 	if not keepOff then boardOff = 0 end
 	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
-	for i = 1, ROWS do board:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
+	for i = 1, ROWS do board:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i, quiet = keepOff }) end
 	local msg = ({
 		ok = "", loading = "Loading the online leaderboard...", unranked = "This map isn't ranked online",
 		login = "Log in to EtternaOnline to see the online leaderboard (click)", none = "",

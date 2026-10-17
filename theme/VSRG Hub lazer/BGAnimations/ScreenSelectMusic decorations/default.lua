@@ -38,7 +38,7 @@ local function fillBoard(self, list, status, pb, pbPlace, keepOff)
 	if pb then for i, hs in ipairs(list) do if hs == pb then pbPlace = i end end end
 	if not keepOff then boardOff = 0 end
 	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
-	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
+	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i, quiet = keepOff }) end
 	self:GetChild("PB"):playcommand("Fill", { hs = pb, n = pbPlace })
 	local msg = ({
 		loading = "Loading the online ranking...", login = "Log in to EtternaOnline to see the online ranking (click)",
@@ -157,7 +157,9 @@ local function scoreRow(name, y, isPB)
 			end
 			self:visible(true)
 			-- (the scores come in one after the other from the left, as lazer's leaderboard does)
-			if hs ~= self.lastShown then
+			if p.quiet then
+				self:stoptweening():x(X0):diffusealpha(1) -- (a scroll: the rows just change)
+			elseif hs ~= self.lastShown then
 				self:stoptweening():x(X0 - M(30)):diffusealpha(0):sleep(isPB and 0.2 or 0.035 * ((p.n or 1) - 1)):decelerate(0.3):x(X0):diffusealpha(1)
 			end
 			self.lastShown = hs

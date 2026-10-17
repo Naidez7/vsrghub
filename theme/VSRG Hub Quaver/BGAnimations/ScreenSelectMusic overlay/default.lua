@@ -277,7 +277,7 @@ local t = Def.ActorFrame {
 		TW.syncNoteskin()
 		if TW.collection and TW.applyCollection then self:sleep(0.05):queuecommand("Collection") end
 		-- after a theme switch: the chart that was selected in the other look
-		if TW.settings.resumeChart and TW.settings.resumeChart ~= "" then self:sleep(0.1):queuecommand("Resume") end
+		if TW.settings.resumeChart and TW.settings.resumeChart ~= "" then self:queuecommand("Resume") end
 		-- back from a score's results: your rate again (Etterna showed them at the score's)
 		TW.afterScoreView()
 		-- from the main menu: the song that was playing there

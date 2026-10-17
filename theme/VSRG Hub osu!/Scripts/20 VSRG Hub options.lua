@@ -244,10 +244,12 @@ function TW.rememberSelection()
 	local st = GAMESTATE:GetCurrentSteps()
 	local key = ""
 	pcall(function() key = st and st:GetChartKey() or "" end)
-	TW.saveSetting("resumeChart", key)
 	local top = SCREENMAN:GetTopScreen()
 	local where = top and top:GetName() or ""
-	TW.saveSetting("resume", (where == "ScreenSelectMusic" or where:find("Evaluation")) and "select" or "")
+	local fromSelect = where == "ScreenSelectMusic" or where:find("Evaluation") ~= nil
+	-- (switched from the main menu: nothing to pick again, song select opens on the menu's song)
+	TW.saveSetting("resumeChart", fromSelect and key or "")
+	TW.saveSetting("resume", fromSelect and "select" or "")
 	-- (only once song select has put your noteskin in force: on the main menu Etterna's player options
 	-- are still its defaults, and switching looks from there saved DivideByZero as your 4K notes)
 	local g = TW.gameName()

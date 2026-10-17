@@ -32,7 +32,7 @@ local function fillBoard(self, list, status, pb, keepOff)
 	list = TW.sortBoard(list)
 	if not keepOff then boardOff = 0 end
 	boardOff = math.max(0, math.min(boardOff, #list - ROWS))
-	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i }) end
+	for i = 1, ROWS do self:GetChild("Row" .. i):playcommand("Fill", { hs = list[boardOff + i], n = boardOff + i, quiet = keepOff }) end
 	self:GetChild("PB"):playcommand("Fill", { hs = pb })
 	local msg = ({
 		loading = "Loading the online ranking...", login = "Log in to EtternaOnline to see the online ranking (click)",
@@ -161,7 +161,9 @@ local function scoreRow(name, y, isPB)
 			end
 			self:visible(true)
 			-- (the scores slide in one after the other, as osu!'s ranking does)
-			if hs ~= self.lastShown then
+			if p.quiet then
+				self:stoptweening():x(M(6)):diffusealpha(1) -- (a scroll: the rows just change)
+			elseif hs ~= self.lastShown then
 				self:stoptweening():x(M(6) - M(40)):diffusealpha(0):sleep(isPB and 0.15 or 0.04 * ((p.n or 1) - 1)):decelerate(0.3):x(M(6)):diffusealpha(1)
 			end
 			self.lastShown = hs
