@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.0-beta.105",
+  "date": "2026-10-17",
+  "notes": "- osu! look, results: \"Watch replay\" moves to the bottom left, above the back tab (it sat over the hit offsets on the right): the skin's ranking-replay when it has one, VSRG Hub's pill otherwise."
+ },
+ {
   "version": "1.8.0-beta.104",
   "date": "2026-10-17",
   "notes": "- Main menu: Etterna's own title music no longer starts over VSRG Hub's random song (every look); song select then opens on that song. A look switched from the main menu no longer pins the old chart on song select.\n- Scoreboard: scrolling with the wheel moves the rows without replaying their entrance (osu! and lazer looks).\n- Switching looks: the chart is picked again at once, so the first song's preview doesn't blip in.\n- VSRG Hub score card: the footer line stays clear of Close."

@@ -30,32 +30,23 @@ local function input(event)
 	end
 	return false
 end
--- osu!'s "Watch replay" on the ranking screen (when the score has one): the skin's ranking-replay
--- at osu!'s place on the right; a skin whose ranking panel has its own "Replay" drawn in gets a
--- button there with a small caption; VSRG Hub's pill otherwise
+-- osu!'s "Watch replay" on the ranking screen (when the score has one). osu! puts it at the bottom
+-- right, but that's where VSRG Hub draws the hit offsets, so it goes at the bottom left, above the
+-- back tab: the skin's ranking-replay when it has one, VSRG Hub's pill otherwise.
 local replay
 if not TW.canWatchReplay() then
 	replay = Def.Actor {}
 elseif TW.has("ranking_replay") then
 	replay = Def.ActorFrame {
-		InitCommand = function(self) self:xy(SCREEN_WIDTH, U * 576) end,
-		TW.sprite("ranking_replay", function(self) self:align(1, 0.5) end) .. { Name = "Img" },
+		InitCommand = function(self) self:xy(U * 16, U * 672) end,
+		TW.sprite("ranking_replay", function(self) self:align(0, 0.5) end) .. { Name = "Img" },
 		TW.button(U * 170, U * 90, function() TW.watchReplay() end, function(self, on)
 			self:GetParent():GetChild("Img"):stoptweening():decelerate(0.1):zoom(TW.scale("ranking_replay") * (on and 1.05 or 1))
-		end) .. { InitCommand = function(self) self:align(1, 0.5):zoomto(U * 170, U * 90):diffusealpha(0) end },
-	}
-elseif TW.has("ranking_panel") then
-	replay = Def.ActorFrame {
-		InitCommand = function(self) self:xy(SCREEN_WIDTH - U * 100, U * 583) end,
-		Def.Quad { Name = "Glow", InitCommand = function(self) self:zoomto(U * 150, U * 90):diffuse({ 1, 1, 1, 0 }) end },
-		TW.text(U * 9, true, function(self) self:align(0.5, 0.5):y(U * 52):settext("Watch replay"):diffusealpha(0.8) end),
-		TW.button(U * 150, U * 90, function() TW.watchReplay() end, function(self, on)
-			self:GetParent():GetChild("Glow"):stoptweening():linear(0.1):diffusealpha(on and 0.08 or 0)
-		end) .. { InitCommand = function(self) self:zoomto(U * 150, U * 90):diffusealpha(0) end },
+		end) .. { InitCommand = function(self) self:align(0, 0.5):zoomto(U * 170, U * 90):diffusealpha(0) end },
 	}
 else
 	replay = TW.replayButton(U * 210, U * 46, TW.text, TW.pink) .. {
-		InitCommand = function(self) self:xy(SCREEN_WIDTH - U * 121, U * 526) end,
+		InitCommand = function(self) self:xy(U * 121, U * 680) end,
 	}
 end
 return Def.ActorFrame { TW.mouse(), f, replay,
