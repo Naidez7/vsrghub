@@ -67,8 +67,9 @@ local t = Def.ActorFrame {
 	OnCommand = function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(input)
 		TWSystemInput = gate
-		-- (a random song plays, as Quaver's menu does; song select opens on it: 29 VSRG Hub menumusic.lua)
-		TW.menuMusicStart()
+		-- (a random song plays, as Quaver's menu does; song select opens on it: 29 VSRG Hub menumusic.lua.
+		-- A moment later: Etterna's own screen music handling has run by then, so it can't silence ours)
+		self:sleep(0.2):queuecommand("MenuMusic")
 		-- (Etterna locks the menu's input while the screen's longest opening animation runs: unlocked
 		-- on the next frame, after it has set that lock)
 		self:queuecommand("Unlock")
@@ -81,6 +82,7 @@ local t = Def.ActorFrame {
 	ThemeCommand = function(self)
 		if not TW.enforceTheme() and TW.takeResume() then choose("GameStart") end
 	end,
+	MenuMusicCommand = function(self) TW.menuMusicStart() end,
 	OffCommand = function(self) if TWSystemInput == gate then TWSystemInput = nil end; TW.closeOptions(); TW.menuMusicStop() end,
 	TWTitleChooseMessageCommand = function(self, p)
 		local f = actions[p.index]

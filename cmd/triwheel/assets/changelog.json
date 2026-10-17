@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.2",
+  "date": "2026-10-17",
+  "notes": "- Main menu music: started a moment after the menu is up, so Etterna's own music handling can't leave it silent (the beating logo with no sound).\n- Play to song select, as osu!: the menu's song keeps playing through the transition (Etterna's theme tune no longer blips in between) and song select opens on it; the osu! look leaves it playing as it is, lazer and Quaver restart it from its preview point."
+ },
+ {
   "version": "1.8.1",
   "date": "2026-10-17",
   "notes": "- Profile page: click your name to rename the profile (\"Default Profile\" no more), click the picture to pick another from Etterna's Assets/Avatars folder (osu!, lazer and Quaver looks).\n- Profile page: the play time tiles put the mode you're looking at first (7K play time first on the 7K tab)."

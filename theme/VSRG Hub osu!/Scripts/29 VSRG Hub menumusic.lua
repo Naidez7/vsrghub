@@ -65,11 +65,14 @@ function TW.menuMusicToggle()
 	MESSAGEMAN:Broadcast("TWMenuMusic")
 end
 -- leaving the menu: the music stops (song select plays its own)
-function TW.menuMusicStop()
+-- leaving the menu: the music goes on (osu! keeps the song playing into song select, which opens on
+-- it: TW.menuSongPending; the osu! look's own preview then leaves it be, the others restart it from
+-- the preview point). keep = false stops it (exit).
+function TW.menuMusicStop(keep)
 	menu.playing = false
-	-- (song select opens on the song that was playing, as osu!'s does)
-	if menu.song then TW.menuSongPending = menu.song end
-	SOUND:StopMusic()
+	if keep == false or not menu.song or menu.paused then SOUND:StopMusic() return end
+	TW.menuSongPending = menu.song
+	TW.menuSongPlaying = menu.song
 end
 function TW.menuMusicTitle()
 	local s = menu.song

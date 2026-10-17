@@ -117,7 +117,8 @@ local t = Def.ActorFrame {
 		-- unlocked on the next frame (after Etterna has set that lock)
 		self:queuecommand("Unlock")
 		self:sleep(0.05):queuecommand("Theme")
-		TW.menuMusicStart()
+		-- (a moment later: Etterna's own screen music handling has run by then, so it can't silence ours)
+		self:sleep(0.2):queuecommand("MenuMusic")
 		-- (back to the middle after a while with nothing pressed)
 		self:SetUpdateFunction(function()
 			if awake and level == "main" and not TW.dialogSpec and not TW.list and not TW.optionsOpen
@@ -126,6 +127,7 @@ local t = Def.ActorFrame {
 			end
 		end)
 	end,
+	MenuMusicCommand = function(self) TW.menuMusicStart() end,
 	UnlockCommand = function(self)
 		local top = SCREENMAN:GetTopScreen()
 		if top and top.lockinput then top:lockinput(0) end

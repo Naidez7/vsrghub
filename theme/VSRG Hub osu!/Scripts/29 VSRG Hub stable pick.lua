@@ -146,6 +146,13 @@ function TW.pickMusicStep()
 	if not w or not w:IsSettled() then previewAt = now return end
 	if now - previewAt < 0.25 or now - tried < 0.4 then return end
 	if GAMESTATE:GetCurrentSong() ~= song then return end
+	-- (the menu's song, still playing from the menu: left as it is, as osu! does)
+	if TW.menuSongPlaying == song and math.abs(getCurRateValue() - 1) < 0.001 then
+		TW.menuSongPlaying = nil
+		previewFor = key
+		return
+	end
+	TW.menuSongPlaying = nil
 	tried, wantKey = now, key
 	pcall(function() s:PlayCurrentSongSampleMusic(false, false) end)
 end
