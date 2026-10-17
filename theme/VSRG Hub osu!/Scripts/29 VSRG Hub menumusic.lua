@@ -7,10 +7,13 @@ local menu = TW.menu
 local function pickSong()
 	local songs = SONGMAN:GetAllSongs()
 	if #songs == 0 then return nil end
-	for _ = 1, 30 do
+	-- (a song with music, playable in the key mode you're in: song select can then open on it)
+	for _ = 1, 60 do
 		local s = songs[math.random(1, #songs)]
 		local ok, path = pcall(function() return s:GetMusicPath() end)
-		if ok and path and path ~= "" and FILEMAN:DoesFileExist(path) then return s end
+		local fits = true
+		if TW.playable then fits = #TW.playable(s) > 0 end
+		if ok and fits and path and path ~= "" and FILEMAN:DoesFileExist(path) then return s end
 	end
 	return nil
 end

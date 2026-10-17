@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.2",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.2.zip",
- "sha256": "82a206a6b6483e249c922d7f5c7d6c18414beae763249618e49166c66c2ce9e0",
- "notes": "- Main menu music: started a moment after the menu is up, so Etterna's own music handling can't leave it silent (the beating logo with no sound).\n- Play to song select, as osu!: the menu's song keeps playing through the transition (Etterna's theme tune no longer blips in between) and song select opens on it; the osu! look leaves it playing as it is, lazer and Quaver restart it from its preview point.",
+ "version": "1.8.3",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.3.zip",
+ "sha256": "1a696e05abb75f733fb09ab594b8ef7f907b6002656c1fc466cad772112dae8b",
+ "notes": "- Play to song select: Etterna's \"Loading Profiles...\" moment is skipped (no band, no second's wait), and the song select really opens on the menu's song: the menu now picks songs playable in the key mode you're in (a 7K-only song couldn't be selected in 4K, so song select stayed where it was).\n- 1.8.2 had the osu! and Quaver looks' main-menu settings in the wrong section of metrics.ini; put right.",
  "latest": {
-  "version": "1.8.2",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.2.zip",
-  "sha256": "82a206a6b6483e249c922d7f5c7d6c18414beae763249618e49166c66c2ce9e0",
-  "notes": "- Main menu music: started a moment after the menu is up, so Etterna's own music handling can't leave it silent (the beating logo with no sound).\n- Play to song select, as osu!: the menu's song keeps playing through the transition (Etterna's theme tune no longer blips in between) and song select opens on it; the osu! look leaves it playing as it is, lazer and Quaver restart it from its preview point."
+  "version": "1.8.3",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.3.zip",
+  "sha256": "1a696e05abb75f733fb09ab594b8ef7f907b6002656c1fc466cad772112dae8b",
+  "notes": "- Play to song select: Etterna's \"Loading Profiles...\" moment is skipped (no band, no second's wait), and the song select really opens on the menu's song: the menu now picks songs playable in the key mode you're in (a 7K-only song couldn't be selected in 4K, so song select stayed where it was).\n- 1.8.2 had the osu! and Quaver looks' main-menu settings in the wrong section of metrics.ini; put right."
  },
  "changelog": [
+  {
+   "version": "1.8.3",
+   "date": "2026-10-17",
+   "notes": "- Play to song select: Etterna's \"Loading Profiles...\" moment is skipped (no band, no second's wait), and the song select really opens on the menu's song: the menu now picks songs playable in the key mode you're in (a 7K-only song couldn't be selected in 4K, so song select stayed where it was).\n- 1.8.2 had the osu! and Quaver looks' main-menu settings in the wrong section of metrics.ini; put right."
+  },
   {
    "version": "1.8.2",
    "date": "2026-10-17",
