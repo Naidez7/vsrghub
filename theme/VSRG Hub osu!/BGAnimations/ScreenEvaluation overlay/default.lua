@@ -60,4 +60,5 @@ return Def.ActorFrame { TW.mouse(), f, replay,
 	TW.hubResultLine and TW.hubResultLine(SCREEN_CENTER_X, SCREEN_HEIGHT - TW.M(16), function(init) return TW.text(TW.M(13), true, init) end) or Def.Actor {},
 	OffCommand = function(self) TW.closeOptions() end,
 	TW.optionsPanel(), TW.listPanel(),
-	TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua") }
+	TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua"),
+	TW.failedCover(function(px, init) return TW.text(px, true, init) end, TW.rgb(255, 80, 80)) }

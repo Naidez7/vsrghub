@@ -33,4 +33,5 @@ return Def.ActorFrame {
 	QV.windowsDialog(),
 	TW.listPanel(),
 	TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua"),
+	TW.failedCover(function(px, init) return QV.t(px, true, init) end, QV.red or color("#FF5A5A")),
 }

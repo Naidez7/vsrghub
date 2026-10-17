@@ -751,6 +751,28 @@ end
 -- A saved score's accuracy on the timing it was played on (for the song select's scoreboard, as on
 -- the results): an osu! OD's accuracy, or Wife% on its judge. Returns the accuracy, the timing's name
 -- ("OD 8", "J4") and whether it failed.
+-- How long ago a score was played, as osu! puts it by a score: "5s", "12m", "18h", "3d". date: the
+-- score's date ("YYYY-MM-DD HH:MM:SS"); utc: it's in UTC (VSRG Hub's and EtternaOnline's rankings)
+-- rather than the PC's local time (Etterna's own scores). "" when the date can't be read.
+function TW.ago(date, utc)
+	local y, mo, d, h, mi, se = tostring(date or ""):match("^(%d+)%-(%d+)%-(%d+)[ T](%d+):(%d+):?(%d*)")
+	if not y then return "" end
+	local ok, t = pcall(os.time, { year = tonumber(y), month = tonumber(mo), day = tonumber(d), hour = tonumber(h), min = tonumber(mi), sec = tonumber(se) or 0 })
+	if not ok or not t then return "" end
+	local now = os.time()
+	if utc then
+		-- (os.time read the figures as local time: shifted by the PC's offset from UTC)
+		local off = 0
+		pcall(function() off = os.difftime(now, os.time(os.date("!*t", now))) end)
+		t = t + off
+	end
+	local ago = math.max(0, os.difftime(now, t))
+	if ago < 60 then return string.format("%ds", math.floor(ago)) end
+	if ago < 3600 then return string.format("%dm", math.floor(ago / 60)) end
+	if ago < 86400 then return string.format("%dh", math.floor(ago / 3600)) end
+	return string.format("%dd", math.floor(ago / 86400))
+end
+
 function TW.scoreAcc(hs)
 	local wife = 0
 	pcall(function() wife = hs:GetWifeScore() * 100 end)
@@ -882,6 +904,30 @@ end
 
 -- A fail with nothing hit: Etterna leaves the song at once and keeps no score (no results screen),
 -- which looks as if nothing happened. Say so.
+-- A failed play's results open behind a black cover that says FAILED and fades away, as osu!'s
+-- fail leads into its ranking. (The game's own fail transition has no length: Etterna keeps
+-- judging the notes that go by during one, so the play's accuracy would go on changing after
+-- you'd already lost. Instead the results come up at once, under this.)
+-- text(px, init): the look's font for the word; col: the word's colour.
+function TW.failedCover(text, col)
+	local failed = false
+	pcall(function()
+		local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
+		failed = pss:GetWifeGrade() == "Grade_Failed" or pss:GetFailed()
+	end)
+	if not failed then return Def.Actor {} end
+	return Def.ActorFrame {
+		InitCommand = function(self) self:visible(true) end,
+		OnCommand = function(self) self:sleep(1.1):linear(0.6):diffusealpha(0):queuecommand("Gone") end,
+		GoneCommand = function(self) self:visible(false) end,
+		Def.Quad { InitCommand = function(self) self:FullScreen():diffuse(color("#000000")) end },
+		text(TW.M(64), function(self)
+			self:xy(SCREEN_CENTER_X, SCREEN_CENTER_Y):settext("FAILED"):diffuse(col or color("#FFFFFF")):zoom(self:GetZoom() * 0.9)
+				:decelerate(0.35):zoom(self:GetZoom() / 0.9)
+		end),
+	}
+end
+
 function TW.failNotice()
 	return Def.Actor {
 		PlayerFailedMessageCommand = function()

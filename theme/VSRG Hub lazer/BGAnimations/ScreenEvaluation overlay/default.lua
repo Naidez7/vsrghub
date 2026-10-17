@@ -40,4 +40,5 @@ t[#t + 1] = LZ.toolbar { home = leave }
 t[#t + 1] = TW.optionsPanel()
 t[#t + 1] = TW.listPanel()
 t[#t + 1] = TW.danOverlay("ScreenEvaluation overlay/dan_overlay_eval.lua")
+t[#t + 1] = TW.failedCover(function(px, init) return LZ.text(px, "bold", init) end, LZ.pinkLight)
 return t

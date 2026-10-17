@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.13",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.13.zip",
- "sha256": "095ff164966874479e991a669926371145fb697762a30101f9c739ba9f3f9e66",
- "notes": "- **osu! look: the list no longer empties as you scroll away from an open song.** With a low difficulty picked, the songs above it moved up out of the way and vanished as you scrolled up through the list (and the picked song's place was off the list's drawn part). The list draws more panels around its middle now and each fades for where it really is.",
+ "version": "1.8.14",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.14.zip",
+ "sha256": "9a8abb610aadd1e436d7a21cdfe2745b634183f2409669b1b041be342c04f89b",
+ "notes": "- **osu! look: how long ago each score was played**, at the top right of its row on the ranking, as osu! puts it: 5s, 12m, 18h, 3d. It keeps counting while you look.\n- **Failing fades into the results.** Instead of a black cut, a failed play's results come up behind a black cover that says FAILED and fades away, in the osu!, lazer and Quaver looks.",
  "latest": {
-  "version": "1.8.13",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.13.zip",
-  "sha256": "095ff164966874479e991a669926371145fb697762a30101f9c739ba9f3f9e66",
-  "notes": "- **osu! look: the list no longer empties as you scroll away from an open song.** With a low difficulty picked, the songs above it moved up out of the way and vanished as you scrolled up through the list (and the picked song's place was off the list's drawn part). The list draws more panels around its middle now and each fades for where it really is."
+  "version": "1.8.14",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.14.zip",
+  "sha256": "9a8abb610aadd1e436d7a21cdfe2745b634183f2409669b1b041be342c04f89b",
+  "notes": "- **osu! look: how long ago each score was played**, at the top right of its row on the ranking, as osu! puts it: 5s, 12m, 18h, 3d. It keeps counting while you look.\n- **Failing fades into the results.** Instead of a black cut, a failed play's results come up behind a black cover that says FAILED and fades away, in the osu!, lazer and Quaver looks."
  },
  "changelog": [
+  {
+   "version": "1.8.14",
+   "date": "2026-10-17",
+   "notes": "- **osu! look: how long ago each score was played**, at the top right of its row on the ranking, as osu! puts it: 5s, 12m, 18h, 3d. It keeps counting while you look.\n- **Failing fades into the results.** Instead of a black cut, a failed play's results come up behind a black cover that says FAILED and fades away, in the osu!, lazer and Quaver looks."
+  },
   {
    "version": "1.8.13",
    "date": "2026-10-17",

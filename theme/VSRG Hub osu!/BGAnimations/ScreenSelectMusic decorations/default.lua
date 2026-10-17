@@ -143,7 +143,6 @@ local function scoreRow(name, y, isPB)
 	local shown = nil
 	return Def.ActorFrame {
 		Name = name,
-		InitCommand = function(self) self:xy(M(6), y):visible(isPB) end,
 		FillCommand = function(self, p)
 			local hs = p.hs
 			shown = hs
@@ -156,7 +155,7 @@ local function scoreRow(name, y, isPB)
 				c.Letter:settext(""); c.Name:settext(isPB and "No personal record set" or "")
 				-- (osu! writes it in the middle of the box)
 				c.Name:halign(isPB and 0.5 or 0):x(isPB and RW / 2 or M(102)):y(RH / 2)
-				c.Score:settext(""); c.Acc:settext(""); c.Extra:settext("")
+				c.Score:settext(""); c.Acc:settext(""); c.Extra:settext(""); c.When:settext("")
 				return
 			end
 			self:visible(true)
@@ -198,6 +197,19 @@ local function scoreRow(name, y, isPB)
 			pcall(function() valid = hs:GetEtternaValid() end)
 			c.Extra:settext(r .. "x  " .. timing .. (ett ~= "" and ("  " .. ett) or "") .. (valid and "" or "  invalid"))
 				:diffuse(valid and color("#FFFFFF") or color("#FF9999"))
+			-- how long ago, as osu! shows by a score (kept current: "5s" becomes "6s")
+			self.whenUTC = not isPB and (TW.rankSource == "hub" or TW.rankSource == "online")
+			self:playcommand("When")
+		end,
+		WhenCommand = function(self)
+			local d = ""
+			if shown then pcall(function() d = shown:GetDate() end) end
+			self:GetChild("When"):settext(shown and TW.ago(d, self.whenUTC) or "")
+		end,
+		InitCommand = function(self)
+			self:xy(M(6), y):visible(isPB)
+			self:SetUpdateFunction(function(a) if shown and a:GetVisible() then a:playcommand("When") end end)
+			self:SetUpdateFunctionInterval(1)
 		end,
 		(TW.has("songpanel") and Def.Sprite { Texture = TW.img("songpanel"), InitCommand = function(self)
 			TW.inset(self); self:align(0, 0):zoomto(RW, RH):diffuse({ 0, 0, 0, 0.3 }) end }
@@ -213,6 +225,7 @@ local function scoreRow(name, y, isPB)
 		TW.text(M(12), false, function(self) self:align(0, 0.5):xy(M(102), M(39)):shadowlength(1) end) .. { Name = "Score" },
 		TW.text(M(12), false, function(self) self:align(1, 0.5):xy(RW - M(16), M(25)):shadowlength(1) end) .. { Name = "Acc" },
 		TW.text(M(9.5), false, function(self) self:align(1, 0.5):xy(RW - M(16), M(42)):shadowlength(1) end) .. { Name = "Extra" },
+		TW.text(M(9), false, function(self) self:align(1, 0.5):xy(RW - M(16), M(9)):shadowlength(1):diffusealpha(0.75) end) .. { Name = "When" },
 		-- (right click: watch its replay, 25 VSRG Hub results.lua)
 		TW.button(RW, RH, function() openScore(shown) end, function(self, on)
 			local panel = self:GetParent():GetChild("Panel")
