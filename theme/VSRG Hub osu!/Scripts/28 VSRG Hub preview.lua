@@ -174,20 +174,43 @@ function TW.mapPreview(o)
 	end
 
 	local f = Def.ActorFrame {}
-	-- (a seek to do once the music has started again: after a rate change, or on opening while the
-	-- song plays; the preview goes on from where the song was)
-	local rateSeek = nil
-	f[o.openMessage .. "MessageCommand"] = function(self)
-		-- (opened while the song plays: the preview goes on from there, not from the song's start)
+	-- A place to go back to once the music has started again (the song's share, 0 - 1): on opening
+	-- while the song plays, and after a rate change (the music restarts for the new rate). The seek
+	-- is done the moment the new sound is there (polled every 20 ms: a fixed wait let the song's
+	-- start be heard first), and again for every restart within two seconds (the looks' own preview
+	-- handling restarts the sample too).
+	local goBack = nil
+	local function rememberPlace()
 		local top, span = SCREENMAN:GetTopScreen(), TW.previewSongSpan()
 		local pos = (top and top.GetSampleMusicPosition) and top:GetSampleMusicPosition() or 0
-		if span and span > 0 and pos > 0 then rateSeek = { p = math.max(0, math.min(1, pos / span)), t = GetTimeSinceStart() } end
-		self:playcommand("Load"); self:playcommand("Fill"); self:playcommand("Set"); extendPreview()
-		if rateSeek then
-			pendingSeek = rateSeek.p
-			rateSeek = nil
-			self:stoptweening():sleep(0.15):queuecommand("RateSeek")
+		if span and span > 0 and pos > 0 then goBack = { p = math.max(0, math.min(1, pos / span)), t = GetTimeSinceStart() } end
+	end
+	local function seekBack(self)
+		if not goBack then return end
+		self:stoptweening():queuecommand("GoBack")
+	end
+	f.GoBackCommand = function(self)
+		local g = goBack
+		if not g then return end
+		if GetTimeSinceStart() - g.t > 2 then goBack = nil return end
+		local top, span = SCREENMAN:GetTopScreen(), TW.previewSongSpan()
+		local song = GAMESTATE:GetCurrentSong()
+		local want, playing = "", ""
+		pcall(function() want = song and song:GetMusicPath() or "" end)
+		pcall(function() playing = SOUND:GetMusicPath() or "" end)
+		-- (the new sound: the song's file, and at a place before where it was, i.e. started over)
+		local pos = (top and top.GetSampleMusicPosition) and top:GetSampleMusicPosition() or 0
+		if want ~= "" and playing:lower() == want:lower() and top and top.SetSampleMusicPosition and span and pos < g.p * span - 0.5 then
+			top:SetSampleMusicPosition(g.p * span)
+			return
 		end
+		self:sleep(0.02):queuecommand("GoBack")
+	end
+	f[o.openMessage .. "MessageCommand"] = function(self)
+		-- (opened while the song plays: the preview goes on from there, not from the song's start)
+		rememberPlace()
+		self:playcommand("Load"); self:playcommand("Fill"); self:playcommand("Set"); extendPreview()
+		seekBack(self)
 	end
 	f.CurrentStepsChangedMessageCommand = function(self) if isOpen() and not (TW.browsingSkip and TW.browsingSkip()) then self:playcommand("Load"); self:playcommand("Fill"); self:playcommand("Set") end end
 	-- a new noteskin shows in the open preview at once
@@ -197,21 +220,18 @@ function TW.mapPreview(o)
 	f.TWLnModChangedMessageCommand = function(self) if isOpen() then self:playcommand("Load"); self:playcommand("Set") end end
 	f.CurrentRateChangedMessageCommand = function(self)
 		if not isOpen() then return end
-		local top, span = SCREENMAN:GetTopScreen(), TW.previewSongSpan()
-		local pos = (top and top.GetSampleMusicPosition) and top:GetSampleMusicPosition() or 0
-		if span and span > 0 and pos > 0 then rateSeek = { p = math.max(0, math.min(1, pos / span)), t = GetTimeSinceStart() } end
+		rememberPlace()
 		self:playcommand("Fill"); self:playcommand("Set")
+		-- (the whole song again at the new rate, from the same place)
+		extendedFor = nil
+		extendPreview()
+		seekBack(self)
 	end
-	f.RateSeekCommand = function(self) self:playcommand("Seek") end
 	f.PlayingSampleMusicMessageCommand = function(self)
 		-- (Etterna's own short sample started: the whole song is played again)
 		if not extending then extendedFor = nil end
 		extendPreview()
-		if rateSeek and GetTimeSinceStart() - rateSeek.t < 2 then
-			pendingSeek = rateSeek.p
-			rateSeek = nil
-			self:stoptweening():sleep(0.15):queuecommand("RateSeek")
-		end
+		seekBack(self)
 	end
 	f.CurrentSongChangedMessageCommand = function(self) extendedFor = nil end
 
