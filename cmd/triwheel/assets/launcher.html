@@ -480,7 +480,7 @@ function md(text) {
 function nice(v) {
 	let m = /^(\d+\.\d+\.\d+)-beta\.(\d+)$/.exec(v);
 	if (m) return "Beta " + m[2];
-	return (cmpVer(v, "1.8.0-beta.10") < 0 ? "TriWheel " : "") + v;
+	return (cmpVer(v, "1.7.14") < 0 ? "TriWheel " : "") + v;
 }
 function cmpVer(a, b) {
 	const p = v => { const [main, pre] = String(v).split("-"); return [main.split(".").map(Number), pre ? Number(pre.split(".").pop()) : Infinity]; };
@@ -659,12 +659,12 @@ async function gameAct(g, a) {
 function drawLog() {
 	const log = allLog();
 	let html = "", era = "";
-	const eraOf = v => cmpVer(v, "1.8.0-beta.10") < 0 ? "TriWheel (VSRG Hub's first name)" : String(v).includes("-beta") ? "VSRG Hub 1.8 betas" : "VSRG Hub";
+	const eraOf = v => cmpVer(v, "1.7.14") < 0 ? "TriWheel (VSRG Hub's first name)" : "VSRG Hub";
 	log.forEach((e, i) => {
 		const thisEra = eraOf(e.version);
 		if (thisEra !== era) { era = thisEra; html += `<div class="era">${era}</div>`; }
 		const long = (e.notes || "").length > 420 && i > 0;
-		const tag = e.version === S.version ? '<span class="tag cur">YOU HAVE THIS</span>' : (latest && latest.newer && e.version === latest.latest ? '<span class="tag">NEW</span>' : "");
+		const tag = e.version === S.version || (e.covers || []).includes(S.version) ? '<span class="tag cur">YOU HAVE THIS</span>' : (latest && latest.newer && e.version === latest.latest ? '<span class="tag">NEW</span>' : "");
 		const next = log[i + 1], lastOfEra = !next || eraOf(next.version) !== thisEra;
 		html += `<div class="entry ${i === 0 ? "first" : ""} ${lastOfEra ? "last" : ""} ${long ? "fold" : ""}"><div class="head"><b>${esc(nice(e.version))}</b><code>${esc(e.version)}</code>${tag}<span>${esc(fmtDate(e.date))}</span></div>
 			<div class="md">${md(e.notes)}</div>${long ? '<button class="more">Show everything</button>' : ""}</div>`;

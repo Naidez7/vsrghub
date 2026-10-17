@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.11",
+  "date": "2026-10-17",
+  "notes": "- **What's new, retold**: the 105 betas of 1.8.0 are now shown as the versions they amounted to, 1.7.12 to 1.7.32, each with its own notes, after TriWheel 1.7.11 and before 1.8.0. If you have one of those betas, its 1.7.x is marked as yours."
+ },
+ {
   "version": "1.8.10",
   "date": "2026-10-17",
   "notes": "- Map preview: after a rate change (or on opening it), the jump back to where the song was happens the moment the restarted music is there, instead of after a fixed wait that let the song's start be heard."
@@ -52,532 +57,259 @@
  {
   "version": "1.8.0",
   "date": "2026-10-17",
-  "notes": "**VSRG Hub 1.8.0**, the first release under its new name (TriWheel before). Everything the 1.8 betas brought, in one place:\n\n- **Three looks**: osu! stable, osu!lazer and Quaver, each with its own song select, results, main menu and options, drawn with your own skins. Switch from the options or the launcher.\n- **VSRG Hub's own rankings**: every chart ranked, 4K and 7K apart, rated with Etterna's calculator. Plays are verified from their replays. The launcher's Online page has rankings (overall, by pattern, this month), profiles with a rating chart, latest plays, plays of the day, best plays and a daily challenge; the same on the web (naidez7.github.io/vsrghub). Failed daily plays go on the day's board, marked.\n- **Ratings**: 4K as Etterna's player rating (the mean of the patterns); 7K the aggregate of your best plays' overall ratings, since Etterna's 7K calculator sits far under the plays. Ties on rating go by accuracy.\n- **Your osu! and Quaver plays count**: the launcher reads your osu! stable, lazer and Quaver replays, judges them as Etterna would and the game rates them; new plays are picked up on their own at each start, and every rated play becomes a local score in Etterna too, with its replay.\n- **Song select**: your osu!, Quaver and Qwilight songs on the wheel with thumbnails; the scoreboard in three scopes (Local, VSRG Hub, EtternaOnline), sortable by rating, accuracy, combo or date, scrolled with the wheel; a click on a VSRG Hub score opens its card; the daily challenge jumps to its chart; song select opens on the song the menu was playing.\n- **Results**: the hit offsets plot with a judge switcher and column filter, VSRG Hub's verdict on the play, Watch replay.\n- **The launcher**: Play with the look to start in, Games with each game's icon, What's new, Online, Options (Discord presence, keep the launcher open, ranking notices, menu background), Report a problem (a zip plus a GitHub issue), updates from GitHub, and a web link to your profile.\n- **Ranking notices**: who passed you and who took a #1 from you, in the launcher, as toasts and in the game (can be turned off).\n- **Discord**: what you're playing, in the game and from the launcher.\n- Licensed under the GPL-3.0; built and checked on GitHub Actions from the public source."
+  "notes": "**VSRG Hub 1.8.0**, the first release under its new name (TriWheel before). Everything 1.7.12 to 1.7.32 brought, in one place:\n\n- **Three looks**: osu! stable, osu!lazer and Quaver, each with its own song select, results, main menu and options, drawn with your own skins. Switch from the options or the launcher.\n- **VSRG Hub's own rankings**: every chart ranked, 4K and 7K apart, rated with Etterna's calculator. Plays are verified from their replays. The launcher's Online page has rankings (overall, by pattern, this month), profiles with a rating chart, latest plays, plays of the day, best plays and a daily challenge; the same on the web (naidez7.github.io/vsrghub). Failed daily plays go on the day's board, marked.\n- **Ratings**: 4K as Etterna's player rating (the mean of the patterns); 7K the aggregate of your best plays' overall ratings, since Etterna's 7K calculator sits far under the plays. Ties on rating go by accuracy.\n- **Your osu! and Quaver plays count**: the launcher reads your osu! stable, lazer and Quaver replays, judges them as Etterna would and the game rates them; new plays are picked up on their own at each start, and every rated play becomes a local score in Etterna too, with its replay.\n- **Song select**: your osu!, Quaver and Qwilight songs on the wheel with thumbnails; the scoreboard in three scopes (Local, VSRG Hub, EtternaOnline), sortable by rating, accuracy, combo or date, scrolled with the wheel; a click on a VSRG Hub score opens its card; the daily challenge jumps to its chart; song select opens on the song the menu was playing.\n- **Results**: the hit offsets plot with a judge switcher and column filter, VSRG Hub's verdict on the play, Watch replay.\n- **The launcher**: Play with the look to start in, Games with each game's icon, What's new, Online, Options (Discord presence, keep the launcher open, ranking notices, menu background), Report a problem (a zip plus a GitHub issue), updates from GitHub, and a web link to your profile.\n- **Ranking notices**: who passed you and who took a #1 from you, in the launcher, as toasts and in the game (can be turned off).\n- **Discord**: what you're playing, in the game and from the launcher.\n- Licensed under the GPL-3.0; built and checked on GitHub Actions from the public source."
  },
  {
-  "version": "1.8.0-beta.105",
+  "version": "1.7.32",
   "date": "2026-10-17",
-  "notes": "- osu! look, results: \"Watch replay\" moves to the bottom left, above the back tab (it sat over the hit offsets on the right): the skin's ranking-replay when it has one, VSRG Hub's pill otherwise."
+  "covers": [
+   "1.8.0-beta.96",
+   "1.8.0-beta.97",
+   "1.8.0-beta.98",
+   "1.8.0-beta.99",
+   "1.8.0-beta.100",
+   "1.8.0-beta.101",
+   "1.8.0-beta.102",
+   "1.8.0-beta.103",
+   "1.8.0-beta.104",
+   "1.8.0-beta.105"
+  ],
+  "notes": "- **A click on a VSRG Hub score opens its card** (every look): player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and where it was played, and the spread of its hit offsets.\n- **The scoreboard scrolls with the mouse wheel** when more scores than fit, and has a **Sort** (Rating, Accuracy, Combo, Newest) in every look and scope; in the VSRG Hub scope each player's row is their best play by that order. Ties on rating go by accuracy.\n- **Song select opens on the song the main menu was playing**, as osu!'s does; the Quaver look's menu plays a random song too; Etterna's own title music no longer starts over it.\n- \"Send my osu! / Quaver plays\" shows its progress every 20 replays.\n- lazer look: title and artist spaced out, the footer buttons' label clear of their line. osu! look: \"Watch replay\" on the results moves to the bottom left, off the hit offsets."
  },
  {
-  "version": "1.8.0-beta.104",
-  "date": "2026-10-17",
-  "notes": "- Main menu: Etterna's own title music no longer starts over VSRG Hub's random song (every look); song select then opens on that song. A look switched from the main menu no longer pins the old chart on song select.\n- Scoreboard: scrolling with the wheel moves the rows without replaying their entrance (osu! and lazer looks).\n- Switching looks: the chart is picked again at once, so the first song's preview doesn't blip in.\n- VSRG Hub score card: the footer line stays clear of Close."
- },
- {
-  "version": "1.8.0-beta.103",
+  "version": "1.7.31",
   "date": "2026-10-16",
-  "notes": "- Scoreboard Sort, VSRG Hub scope: each player's row is their best play by the chosen order (best accuracy, best combo, latest...), asked from the server again on each change (update 21); before, only the rows already there were reordered. Ties on accuracy go to the higher-rated play (the higher rate). EtternaOnline's board only has one play per player, so there it reorders."
+  "covers": [
+   "1.8.0-beta.90",
+   "1.8.0-beta.91",
+   "1.8.0-beta.92",
+   "1.8.0-beta.93",
+   "1.8.0-beta.94",
+   "1.8.0-beta.95"
+  ],
+  "notes": "- **Your osu! / Quaver plays become local scores in Etterna too**: once rated, the launcher writes each into your Etterna profile with its replay, so it shows on the local ranking, your profile, its results, and its replay plays.\n- **7K rating**: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset) instead of the mean of Etterna's 7K skillsets, which sat far under the plays. 4K is unchanged.\n- **Ranking notices** can be turned off (Options). **Report a problem** opens a GitHub issue with your message filled in, to attach the zip to.\n- Discord: with the launcher kept open, the game's presence replaces the launcher's while the game runs.\n- lazer look: the cards' pictures cut to fit instead of squeezed, the wedge's picture slanted with the wedge."
  },
  {
-  "version": "1.8.0-beta.102",
-  "date": "2026-10-16",
-  "notes": "- Scoreboard order: plays tied on rating (Etterna's calculator stops raising a play's rating past about 97%) go by accuracy, then the earlier one first, on the server (update 20) and in the game's Sort."
- },
- {
-  "version": "1.8.0-beta.101",
-  "date": "2026-10-16",
-  "notes": "- Song select scoreboard, every look and scope: a Sort control (Rating, Accuracy, Combo, Newest); the places follow the order. In osu! it's the pill right of the rate, in lazer the Sort pill next to Rate, in Quaver the box left of RANKING. Click goes on, right click back.\n- Quaver look: the main menu plays a random song, as Quaver's does, and song select opens on it (the osu! looks already did).\n- The scoreboard's wheel scrolling stays off while the map preview is shown."
- },
- {
-  "version": "1.8.0-beta.100",
-  "date": "2026-10-16",
-  "notes": "- Song select scoreboard (every look): with more scores than fit, the mouse wheel over the board scrolls the scores instead of the song list."
- },
- {
-  "version": "1.8.0-beta.99",
-  "date": "2026-10-16",
-  "notes": "- Song select, VSRG Hub scope: a click on a score opens its card: player and place, the song, accuracy and grade, judgements, combo, the play's rating in each skillset, when and in which game it was played, and the spread of its hit offsets (every look). No replay: Etterna only plays its own and EtternaOnline's."
- },
- {
-  "version": "1.8.0-beta.98",
-  "date": "2026-10-16",
-  "notes": "- osu!lazer look: the song's title no longer runs into the artist under it (song list cards and the results card)."
- },
- {
-  "version": "1.8.0-beta.97",
-  "date": "2026-10-16",
-  "notes": "- osu!lazer look, footer buttons (Mods, Random, Options...): the label no longer sits on the coloured line; icon, label and line are spaced out."
- },
- {
-  "version": "1.8.0-beta.96",
-  "date": "2026-10-16",
-  "notes": "- osu! and osu!lazer looks: song select opens on the song the main menu was playing, as osu!'s does (the menu's song is a random one each time).\n- \"Send my osu! / Quaver plays\": the progress line moves every 20 replays instead of every 200 (each replay is judged against its map, so it looked stuck)."
- },
- {
-  "version": "1.8.0-beta.95",
-  "date": "2026-10-16",
-  "notes": "- Report a problem: after the zip, a GitHub issue opens in your browser with your message filled in; drag the zip into it and post."
- },
- {
-  "version": "1.8.0-beta.94",
-  "date": "2026-10-16",
-  "notes": "- 7K rating: the aggregate of your best plays' overall ratings (the same aggregation Etterna uses within a skillset), instead of the mean of Etterna's 7K skillsets, which sat far under the plays (Etterna's 7K calculator is the 4K one adapted; jacks hardly exist in 7K). 4K is unchanged. Server update 19 recomputes everyone's 7K."
- },
- {
-  "version": "1.8.0-beta.93",
-  "date": "2026-10-16",
-  "notes": "- Your osu! / Quaver plays become local scores in Etterna too: once the game has rated one, the launcher writes it into your Etterna profile with its replay (before the game starts, with a backup of the profile in Save/VSRGHub/backup), so it shows on the local ranking, your profile, its results and its replay. Plays sent before this update get there with \"Send my osu! / Quaver plays again\"."
- },
- {
-  "version": "1.8.0-beta.92",
-  "date": "2026-10-16",
-  "notes": "- osu!lazer look, song select: the cards' pictures are cut to fit instead of squeezed; the wedge's picture is slanted with the wedge (its corner stuck out by the pattern ratings); the RANKED pill fits its word; the selected card's pills have air between them."
- },
- {
-  "version": "1.8.0-beta.91",
-  "date": "2026-10-16",
-  "notes": "- Discord: with the launcher kept open, the game's presence (what you're playing) replaces the launcher's while the game runs; before, Discord kept showing the launcher's."
- },
- {
-  "version": "1.8.0-beta.90",
-  "date": "2026-10-16",
-  "notes": "- Options > \"Ranking notices\": off hides who passed you and who took a #1 from you (the Online page, the toasts and the game). \"hide\" on the box does the same."
- },
- {
-  "version": "1.8.0-beta.89",
+  "version": "1.7.30",
   "date": "2026-10-15",
-  "notes": "- osu! / Quaver plays: after the first send, the plays you make in osu! and Quaver are picked up on their own each time VSRG Hub or the game starts (the game rates them when song select comes up, then they're sent). Online has a \"Load new plays\" button to look right away."
+  "covers": [
+   "1.8.0-beta.83",
+   "1.8.0-beta.84",
+   "1.8.0-beta.85",
+   "1.8.0-beta.86",
+   "1.8.0-beta.87",
+   "1.8.0-beta.88",
+   "1.8.0-beta.89"
+  ],
+  "notes": "- **osu! / Quaver plays are picked up on their own**: after the first send, the plays you make in osu! and Quaver are found each time VSRG Hub or the game starts, rated in the game and sent. \"Load new plays\" looks right away.\n- **Daily challenge**: the day's chart is kept once picked; a failed play of it goes on the day's board, marked FAILED, counted for nothing else.\n- **Results** say why a play wasn't sent (paused or invalid in Etterna, failed, autoplay, practice) instead of nothing.\n- lazer look: the song list's pills sized to their words, the grade letter centred, the judge switcher on the results clear of the column buttons.\n- The pictures of a converted song whose chart is gone are removed with it."
  },
  {
-  "version": "1.8.0-beta.88",
+  "version": "1.7.29",
   "date": "2026-10-15",
-  "notes": "- Results: when a play isn't sent to VSRG Hub, the line at the bottom says why (paused or invalid in Etterna, failed, autoplay, practice...) instead of nothing.\n- osu!lazer look, results: the hit offsets' judge switcher no longer runs into the column buttons."
+  "covers": [
+   "1.8.0-beta.80",
+   "1.8.0-beta.81",
+   "1.8.0-beta.82"
+  ],
+  "notes": "- VSRG Hub is under the **GNU GPL v3**, and every push builds the launcher on GitHub Actions from the public source (the Go source is in the repository).\n- Online has a **\"My profile on the web\"** button, and the rankings' web address is in the README."
  },
  {
-  "version": "1.8.0-beta.87",
+  "version": "1.7.28",
   "date": "2026-10-15",
-  "notes": "- Daily challenge: a failed play of the day's chart goes on the day's board too, marked FAILED and counted for nothing else (server update 18). A pass that day takes its place.\n- Thumbnails: the pictures of a converted song whose chart is gone are removed with it (and the empty folder)."
+  "covers": [
+   "1.8.0-beta.76",
+   "1.8.0-beta.77",
+   "1.8.0-beta.78",
+   "1.8.0-beta.79"
+  ],
+  "notes": "- **Daily challenge**: one chart a day for everyone, 4K and 7K each, picked from the charts people know; the day's board and the last days' winners, in the launcher and on the web. \"Play it\" takes the game to it.\n- **This month's ranking**: players ranked by this month's plays only, in the rankings' dropdown (launcher and web).\n- **Duplicates**: the same play sent from two games (Etterna and an osu! / Quaver replay of it) is refused.\n- Web: the profile's rating graph expands to the big one; the rankings page has Latest plays / Plays of the day / Best plays / Daily challenge."
  },
  {
-  "version": "1.8.0-beta.86",
+  "version": "1.7.27",
   "date": "2026-10-15",
-  "notes": "- What's new: betas 82 to 85 had their notes missing (their files lacked the date line); they're there now."
+  "covers": [
+   "1.8.0-beta.72",
+   "1.8.0-beta.73",
+   "1.8.0-beta.74",
+   "1.8.0-beta.75"
+  ],
+  "notes": "- **Admin tools** (Online page, admins only): the server at a glance, players (ban, make admin, rename), a message of the day, removing a score, duplicates.\n- **Keep the launcher open while playing** (Options): it minds the game as before and is ready again once the game ends.\n- **\"X took #1 on Y from you\"**: the ranking notices also say when someone takes the top of a chart you were first on. **Export scores** as a CSV.\n- osu! look: the rate pill right of the ranking box is always there; mods have < > for the rate. lazer look: a playlists button that opens song select on your collections."
  },
  {
-  "version": "1.8.0-beta.85",
+  "version": "1.7.26",
   "date": "2026-10-15",
-  "notes": "- Daily challenge: the day's chart is kept once picked (server update 17: it could change during the day as people's play counts changed)."
+  "covers": [
+   "1.8.0-beta.66",
+   "1.8.0-beta.67",
+   "1.8.0-beta.68",
+   "1.8.0-beta.69",
+   "1.8.0-beta.70",
+   "1.8.0-beta.71"
+  ],
+  "notes": "- **The lazer look, closer to lazer**: the song list's cards as lazer's carousel (title, artist, RANKED, chart and mapper, a star pill, your grade), the main menu's backdrop with lazer's triangles, and the results as lazer's: the score card in the middle, life graph, details and hit offsets on the right, the chart's ranking on the left.\n- **Menu background** (Options): the song playing's picture, one random picture kept for the session, or pictures of your own.\n- Fixed: the stage and receptors off to one side when the notefield is moved with a receptor size other than 100%; the scoreboard showing another scope's list after switching."
  },
  {
-  "version": "1.8.0-beta.84",
+  "version": "1.7.25",
   "date": "2026-10-15",
-  "notes": "- osu!lazer look, song list: the MSD pill stays inside the card, and \"[4K] chart name\" starts after the RANKED pill instead of over it."
+  "covers": [
+   "1.8.0-beta.63",
+   "1.8.0-beta.64",
+   "1.8.0-beta.65"
+  ],
+  "notes": "- **Who passed you**: the launcher looks at the rankings when it starts and every ten minutes while the game runs, and says when someone gets past you in 4K or 7K (or you move up), on the Online page and in the game.\n- **Discord**: your activity says what you're doing in the game (picking a song, playing, results, multiplayer) and, while the launcher is open, your name and place on the rankings.\n- Big backgrounds (over 2048 px) get a 1080p copy that the menus and song select load instead."
  },
  {
-  "version": "1.8.0-beta.83",
+  "version": "1.7.24",
   "date": "2026-10-15",
-  "notes": "- osu!lazer look, song list: the MSD pill no longer cuts its number short, the RANKED pill fits its word, and the grade letter sits in the middle of its bubble."
+  "covers": [
+   "1.8.0-beta.54",
+   "1.8.0-beta.55",
+   "1.8.0-beta.56",
+   "1.8.0-beta.57",
+   "1.8.0-beta.58",
+   "1.8.0-beta.59",
+   "1.8.0-beta.60",
+   "1.8.0-beta.61",
+   "1.8.0-beta.62"
+  ],
+  "notes": "- **Rankings on the web**: rankings, profiles (pins, pictures, the rating graph), each chart's top and a page to compare two players, at naidez7.github.io/vsrghub.\n- **Latest plays, three ways**: Latest plays, Plays of the day (every day's best, with a star) and Best plays, in pages of ten, with All / 4K / 7K; days counted by your PC's clock.\n- **Rating over time, big**: a ⤢ button opens the graph over the whole window, with zoom, pan and a day's best plays on hover.\n- **Goals** (Ctrl+G on song select), **find a player** on the Online page, an icon by the clock while plays wait to be sent, best plays per game on a profile, \"someone passed you\" on song select.\n- **Song select loads faster**: small thumbnails instead of full backgrounds (some are 4K photos). Each game shows its own icon on the Games page.\n- Sending plays no longer gets stuck; the launcher says when the server is behind; Quaver dates are read from the replay's own clock."
  },
  {
-  "version": "1.8.0-beta.82",
+  "version": "1.7.23",
   "date": "2026-10-15",
-  "notes": "- The rankings are on the web now: https://naidez7.github.io/vsrghub/ (rankings, profiles, the daily challenge). Online has a \"My profile on the web\" button, for sharing yours."
+  "covers": [
+   "1.8.0-beta.46",
+   "1.8.0-beta.47",
+   "1.8.0-beta.48",
+   "1.8.0-beta.49",
+   "1.8.0-beta.50",
+   "1.8.0-beta.51",
+   "1.8.0-beta.52",
+   "1.8.0-beta.53"
+  ],
+  "notes": "- **Your osu! and Quaver plays count**: \"Send my osu! / Quaver plays\" reads your osu! stable, osu!lazer and Quaver replays, judges them as Etterna would and the game rates them. A dot by each play says where it was played.\n- **Profile pictures** (PNG, JPEG, GIF, WebP), **latest plays** of everyone, **a chart's top**, **rating over time** on each profile, and **pinned plays** (up to 20, in the order you like).\n- **Report a problem**: the game's and VSRG Hub's logs in a zip on your desktop. \"A new VSRG Hub is out\" on the game's main menu when there is one.\n- 7K ratings: Etterna's calculator doesn't rate Technical for 7K, so the 7K overall is the mean of the six skillsets it does rate.\n- Multiplayer sign-in works under these looks; the Quaver look's mouse wheel scrolls the list without picking; the launcher updates itself even when Windows holds its old copy."
  },
  {
-  "version": "1.8.0-beta.81",
+  "version": "1.7.22",
   "date": "2026-10-15",
-  "notes": "- The launcher's Go source is in the GitHub repository now (the publishing step had been leaving the `cmd/triwheel` folder out), so the Actions build and \"read every line\" are true."
+  "covers": [
+   "1.8.0-beta.39",
+   "1.8.0-beta.40",
+   "1.8.0-beta.41",
+   "1.8.0-beta.42",
+   "1.8.0-beta.43",
+   "1.8.0-beta.44",
+   "1.8.0-beta.45"
+  ],
+  "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make an account, pick your player name, sign in. **Every chart is ranked**: each play you finish is sent to VSRG Hub's rankings and your 4K and 7K ratings are worked out as Etterna does.\n- **Checked scores**: each play is sent with its replay and the server works its accuracy out again. **Your older plays** can be sent too.\n- **Player profiles**: anyone's place, rating by pattern and best plays. Your rating and place on the results screen and in the song select's player card.\n- **VSRG Hub boards in song select**, beside Local and EtternaOnline, in every look. Forgot-your-password mail opens a page to choose a new one.\n- Fixes: the main menu's circle takes clicks right away; starting a song no longer hangs on the player options hint; profiles show the right place."
  },
  {
-  "version": "1.8.0-beta.80",
+  "version": "1.7.21",
   "date": "2026-10-15",
-  "notes": "- VSRG Hub is under the **GNU GPL v3** now (LICENSE in the repo and in the install), and every push builds the launcher on GitHub Actions, so a release can be checked against its code and signed."
+  "covers": [
+   "1.8.0-beta.34",
+   "1.8.0-beta.35",
+   "1.8.0-beta.36",
+   "1.8.0-beta.37",
+   "1.8.0-beta.38"
+  ],
+  "notes": "- **A new launcher**: Play, Games, What's new and Options, in VSRG Hub's violet and pink. It installs itself where you choose (desktop and Start menu shortcuts), finds Etterna, and shows your games in colour when found. Options before playing: resolution, fullscreen, refresh rate, VSync, frame limits, Direct3D or OpenGL. **Updates come from GitHub.**\n- **The osu! look is osu! stable**, compared screen by screen with osu! using the same skins: the main menu's cookie and purple buttons, song panels at your skin's size on osu!'s curve, the top bar as osu! draws it, osu!'s font, your player card, mod select and results like osu!'s.\n- **Song select: the difficulties scroll like the songs**, and fast scrolling no longer stutters or freezes (every panel used to unpack every chart's notes). Only 4K and 7K charts are listed.\n- The launcher says what's missing on PCs without the WebView2 runtime, and no longer gets stuck asking to update."
  },
  {
-  "version": "1.8.0-beta.79",
-  "date": "2026-10-15",
-  "notes": "- **This month's ranking:** \"This month\" in the rankings' dropdown (launcher and web) ranks players by their plays made this month only, worked out as the all-time rating is, so every month starts from nothing.\n- **Duplicates:** the same play sent from two games (Etterna and an osu! / Quaver replay of it: same chart and rate, played within 3 seconds) is refused on the way in now; the admin tools' Duplicates tab finds the ones already there and cleans them up (the verified one, then the Etterna one, stays).\n- **Web:** the profile's rating graph expands to the big one (zoom, pan, a day's best plays), and the rankings page has Latest plays / Plays of the day / Best plays / Daily challenge with All / 4K / 7K and pages, as the launcher.\n- The daily challenge picks from MSD 8 to 28 and prefers charts more players know. Needs `v2.sql` run again (server version 16)."
- },
- {
-  "version": "1.8.0-beta.78",
-  "date": "2026-10-15",
-  "notes": "- The daily challenge is a tab beside Latest plays / Plays of the day / Best plays now, instead of a card of its own (All shows the 4K one; pick 4K or 7K beside the tabs)."
- },
- {
-  "version": "1.8.0-beta.77",
-  "date": "2026-10-15",
-  "notes": "- **Fixed:** the ranking notices in the game, the Discord activity while playing and the daily challenge's jump to the chart never ran (their watchers were plain actors, which Etterna doesn't give update functions to). All three work now."
- },
- {
-  "version": "1.8.0-beta.76",
-  "date": "2026-10-15",
-  "notes": "- **Daily challenge.** One chart a day for everyone, 4K and 7K each (the server picks it from the charts people have played at 1.0x, MSD 8 to 32, preferring ones two or more players know). The Online page shows today's chart, the day's board (everyone's best on it played today, UTC), your place and the last two weeks' winners; **Play it** makes song select jump to the chart (now, if the game runs; otherwise when you press Play). In the lazer look, the play menu has a **daily challenge** button that does the same. Needs `v2.sql` run again (server version 15)."
- },
- {
-  "version": "1.8.0-beta.75",
-  "date": "2026-10-15",
-  "notes": "- **\"X took #1 on Y from you\":** the ranking notices (Online page, and in the game) now also say when someone takes the top of a chart you were first on, with both ratings.\n- **Export scores** (Online page): every score of yours as a CSV file on your desktop (for a spreadsheet).\n- **lazer look:** a \"playlists\" button in the play menu, which opens song select on your collections.\n- The admin tools say the server needs `v2.sql` when it's behind, instead of a raw error. Needs `v2.sql` run again (server version 14, which also brings the admin tools of beta 72)."
- },
- {
-  "version": "1.8.0-beta.74",
-  "date": "2026-10-15",
-  "notes": "- **osu! look:** the rate pill right of the ranking box is always there now (left click 0.05x up, right click down; skins with their own top bar art had it hidden), and the mods screen (F1) has < and > beside \"Music Rate\" (the mouse wheel over it works too)."
- },
- {
-  "version": "1.8.0-beta.73",
-  "date": "2026-10-15",
-  "notes": "- **Fixed (lazer look):** the scores staying invisible after switching their scope until the tab was toggled (the board's fade-in was cut short at see-through)."
- },
- {
-  "version": "1.8.0-beta.72",
-  "date": "2026-10-15",
-  "notes": "- **Admin tools** (Online page, admins only): an overview of the server (players, scores, this week, by game), the players with Ban / Make admin / Rename / Recalc / Clear picture / Wipe scores (off the rankings, restorable), every score on a chart taken off (or put back), and a **message of the day** everyone sees on the Online page. Needs `v2.sql` run again (server version 13).\n- **Keep the launcher open while playing** (Options): the launcher stays up while the game runs, minding it as before (scores sent, rankings, tray icon, Discord), and is ready again when the game closes. Off by default, as before."
- },
- {
-  "version": "1.8.0-beta.71",
-  "date": "2026-10-15",
-  "notes": "- **Fixed (lazer look):** switching the scope of the scores to VSRG Hub or EtternaOnline left the local list on screen: the tab's fade stopped the board's wait for the ranking. Also rows left half see-through when the mouse passed over them while they slid in."
- },
- {
-  "version": "1.8.0-beta.70",
-  "date": "2026-10-15",
-  "notes": "- **Fixed:** the scores on song select showing another source's ranking (a late answer from VSRG Hub's or EtternaOnline's ranking landed on the board after you had switched the scope); in all three looks.\n- lazer look: the chart preview in a tall box, as the chart is (the wide one squeezed it)."
- },
- {
-  "version": "1.8.0-beta.69",
-  "date": "2026-10-15",
-  "notes": "- **The lazer look, part 2 (results):** the score card in the middle as lazer's, the life graph, details and hit offsets in a column on the right, and on the left the chart's VSRG Hub ranking as lazer's score cards: the three scores just above yours (the ones to beat), or the top three when yours isn't there yet."
- },
- {
-  "version": "1.8.0-beta.68",
-  "date": "2026-10-15",
-  "notes": "- **Fixed:** the stage (the lane cover) and the receptors off to one side when the notefield is moved left or right in Customize gameplay with a receptor size other than 100%.\n- **Menu background** (Options): the song playing's picture (as before), one random song's picture kept for the session, or a picture of your own: put png or jpg files in `Etterna/Save/VSRGHub/menu` and pick one there. In all three looks."
- },
- {
-  "version": "1.8.0-beta.67",
-  "date": "2026-10-15",
-  "notes": "- lazer look: the cards' titles at their size, the rating slider's right end on the screen, the main menu's backdrop with lazer's lighter and darker triangles and the picture barely there (as lazer's \"triangles\" background)."
- },
- {
-  "version": "1.8.0-beta.66",
-  "date": "2026-10-15",
-  "notes": "- **The lazer look, closer to lazer (part 1):** the song list's cards as lazer's 2025 carousel (title, artist, RANKED, \"[4K] chart mapped by\", a star pill, your grade at the left, the picture on the right; the selected one lighter and further left; packs as blue headers with a count), the chart's wedge as lazer's (RANKED and key pills, a lighter title, the counts in a row, the difficulty in yellow with its mapper, the pattern ratings as stat boxes), Details / Ranking tabs with Scope and Rate pills, and a **rating range slider** under the search (drag either end: the list keeps the charts in that MSD range). The main menu's backdrop is lazer's blue."
- },
- {
-  "version": "1.8.0-beta.65",
-  "date": "2026-10-15",
-  "notes": "- **Discord, in the launcher too:** while the launcher is open your activity says \"In the launcher\" with your name and place on the rankings (#2 in 4K (24.35) · #1 in 7K (24.50)); in the game, what you're playing, as before."
- },
- {
-  "version": "1.8.0-beta.64",
-  "date": "2026-10-15",
-  "notes": "- **Discord:** while the game runs, your Discord activity says what you're doing (picking a song, playing or practicing a chart, results, multiplayer) and for how long. Off on the Options page if you'd rather not."
- },
- {
-  "version": "1.8.0-beta.63",
-  "date": "2026-10-15",
-  "notes": "- **Who passed you.** The launcher looks at the rankings when it starts and every ten minutes while the game runs: when someone gets past you in 4K or 7K (or you move up) it says so, on the Online page under your ratings and, in the game, as a message on screen.\n- **Big backgrounds shrunk.** A background over 2048 px (a 4K photo) also gets a 1080p copy beside its thumbnail, and the main menu, song select and results load that one: less to read on each change of song, less graphics memory. (The game's own gameplay background is still the original.)\n- Groundwork for Discord's \"Playing VSRG Hub\" (what you're playing as your Discord activity): on once VSRG Hub has its Discord application."
- },
- {
-  "version": "1.8.0-beta.62",
-  "date": "2026-10-15",
-  "notes": "- **Plays of the day** goes all the way back now (it stopped at 365 days with plays). Needs `v2.sql` run again (server version 12)."
- },
- {
-  "version": "1.8.0-beta.61",
-  "date": "2026-10-15",
-  "notes": "- **Rating over time, big:** a ⤢ button by a profile's rating graph opens it over the whole window: dates along, rating (MSD) up, the mouse wheel zooms, dragging pans, a double-click resets. Hover a day for its rating and its best plays (click to keep them open; a play opens its chart)."
- },
- {
-  "version": "1.8.0-beta.60",
-  "date": "2026-10-15",
-  "notes": "- **Latest plays, three ways:** Latest plays, Plays of the day (every day's best, newest first, each with a gold star; the best of them all in pink) and Best plays (the top plays of everyone, one per player and chart, numbered). All / 4K / 7K beside them filters all three.\n- **Pages of ten** with arrows and a page box (\"Page 1 of 12\") instead of one long list.\n- Days are counted by your PC's clock now (the plays of the day too), so \"Today\" and the day headings agree with \"2 d ago\".\n- Needs `v2.sql` run again (server version 11): the plays-of-the-day query takes your time zone and the key count."
- },
- {
-  "version": "1.8.0-beta.59",
-  "date": "2026-10-15",
-  "notes": "- **Plays of the day:** Latest plays has two buttons now: the latest plays (as before), and every day's best play, newest first, each with its star. The star and the best play's frame are pink.\n- Needs `v2.sql` run again (server version 10): it adds the plays-of-the-day query."
- },
- {
-  "version": "1.8.0-beta.58",
-  "date": "2026-10-15",
-  "notes": "- **Song select loads faster.** The song list's small pictures are no longer the full backgrounds (some are 4K photos, slow to read and shrunk badly into a panel's corner): the launcher now makes a thumbnail per song, made in the background while the game starts — the first time it takes a few minutes for a big library, and the list shows the full pictures until each one is there.\n- **Fixed:** a song's panel and its difficulties staying over the packs after its pack was closed, or opening another pack, from the pack's name while the list was scrolled with the mouse wheel; and nothing opening properly after that.\n- **Play of the day:** on Latest plays, today's best play stands first under its own heading, and each day's best play goes first in its day.\n- **Games page:** each game shows its own icon."
- },
- {
-  "version": "1.8.0-beta.57",
-  "date": "2026-10-15",
-  "notes": "- **Goals.** On song select, Ctrl+G sets the Wife% you want on the selected chart at the current rate (or changes it; empty drops it). It shows by the bottom left while the chart is selected, and the results screen says \"Goal reached\" when a play beats it.\n- **Find a player** on the Online page: a search box over the rankings that also finds players not on that ranking.\n- **Latest plays** are grouped by day, with a star on the best play of each day.\n- **Falling arrows off:** an option (Options page) to stop the Play page's stage drawing, for slow PCs.\n- **An icon by the clock** while the game runs, saying how many plays wait to be sent."
- },
- {
-  "version": "1.8.0-beta.56",
-  "date": "2026-10-15",
-  "notes": "- On a profile, the legend under the plays (Etterna, osu!, Quaver) is the per-game filter: hover shows it can be pressed, press one for that game's best plays by SSR, again for all. osu!lazer plays count as osu! (no separate colour)."
- },
- {
-  "version": "1.8.0-beta.55",
-  "date": "2026-10-15",
-  "notes": "- Scrolling the song list past the picked song no longer reloads its ranking board or makes its picture blink: the board and the picture stay when the chart is the same one."
- },
- {
-  "version": "1.8.0-beta.54",
-  "date": "2026-10-15",
-  "notes": "- **Rankings on the web:** rankings, profiles (with pins, pictures and the rating graph), each chart's top, and a page to compare two players, at https://naidez7.github.io/vsrghub/rankings.html (once the site is turned on). Share a profile by link.\n- **Best plays per game:** on a profile, Best 4K / 7K can be narrowed to Etterna, osu!, lazer or Quaver plays.\n- **Results screen:** after a play, your place on that chart too.\n- **\"Someone passed you\":** when song select comes up and your 4K or 7K place dropped since last time, the game says so.\n- **Sending plays no longer gets stuck** on \"statement timeout\": the server checks replays much faster and the launcher sends smaller batches (and smaller still if the server is slow).\n- **Quaver dates** are read from the replay's own clock; plays sent with the wrong date get their real one the next time you press \"Send my osu! / Quaver plays again\".\n- The launcher says when the server is behind (its v2.sql needs running) instead of failing quietly, and the server caps how many scores one player can send in ten minutes."
- },
- {
-  "version": "1.8.0-beta.53",
-  "date": "2026-10-15",
-  "notes": "- \"Latest plays\" shows again (the pinned plays gave the server a second path between plays and players, and the list asked for an ambiguous one)."
- },
- {
-  "version": "1.8.0-beta.52",
-  "date": "2026-10-15",
-  "notes": "- The launcher updates itself even when the copy left by its last update is still held by Windows (it moves aside under a fresh name, and the leftovers are cleared next time)."
- },
- {
-  "version": "1.8.0-beta.51",
-  "date": "2026-10-15",
-  "notes": "- Quaver replays are found and read now (they're in Quaver's Data\\r, and their file layout differs between Quaver versions: tried against real ones).\n- The Play page's stage stays yours once you've pressed a key, until you come back to the page: handing it back to itself mid-play left notes stuck under the receptors."
- },
- {
-  "version": "1.8.0-beta.50",
-  "date": "2026-10-15",
-  "notes": "- Your pinned plays can be dragged into the order you like (on your own profile, \"Pinned\" tab)."
- },
- {
-  "version": "1.8.0-beta.49",
-  "date": "2026-10-15",
-  "notes": "- **Your Quaver plays count too:** \"Send my osu! / Quaver plays\" reads Quaver's replays as well (a cyan dot on those plays).\n- **Pinned plays.** Open one of your plays (click it), press **Pin** on your row, and it shows on your profile under a \"Pinned\" tab (up to 20).\n- **Profile pictures can move:** a GIF is shown as it is (up to 1 MB); a PNG keeps its transparent parts.\n- **7K ratings:** Etterna's calculator doesn't rate Technical for 7K (every 7K chart got 0.18), so the 7K overall is now the mean of the six skillsets it does rate, and Technical isn't shown for 7K.\n- osu! plays sent before the last server update showed as Etterna's: they're told apart again.\n- Rating your osu! / Quaver plays in the game goes on from where it was if you leave song select half way.\n- The Play page's arrows can be played: the keyboard arrows hit them, with a combo and judgements. Leave the keys for a few seconds and it plays itself again."
- },
- {
-  "version": "1.8.0-beta.48",
-  "date": "2026-10-15",
-  "notes": "- Profiles with 4K, 7K and the graph no longer run out of the window: each side scrolls on its own.\n- The osu!lazer dot is gold (the ring on the pink one was too small to see)."
- },
- {
-  "version": "1.8.0-beta.47",
-  "date": "2026-10-15",
-  "notes": "- **Your osu! plays count.** \"Send my osu! plays\" on the Online page reads your osu! stable replays (and osu!lazer's, for maps that are also in your osu! Songs folder), judges each as Etterna would on the same chart, and the game rates them with Etterna's calculator: every 4K and 7K map is ranked.\n- A dot by each play says where it was played: Etterna (violet), osu! (pink) or osu!lazer (pink with a gold ring).\n- Song select: the last song's picture stays while the list sits on a pack's name, so the next song's picture fades in over it instead of coming up from black."
- },
- {
-  "version": "1.8.0-beta.46",
-  "date": "2026-10-15",
-  "notes": "- **Profile pictures.** Click your picture on the Online page to pick one (PNG, JPEG, GIF or WebP): it shows on the rankings, your profile and the latest plays.\n- **Latest plays** on the Online page: what everyone played lately. Click a play for that chart's top, or the name for the player.\n- **A chart's top.** Click any play on a profile to see each player's best on that chart.\n- **Rating over time** on each profile: how the 4K and 7K rating grew, day by day.\n- **Report a problem** (the launcher's corner): puts the game's and VSRG Hub's logs in a zip on your desktop, to send with what happened.\n- **\"A new VSRG Hub is out\"** on the game's main menu when there is one.\n- **Multiplayer sign-in works:** the EtternaOnline name and password are asked in VSRG Hub's own box (Etterna's took no typing under these looks).\n- **Quaver look:** the mouse wheel scrolls the map list without picking each map it passes, as in Quaver; a click picks.\n- **osu! look:** closing a pack no longer leaves the old song's difficulties showing over the packs while scrolling.\n- The \"What's new\" timeline: the line starts at the newest version and stops at the last one of each era, with the circles on it."
- },
- {
-  "version": "1.8.0-beta.45",
-  "date": "2026-10-15",
-  "notes": "- Profiles show the right place: everyone read one place too low (#2 for the first)."
- },
- {
-  "version": "1.8.0-beta.44",
-  "date": "2026-10-15",
-  "notes": "- Starting a song no longer hangs on \"Press Enter again for player options\" for several seconds (the player card's refresh held song select open).\n- The main menu's circle no longer stays see-through, or vanishes, when clicked while it's still fading in."
- },
- {
-  "version": "1.8.0-beta.43",
-  "date": "2026-10-15",
-  "notes": "- The main menu's circle takes clicks right away (it waited a few seconds after the menu came up).\n- Profiles show only the key counts the player has plays in (no empty 7K box for a 4K player).\n- Plays no longer show as \"not ranked\" while the server hasn't been updated for replays yet."
- },
- {
-  "version": "1.8.0-beta.42",
-  "date": "2026-10-15",
-  "notes": "- **Checked scores.** Each play is sent with its replay, and the server works its accuracy out again: a score that doesn't add up isn't ranked.\n- **Your older plays.** \"Send my older plays\" on the Online page puts the plays you made before having an account on the rankings.\n- **Rating on results.** The results screen shows how your VSRG Hub rating and place changed with that play.\n- **Your rating in the corner.** Signed in, the player card in song select shows your VSRG Hub rating and place.\n- **VSRG Hub boards in the lazer and Quaver looks** too, beside Local and EtternaOnline.\n- **Forgot your password?** The mail's link now opens a page to choose a new one.\n- Clearer message when the server can't send more sign-up mails for now.\n- Judgement art set only in another key count's [Mania] section of skin.ini is used too (OFF SCRIPT's results)."
- },
- {
-  "version": "1.8.0-beta.41",
-  "date": "2026-10-15",
-  "notes": "- **Player profiles.** Click anyone on the Online page's rankings (or your own name) to open their profile: their place in 4K and 7K, their rating by pattern, their best plays (4K and 7K) and their latest ones, with the rate, MSD, judgements and accuracy of each.\n- **Check for updates**: a button in the launcher's corner, above the version, to look for a new version right away."
- },
- {
-  "version": "1.8.0-beta.40",
-  "date": "2026-10-15",
-  "notes": "- **Online page: plays waiting to be sent.** When some of your plays haven't reached VSRG Hub's ranking yet, the Online page says how many and why (not signed in, no player name, no internet...), with a **Send now** button. The launcher's log also says whether you're signed in when the game starts and why plays wait."
- },
- {
-  "version": "1.8.0-beta.39",
-  "date": "2026-10-15",
-  "notes": "- **VSRG Hub online: accounts and rankings.** A new **Online** page in the launcher: make a VSRG Hub account (e-mail and password) and pick your player name, sign in, and see the rankings, 4K and 7K, overall or by pattern (stream, jumpstream, handstream, stamina, jackspeed, chordjack, technical).\n- **Every chart is ranked.** While you're signed in, each play you finish is sent to VSRG Hub's rankings (valid for Etterna's rating, not failed, not autoplay or practice), whatever game or pack the chart came from. Your rating is worked out exactly as Etterna works out its own, from your best scores, 4K and 7K apart; the Online page shows it with each pattern's.\n- **Plays from before you signed in count too**: the ones played since this version are kept and sent once you sign in.\n- **Song select (osu! look): Global Ranking (VSRG Hub)**: the ranking box now goes Local Ranking, VSRG Hub's global ranking for the chart, EtternaOnline's, and the map preview."
- },
- {
-  "version": "1.8.0-beta.38",
-  "date": "2026-10-15",
-  "notes": "- **The launcher says what's missing instead of doing nothing** on PCs without the Microsoft Edge WebView2 Runtime (some Windows 10 PCs): it offers to open Microsoft's free download page. Before, the launcher just closed without a word on those PCs when VSRG Hub wasn't installed yet."
- },
- {
-  "version": "1.8.0-beta.37",
-  "date": "2026-10-15",
-  "notes": "- **Fixed: the launcher kept asking to update and wouldn't let you play** after updating to beta.35 or beta.36: those versions still said they were beta.34, so the launcher always saw Etterna's VSRG Hub as a different version. Updating once more (to this version) ends it."
- },
- {
-  "version": "1.8.0-beta.36",
-  "date": "2026-10-15",
-  "notes": "- **Fixed: the launcher said a new version was out but showed no Update button** when Etterna had an older VSRG Hub that doesn't say which version it is (beta.20 and earlier). The Update button now always shows when there's a newer version, and the big button says UPDATE whenever Etterna's VSRG Hub isn't the launcher's version."
- },
- {
-  "version": "1.8.0-beta.35",
-  "date": "2026-10-15",
-  "notes": "- **The osu! look is now osu! stable**, compared screen by screen with osu! itself using the same skins.\n- **Main menu like osu! stable**: the big cookie, which grows under the mouse and pulses to the beat, and the purple Play / Options / Exit buttons sliding out of it.\n- **Song select like osu! stable**: song panels drawn at your skin's own size, on osu!'s curve, with the song's picture; each difficulty is its own panel with its stars, grade and key count. The mouse wheel scrolls the list freely and the song you picked stays picked until you click another, as in osu!.\n- **The top bar as osu! draws it**: your skin's art, the Group / Sort lists, the quick tabs (in crimson, the one in use white), \"Search:\" and \"N matches found!\", at osu!'s places and sizes, layered as osu! layers them, so skins that draw their own tabs, hearts or diamonds look as they do in osu!.\n- **osu!'s font**: the look now writes in Ubuntu, the free font closest to osu!'s Aller, with fixed letter spacing.\n- **Your player card as in osu!**: name, Performance (your Etterna rating), Accuracy (your best scores, weighted as osu! does) and level, where skins leave room for them.\n- **Mod select like osu! stable**: the whole screen darkened, a row for each kind of mod, your skin's mod icons, osu!-style icons for the mods your skin has none for, and the big Reset / Close buttons.\n- **Results like osu! stable**: your skin's ranking panel, title, back button and replay button, osu!'s 7-digit score and the hit counts at osu!'s places.\n- **Ctrl+O opens the options while you're typing a search**, as in osu!.\n- **Fixed: every song panel was drawn three or four times over itself**, which made hovering a panel show a copy left behind and made the list slower, in every look.\n- **Updates now come from GitHub** (github.com/Naidez7/vsrghub): the launcher checks there for new versions of VSRG Hub and of itself."
- },
- {
-  "version": "1.8.0-beta.34",
-  "date": "2026-10-15",
-  "notes": "- **A new launcher.** Play, Games, What's new and Options, in VSRG Hub's violet and pink. It runs from anywhere: the first time, it puts itself where you choose (with a desktop and Start menu shortcut), finds Etterna (or asks where it is, with a link to get it), and installs VSRG Hub into Etterna with one click. From then on it updates VSRG Hub, and itself, when a new version is out.\n- **Your games, at a glance**: Etterna, osu!, Quaver and Qwilight in colour when they're found and grey when they aren't, each with its folder; pick or change any of them, or stop using one.\n- **What's new**: every version's notes, from TriWheel's first ones to this, newest first.\n- **Options before playing**: resolution, fullscreen / borderless / windowed, refresh rate, VSync, frame limits (menus and gameplay), Direct3D or OpenGL, and Etterna's FPS counter.\n- **Fixed: song select stuttered and froze when scrolling fast through many songs** (a long spin of the mouse wheel), in every look. Each song panel asked Etterna for its charts' key count in a way that unpacks every chart's notes, again on every step of the list; the song's background picture was also loaded for every song passed. Now the key count comes from the chart's type, the background waits until the list stops, and panels skip redrawing what hasn't changed.\n- **Song select: the difficulties scroll like the songs.** The picked difficulty sits in the middle of the list and the mouse wheel goes through a song's difficulties (gliding), then on to the next or previous song; a quick spin of the wheel keeps going through the songs. Rows that pass the play button keep their MSD clear of it.\n- **The osu! look's difficulty rows use your skin's song panel art** (its top and bottom, not squashed), the picked one bright and the others dimmer, with the skin's text colours; skins without panel art keep the blue and white rows.\n- **Only 4K and 7K charts**: Etterna's 8K (dance-double), 6K and 3K charts are left out of the difficulty lists, and songs that only have those are left out of the song list (VSRG Hub has no notes or skins for them)."
- },
- {
-  "version": "1.8.0-beta.33",
+  "version": "1.7.20",
   "date": "2026-10-14",
-  "notes": "- **The icon is the same picture everywhere**: the window, the taskbar, the desktop shortcut and the launcher all show the four arrow lanes (the small sizes were simpler pictures before). The launcher also tells Windows to redraw the desktop shortcut's picture when the icon changes."
+  "covers": [
+   "1.8.0-beta.30",
+   "1.8.0-beta.31",
+   "1.8.0-beta.32",
+   "1.8.0-beta.33"
+  ],
+  "notes": "- **A new icon**: Etterna's four arrow lanes on the violet-to-pink tile, the same picture everywhere (window, taskbar, shortcut, launcher). The launcher's background: arrows falling onto their receptors.\n- **Customize gameplay: Note width and Note height**, with Note size, in every look.\n- **F3 / F4 change the scroll speed while playing** (in the song's first seconds), as in osu! and Quaver, and the scroll speed is shown in your game's numbers (osu!'s, lazer's or Quaver's)."
  },
  {
-  "version": "1.8.0-beta.32",
+  "version": "1.7.19",
   "date": "2026-10-14",
-  "notes": "- **Fixed: F3 / F4 (and Options > Scroll speed) got stuck between two speeds** (29 and 30, say): a step landed a hair under its number, so the next one went back to it."
+  "covers": [
+   "1.8.0-beta.27",
+   "1.8.0-beta.28",
+   "1.8.0-beta.29"
+  ],
+  "notes": "- **New look: osu!lazer**, the fifth: lazer's toolbar, the main menu's button bar through the logo, the song wedge, slanted scores, the footer and lazer's results card.\n- **The osu! look, redesigned**: rounded, coloured and animated like osu!; the main menu's cookie pulses to the menu music (a random song, with previous / pause / next), with its visualizer.\n- **Sharper shapes** everywhere (soft one-pixel edges), **smoother song select** (the list glides, pictures fade over each other), the osu! look's song panels use your skin's art, the results count up.\n- **Menus as smooth as your monitor**: the themes' moving parts ran at 60 per second whatever the frame rate; the beat is right on the music's.\n- First start picks the skins you use in osu!. Fixed: a crash after opening an online score whose replay couldn't be sent; a replay's noteskin staying as your pick; switching looks changing your 4K notes."
  },
  {
-  "version": "1.8.0-beta.31",
+  "version": "1.7.18",
   "date": "2026-10-14",
-  "notes": "- **F3 / F4 change the scroll speed while playing** (the osu!, osu!lazer and Quaver looks), as in osu! and Quaver: in the song's first seconds (the first 5 seconds, or until just before the first note when the intro is longer). A press is one step; held, it keeps going, faster the longer it's held. The new speed shows at the top of the screen. The keys can be changed in Keybinds.\n- **Scroll speed in your game's numbers**: Etterna's C speed is shown and changed as osu!'s scroll speed in the osu! look (27 = C886), osu!lazer's in the lazer look (with its time on screen) and Quaver's in the Quaver look (29.9 = C877), worked out from how fast each game moves its notes. Options > Scroll speed steps by one of them, and takes them typed (27, 30.2) as well as C700, M650 or 2.5x. In osu!lazer and Quaver, Ctrl with F3 / F4 steps by a tenth."
+  "covers": [
+   "1.8.0-beta.26"
+  ],
+  "notes": "- **The launcher**: opening vsrghub.exe (or the new desktop shortcut) shows a window with Play, the look to start in and update checks.\n- **Online rankings in song select** (osu! and Quaver looks): the ranking box switches between Local and EtternaOnline's leaderboard for the chart. Click an online score to see it, right click to watch its replay.\n- **Background dim and blur** options for song select; **sharper text** (the fonts redrawn at a higher resolution); an **icon** for the program, the launcher and the game window.\n- Fixed: grades on the song wheel follow your accuracy on the timing you played; the osu! options' E section scrolls again."
  },
  {
-  "version": "1.8.0-beta.30",
-  "date": "2026-10-14",
-  "notes": "- **A new icon**: Etterna's four arrow lanes, arrows falling onto their receptors, on the violet-to-pink tile (the program, the desktop shortcut, the launcher and the game's window).\n- **The launcher's background**: arrows (left, down, up, right) falling onto their receptors, which light up as they're hit and glow while a hold runs into them. A hold's body no longer shows inside its arrow.\n- **Customize gameplay: Note width and Note height** (in every look, with Note size): the notes and hold heads stretched across or along their column; hold bodies follow the width. For VSRG Hub's noteskins (made from your osu! and Quaver skins), like Note size."
- },
- {
-  "version": "1.8.0-beta.29",
-  "date": "2026-10-14",
-  "notes": "- **Menus as smooth as your monitor**: Etterna ran the themes' moving parts only 60 times a second, whatever the frame rate, so the pointer, the song list, the logo's visualizer and the beat in the menus moved at 60 per second even on a 200 Hz monitor. They now move every frame (the pointer and the list) or at your monitor's rate (the visualizer and other redrawn shapes), and those shapes are drawn with far less work.\n- **The beat**: the logo and the song select's play button now pulse right on the music's beat (they were up to a sixtieth of a second late).\n- **Fixed: shapes that got smaller could leave bits of their old shape drawn** (the logo's drifting triangles, some panels)."
- },
- {
-  "version": "1.8.0-beta.28",
-  "date": "2026-10-14",
-  "notes": "- **Sharper osu! and osu!lazer looks**: circles, rounded boxes, triangles and lines are drawn with a soft one-pixel edge (no more jagged or blurry edges): the logo, its visualizer (now joined to the logo all the way round), buttons, panels, the results ring and graphs. The \"VSRG Hub\" word on the logo is redrawn, small text has its own small fonts and big numbers their own big ones, and small icons their own small pictures.\n- **Smoother song select**: the song list now glides when you scroll (things moving inside the panels used to freeze it, so it jumped), the panels slide in when you come in, each song's picture fades in over the last one instead of the screen going dark, and the screens fade in and out smoothly.\n- **The osu! look's song panels** use your skin's panel art, with each song's picture on it (they showed none), and the skin's lit bottom buttons fade in under the mouse. The results' score, counts, combo and accuracy count up.\n- **osu!lazer look**: the difficulty pills show only the MSD (no star); the main menu's side flashes on the beat are soft.\n- **First start**: the cursor, combo and interface skins start on the osu! skin you use in osu!, 4K notes on the noteskin Etterna is using, 7K notes on your osu! skin's.\n- **Fixed: the osu! look's Play / Options / Exit only took clicks on their right half.**\n- **Fixed: switching looks from the main menu changed your 4K notes to DivideByZero.**\n- **Fixed: the launcher's background could put a note inside a long note.**\n- \"Press Enter again for player options\" (when Til' Death's hint is on) is a VSRG Hub pill instead of Til' Death's purple bar."
- },
- {
-  "version": "1.8.0-beta.27",
-  "date": "2026-10-14",
-  "notes": "- **New look: osu!lazer** (the fifth look, in the launcher and in Options > Theme). lazer's toolbar (settings, home, 4K / 7K, packs, collections, music controls, your profile, the clock), the main menu's button bar through the logo, song select with lazer's slanted song info, star pills, slanted score rows with grade tabs, search with its match count, Sort / Group / Collection, the carousel with each song's picture, the footer and lazer's mod select; lazer's dialogs; and lazer's results card with the accuracy ring next to the life graph, details and hit offsets. Every feature of the osu! look is there.\n- **The osu! look, redesigned**: rounded, coloured and animated like osu!. The main menu's cookie pulses to the menu music (a random song, with previous / pause / next), with its visualizer and the background moving with the mouse; coloured Play / Options / Exit buttons; song panels with the MSD on a pill; rounded dropdowns, tabs, search and ranking rows; the options, lists, dialogs and mods panel restyled; the results with coloured judgement chips, a filled life graph, a \"full combo\" pill and the pink back tab.\n- **Fixed: a crash after opening an online score whose replay EtternaOnline couldn't send** (it played an empty replay, and the next song could crash the game). Now it says so instead.\n- **Fixed: coming back from a replay could keep the replay's noteskin** as your pick.\n- **Fixed: switching looks could put the osu! skin's notes back** over the notes you picked, on the day you changed skins in osu!."
- },
- {
-  "version": "1.8.0-beta.26",
-  "date": "2026-10-14",
-  "notes": "- **Launcher**: opening vsrghub.exe (or the new \"VSRG Hub\" desktop shortcut) shows a window with Play, the look to start in and update checks. Started from Melty, the game starts straight away as before.\n- **Online rankings** in the osu! and Quaver song select: the ranking box switches between Local and Global (EtternaOnline's leaderboard for the chart). Click an online score to see it, right click to watch its replay.\n- **Song select background options**: Background dim and Background blur in the options (osu! and Quaver looks).\n- **Sharper text**: the osu! look's fonts are redrawn at a higher resolution, with extra-sharp copies for big numbers (profile rating, scores); the Quaver look and the profile page in Til' Death / Rebirth too.\n- **Icon** for vsrghub.exe, the launcher and the game window.\n- **Fixed: grades on the song wheel and next to the difficulties** now follow your accuracy on the timing you played (an S stays an S).\n- **Fixed: osu! options** — the E (ETTERNA) section can be scrolled to again, and its icon no longer jumps to Keybinds."
- },
- {
-  "version": "1.8.0-beta.25",
+  "version": "1.7.17",
   "date": "2026-10-13",
-  "notes": "- **Fixed: Ctrl+O (and typing) not working in Til' Death and Rebirth** after having been in the osu! or Quaver look in the same session: the other look's key handling stayed active after switching."
+  "covers": [
+   "1.8.0-beta.21",
+   "1.8.0-beta.22",
+   "1.8.0-beta.23",
+   "1.8.0-beta.24",
+   "1.8.0-beta.25"
+  ],
+  "notes": "- **Easy updates**: your songs, settings and layouts live in Etterna's `Save/VSRGHub`, so a new version never converts your library again.\n- **Profile: Local / Online**: your EtternaOnline profile (ratings, world and country rank, top, recent and most played) and a Rankings tab with the world's and your country's players. **Log in to EtternaOnline from any look.**\n- **Customize gameplay: a Lighting tab**, receptors over or under the notes, the lane cover's border; **combo skin** in any skin's digits; **Quaver's custom judgement windows** (Peaceful to Impossible and your own).\n- **Results and scoreboards go by the timing you played with**: osu!'s letters in the osu! look, Quaver's in the Quaver look, Etterna's grade beside; the big accuracy on your timing, other judges in the tooltip.\n- Song select: search waits until you stop typing and the results slide in; difficulties stay put when you click one; the list no longer wraps round with few songs.\n- Fixed: Ctrl+O and typing not working in Til' Death and Rebirth after the osu! or Quaver look."
  },
  {
-  "version": "1.8.0-beta.24",
+  "version": "1.7.16",
   "date": "2026-10-13",
-  "notes": "- **Song select's scoreboard (osu! and Quaver looks)** shows each score as the results do: its grade and accuracy on the timing it was played on (osu! OD or Etterna judge), with the timing and Etterna's grade (AAAA, AA...) beside it."
+  "covers": [
+   "1.8.0-beta.17",
+   "1.8.0-beta.18",
+   "1.8.0-beta.19",
+   "1.8.0-beta.20"
+  ],
+  "notes": "- **Your profile page, in every look**: click your player card (osu!), PROFILE (Quaver), or your profile corner in Til' Death and Rebirth. A full page in the look's own style: ratings per skillset, play time, plays, grades, top, recent and most played.\n- **Every difficulty of a song in the osu! and Quaver looks**: the selected song opens up and lists all its charts (name, keys, length, notes, main pattern, MSD at your rate, your best).\n- **osu!, Quaver and Qwilight are found on any drive** (where their installers put them, their usual folders, or a folder at the top of a drive); rate edits are found by the song's name.\n- The combo shows with skins that put it off the screen."
  },
  {
-  "version": "1.8.0-beta.23",
+  "version": "1.7.15",
   "date": "2026-10-13",
-  "notes": "- **Results (osu! and Quaver looks):** the big grade now goes by the accuracy on the timing you played with: osu!'s letters in the osu! look (SS 100%, S 95, A 90, B 80, C 70), Quaver's in the Quaver look (X 100%, SS 99, S 95...). 97% on OD 8 is an S. Etterna's grade (AAAA, AA...) is written small next to the J4 accuracy.\n- **Combo skin** is now the osu! and Quaver looks' only: Til' Death and Rebirth keep their own combo (the skin digits overlapped it there)."
+  "covers": [
+   "1.8.0-beta.11",
+   "1.8.0-beta.12",
+   "1.8.0-beta.13",
+   "1.8.0-beta.14",
+   "1.8.0-beta.15",
+   "1.8.0-beta.16"
+  ],
+  "notes": "- **Til' Death and Rebirth: Customize Gameplay with a panel** in their own colours, with the noteskin settings of the osu! and Quaver looks (note spacing and size, receptor offset and size, stage hint, LN tail).\n- **The lane cover, in every look**: off, sudden or hidden, with its height, opacity and colour; skins with a mania-stage-bottom keep their art as a fourth choice.\n- **A new Customize gameplay panel in the osu! and Quaver looks**, each in its look's style: Notefield, Notes, Receptors, Lane cover and HUD tabs, a slider with - / + for every value.\n- Lane flash on misses is off by default (an option turns it on); Ctrl+O never turns Etterna's practice mode on by itself any more."
  },
  {
-  "version": "1.8.0-beta.22",
-  "date": "2026-10-13",
-  "notes": "- **Log in to EtternaOnline from any look.** Log in / Log out on the profile page, in the options (EtternaOnline row), in VSRG Hub's Ctrl+O menu in Til' Death and Rebirth, and from Rebirth's login corner (it used to just open the profile). Name or e-mail and password, Ctrl+V pastes. The session is remembered, so the next start logs in by itself in every look; Log out forgets it."
- },
- {
-  "version": "1.8.0-beta.21",
-  "date": "2026-10-13",
-  "notes": "- **Easy updates.** Your songs, settings and layouts now live in Etterna's `Save/VSRGHub` (moved there on the first start), so a new VSRGHub folder never converts your library again. To update: drop the new zip on `vsrghub.exe`, or leave it in Downloads / Desktop and start the game, which asks to install it. (From an older version, extract this one over the old folder once.)\n- **Profile: Local / Online.** Online shows your EtternaOnline profile (ratings, world and country rank, and top, recent and most played from all your online scores), and a **Rankings** tab with the world's and your country's players: click one to open their profile, or type a name and press Enter.\n- **Customize gameplay, in every look:** a Lighting tab (hit lighting / LightingN, hold lighting / LightingL, column lighting: on or off, moved, sized, width and height), receptors over or under the notes, the lane cover's border (none, line, fade or glow, height and colour; no more grey line), and the **FPS counter** as a HUD part (moved, sized, switched off, each line shown or hidden).\n- **Combo skin:** the combo in any skin's digits (osu! or Quaver skins), picked with a preview, in all four looks.\n- **Quaver's custom judgement windows:** Quaver's dialog with Peaceful to Impossible and your own (create, name, sliders). Etterna judges on them; Wife% stays J4; the accuracy shown is Quaver's.\n- **Til' Death and Rebirth Ctrl+O** has what the osu! look's options have, in sections: noteskin with a live preview, combo skin and pointer with previews, scroll speed and direction, timing (judge, OD or Quaver windows), 7K thumb, Customize gameplay, video / performance / audio, Etterna's options.\n- **Quaver look:** skin lists in Quaver's style with the noteskin preview; Quaver skins' stage borders; the lobby chat no longer pops up after a song.\n- **Results:** the big accuracy is on the timing you played with (a fail shows the accuracy of what was played), J4 small, other judges in the tooltip.\n- **Song select:** search waits until you stop typing and the results slide in; difficulties stay put when you click one; the list no longer wraps round when there are few songs.\n- A fail with nothing hit now says so (Etterna keeps no score of it, so it looked like nothing happened)."
- },
- {
-  "version": "1.8.0-beta.20",
-  "date": "2026-10-13",
-  "notes": "- **Rate edits are found by the song's name.** A map set with one song at several rates, each with its own audio (e.g. DEVILS NEVER CRY at 0.9, 0.95, 1.05...), used to show each rate titled only by its difficulty (\"0.9\"), so searching for the song found nothing in Til' Death and Rebirth. Each one is now \"DEVILS NEVER CRY [0.9]\" and so on, in every look; dan packs keep the pack's name first too. Packs whose difficulties are named \"Artist - Title\" keep those names. Only those sets are read again on the next start, and your scores stay with them."
- },
- {
-  "version": "1.8.0-beta.19",
-  "date": "2026-10-13",
-  "notes": "- **osu!, Quaver and Qwilight are found on any drive.** osu! (stable) is looked for where Windows says osu!.exe is (osu!'s installer registers it), in its usual folder, and in an osu! folder at the top of any drive, in Games or in Program Files. Quaver and Qwilight are looked for in every Steam library, with Steam itself found wherever it was installed. If one is still missed, `vsrghub.exe --osu \"<folder>\"` (or `--quaver`, `--qwilight`) points to it, and the log says when only osu!lazer is there (its maps can't be read)."
- },
- {
-  "version": "1.8.0-beta.18",
-  "date": "2026-10-13",
-  "notes": "- **The combo shows with skins that put it off the screen.** Some osu! skins set ComboPosition below the screen (nego_dnik edit has 1111), which hides the combo. VSRG Hub now shows it at osu!'s usual place, in the skin's own combo digits; it can still be switched off or moved in Customize gameplay (HUD)."
- },
- {
-  "version": "1.8.0-beta.17",
-  "date": "2026-10-13",
-  "notes": "- **Your profile page, in every look.** Click your player card (osu!), PROFILE (Quaver), your profile corner on song select (Til' Death bottom left, Rebirth top left) or Profile in the Ctrl+O menu. A full page in the look's own style, like osu!'s user page with Etterna's numbers: avatar, play time, arrows hit, EtternaOnline rating and rank, your 4K and 7K ratings. Tabs for Overview (a bar for each skillset, grades, plays, charts played, average accuracy, best play, 4K / 7K / total play time, sessions, last plays), Top plays (ranked by SSR, or by one skillset with the chips beside the tabs), Recent plays and Most played, each row with the song's banner, title, artist, difficulty, MSD at the rate, rate, accuracy, grade, SSR and when.\n- **Every difficulty of a song in the osu! and Quaver looks.** The selected song opens up as in osu!lazer and Quaver and lists all its charts (name, keys, length, notes, main pattern, MSD at your rate, your best). Click one to pick it, click again to play; the arrows go through them (osu!: up / down, Quaver: left / right) and on to the next song.\n- No more \"Could not fetch profile dir to read playerConfig\" warning on the title screen."
- },
- {
-  "version": "1.8.0-beta.16",
-  "date": "2026-10-13",
-  "notes": "- **Ctrl+O and practice mode, for good.** Etterna's own Ctrl+O (its practice-mode switch) is undone at once whenever it gets past VSRG Hub's options key, however short the key press, and its \"Practice Mode On\" message is hidden. Ctrl+O only opens and closes the options / menu."
- },
- {
-  "version": "1.8.0-beta.15",
-  "date": "2026-10-13",
-  "notes": "- **Ctrl+O never turns practice mode on by itself any more.** On song select Ctrl+O is VSRG Hub's options / menu in every look; Etterna's own Ctrl+O (its practice-mode switch) could sometimes get through as well. Practice mode stays where you set it (the Practice mod, or the menu's row)."
- },
- {
-  "version": "1.8.0-beta.14",
-  "date": "2026-10-13",
-  "notes": "- **Lane flash on misses is off by default.** Etterna's combo break highlight (a column lit in the judgment's colour on a Bad or a Miss) no longer shows unless you turn it on: \"Lane flash on misses\" in the options (osu! and Quaver looks) or the Ctrl+O menu (Til' Death and Rebirth). It works in every look."
- },
- {
-  "version": "1.8.0-beta.13",
-  "date": "2026-10-13",
-  "notes": "- **osu! and Quaver looks: the full lane cover.** Off, sudden or hidden, with its height, opacity and colour (12 colours), as in Til' Death and Rebirth. Skins with a mania-stage-bottom keep their own art as a fourth choice, \"Skin\". Covers you set before stay as they were.\n- **A new Customize gameplay panel in the osu! and Quaver looks**, each in its look's own style (osu!'s settings, Quaver's options dialog): five tabs (Notefield, Notes, Receptors, Lane cover, HUD), a slider with - / + for every value, the lane cover's modes and colour swatches, and every HUD part with a switch. Picking a part on the screen opens its tab; the header drags the panel out of a wide notefield's way."
- },
- {
-  "version": "1.8.0-beta.12",
+  "version": "1.7.14",
   "date": "2026-10-12",
-  "notes": "- **Til' Death and Rebirth: lane cover in Customize Gameplay.** Off, sudden (over the far end of the lanes) or hidden (over the receptors), with its height, opacity and colour (12 colours, with a swatch). It is kept per key mode and, while it is on, it replaces the theme's own lane cover. It covers the whole notefield, also with Rebirth's notefield width and column spacing.\n- **Rebirth's panel has two tabs**, Noteskin and Lane cover, so it stays small and out of the way."
+  "covers": [
+   "1.8.0-beta.10"
+  ],
+  "notes": "- **New name: VSRG Hub.** The title screen, the looks (\"VSRG Hub osu!\" / \"VSRG Hub Quaver\"), the program (VSRGHub/vsrghub.exe) and this page. Coming from TriWheel, the first launch moves your converted song library over.\n- **Only Etterna is needed.** osu!, Quaver and Qwilight are optional: whichever you have adds its songs and skins, the ones you don't have are left out."
  },
  {
-  "version": "1.8.0-beta.11",
+  "version": "1.7.13",
   "date": "2026-10-12",
-  "notes": "- **Til' Death: Customize Gameplay with a panel**, in Til' Death's own colours. The notefield (position, hit position, width, height, column spacing) has - / + buttons, and every part Til' Death lets you move is listed: click Move / Size / Spacing / Turn on a part, then drag it or use the arrow keys (Backspace resets it, right click lets go). No more letter keys to remember or \"hold R\" (which made the pick blink); Til' Death's key list and the yellow hint line are gone.\n- **Til' Death and Rebirth get the noteskin settings of the osu! and Quaver looks**: note spacing, note size, receptor offset / size / width / height, stage hint offset / height and LN tail height / offset, the same values per noteskin in every look. Rebirth keeps its own menu for its parts and the notefield; the new rows sit at the top left, clear of the play's parts and of Rebirth's menu. The panel can be dragged by its title and folded with a click on it, and it starts below Etterna's frame rate display when that is on.\n- In these two themes the stage hint is also one line across the whole stage."
+  "covers": [
+   "1.8.0-beta.4",
+   "1.8.0-beta.5",
+   "1.8.0-beta.6",
+   "1.8.0-beta.7",
+   "1.8.0-beta.8",
+   "1.8.0-beta.9"
+  ],
+  "notes": "- **Failing ends the play at once** (the fade used to keep judging notes for two seconds); the pause menu opens instantly.\n- **No more 1-pixel lines around skin pictures** and no coloured lines beside long notes: pictures whose size isn't a power of two are handled as Etterna needs; very long LNs no longer show a cut in the middle.\n- **Customize gameplay: Column spacing, Note spacing, Note size, Stage hint offset and height**, kept per noteskin, 4K and 7K apart; the stage hint is one picture across the whole stage, as osu! and Quaver draw it.\n- Map preview: long notes come in whole from the top of the box.\n- Layout polish in the osu! and Quaver looks (song select panels, options, mods, results, pause menu), and Til' Death / Rebirth menus answer the keys again after a look switch."
  },
  {
-  "version": "1.8.0-beta.10",
+  "version": "1.7.12",
   "date": "2026-10-12",
-  "notes": "- **New name: VSRG Hub.** The title screen, the looks (\"VSRG Hub osu!\" / \"VSRG Hub Quaver\"), the program (VSRGHub/vsrghub.exe) and this page. Coming from TriWheel, the first launch moves over your converted song library (nothing is converted again), your settings, Customize gameplay layout and keybinds, and your Full LN / Inverse charts.\n- **Only Etterna is needed.** osu!, Quaver and Qwilight are optional: whichever you have adds its songs and skins, and the ones you don't have are simply left out (also when Melty passes an empty folder for them)."
- },
- {
-  "version": "1.8.0-beta.9",
-  "date": "2026-10-12",
-  "notes": "- **Customize gameplay: Note size, Stage hint offset and Stage hint height** (kept per noteskin, 4K and 7K apart). Note size draws the notes, hold heads, bodies and ends bigger or smaller than their column. Stage hint offset moves the skin's hit line (and osu!'s judgement line) up or down from the hit position, and Stage hint height makes it taller or thinner; for skins without receptors, whose only hit marker is the stage hint.\n- **The stage hint is one picture across the whole stage**, as osu! and Quaver draw it. It used to be drawn once per column, so skins with gaps between columns or columns of different widths (R Skin - AZUSA soo-, for one) showed a broken line with brighter overlaps."
- },
- {
-  "version": "1.8.0-beta.8",
-  "date": "2026-10-12",
-  "notes": "- **Very long LNs no longer show a cut in the middle.** Etterna draws a stretched hold body from its far end in batches and leaves out one step between batches, so holds longer than about five screens showed a thin cut across the body. Skins whose hold body is the same all the way down (the tall \"Percy\" bodies TriWheel cuts a plain slice from, solid bodies...) now repeat their body instead of stretching it: it looks the same, and repeated bodies are drawn from the edge of the screen, so the cut never reaches it. Skins whose body really changes along its length still stretch it, as osu! does."
- },
- {
-  "version": "1.8.0-beta.7",
-  "date": "2026-10-12",
-  "notes": "- **Customize gameplay: Column spacing and Note spacing.** \"Column width\" is now called **Column spacing**: the gap between the columns (receptors and notes move together, the notes keep their size). The new **Note spacing** spreads only the notes and long notes further apart (or closer) than the receptors, for skins whose notes don't line up with their receptors; +0 keeps them together. Both are kept per noteskin, for 4K and 7K separately."
- },
- {
-  "version": "1.8.0-beta.6",
-  "date": "2026-10-12",
-  "notes": "- **Failing ends the play at once.** The fail used to fade out over two seconds while the song kept being judged, so the misses and hits in that fade counted towards the results. Now the screen cuts to black the moment you fail, and the results show the accuracy and counts you died with (osu! and Quaver looks).\n- **Pause opens instantly.** The pause menu's pictures are loaded when the song starts instead of when Esc is pressed, so the game no longer hitches for a moment before pausing.\n- **No coloured lines beside long notes.** Hold bodies and ends from osu! and Quaver skins whose image sizes aren't powers of two (THE SKIN's 7K, for one) are copied at a power-of-two size, and notes, hold heads and keys are drawn from half a texel inside their edges, so no line of leftover texture memory shows along their sides.\n- **Map preview: long notes come in whole.** Notes now come in from the very top of the preview box (behind a short fade) instead of appearing partway down with their hold ends still growing."
- },
- {
-  "version": "1.8.0-beta.5",
-  "date": "2026-10-12",
-  "notes": "- **No more 1-pixel lines around skin pictures.** Etterna stores a picture whose size isn't a power of two inside a bigger texture and leaves the rest of that texture as it was in memory; drawn up to its very edge, the picture picked up a line of random coloured dots or a faint frame along its sides (very visible around the score, combo and accuracy digits on the results screen). Skin pictures are now drawn from half a texel inside their edges: the digits, judgments, rank, song panels, health bar, cursor, mod icons and the pause menu's art, in the osu! and Quaver looks (and the pause menu in every look)."
- },
- {
-  "version": "1.8.0-beta.4",
-  "date": "2026-10-12",
-  "notes": "**osu! look**\n- Song select: the map's info lines and the pattern cards no longer touch; the song list fades out under the top and bottom bars instead of showing through them; a darker backing behind the list's panels keeps titles readable over bright backgrounds; the map preview's MSD has its own tab; active mod icons no longer cover the personal best.\n- The options panel is solid (song select's text no longer shows through it); the mods panel and the dialogs get a dark header so their text reads cleanly.\n- Main menu: Solo's and Multi's subtitles fit inside their buttons.\n- Gameplay: a negative accuracy's minus sits in the middle of the digits, also with skins whose digit images are padded.\n- Results: no doubled MAX / 200 labels; \"Result: Clear / Failed\" (a failed score opened from the ranking says Failed); the column chips' combo-break counts fit; the accuracy tooltip's values line up with their names; the J4 label stays under a negative accuracy.\n- Customize gameplay: the help text fits on the screen.\n- Local ranking: paused plays show your name instead of \"#P1#\", and a score never shows below 0.\n\n**Quaver look**\n- The map list fades out under the top strip and the bottom bar; Sort by shows \"Title\" while grouped by pack; the same results and ranking fixes.\n\n**Every look**\n- Pause menu: the buttons not picked are darker but solid (nothing from the play shows through), the backdrop is a little darker, and a skin's pause buttons are used only when it has all three (no more mix of art and plain buttons).\n\n**Til' Death and Rebirth**\n- After switching to them from the osu! or Quaver look, their menus answer the arrows and Enter again (before, the keyboard stayed with the previous look until a restart).\n- TriWheel's Ctrl+O menu: the value on the highlighted row is white, so it reads on Til' Death's purple."
- },
- {
-  "version": "1.8.0-beta.3",
-  "date": "2026-10-12",
-  "notes": "- **Keybinds, in every look**: Ctrl+K (or Keybinds in the options; in Til' Death and Rebirth, in TriWheel's Ctrl+O menu) lists every key worth knowing, by category: general, song select, gameplay, note keys, practice and replays, results, Customize gameplay and Etterna's tools. Each look draws it in its own style (osu!'s options panel, Quaver's options dialog, Til' Death's and Rebirth's menus).\n- **Change your keys there**: TriWheel's shortcuts (options, keybinds, pausing on / off, mods, random song, beatmap options, play from the preview, pause, skip the intro) and Etterna's note keys, restart and rate keys. Press Enter (or click), then the new key; Delete puts the default back. A key that something else already uses where the shortcut works is refused with the reason (Etterna's own keys, a note key, typing into the search); a key another shortcut has is swapped with it. Keys show as your keyboard prints them.\n- The rate keys change the rate on the osu! and Quaver looks' song select instead of starting a search; the osu! main menu's letter keys (P, O, S, M, Q) no longer fire with Ctrl or Alt held."
- },
- {
-  "version": "1.8.0-beta.2",
-  "date": "2026-10-12",
-  "notes": "- **Pause**: after the 3-2-1 the notes go on from where they stopped, without jumping (Etterna reports the song a little ahead for a moment after it starts again; the notes are now held until it settles). The mouse pointer shows over the pause menu in every look.\n- **Accuracy**: it can go below 0% as in Etterna. On the osu! and Quaver results, hover the accuracy for a small window, following the mouse, with the play at J4, J5, J6, J7, Justice and OD 6 to OD 10. Autoplay shows 100%.\n- **osu! OD**: played on an osu! OD, the accuracy is osu!mania's (300g and 300 both 100%, then 200 / 100 / 50 / miss). The results show the accuracy at J4 with osu!'s beside it. Notes are still judged by Etterna.\n- **Customize gameplay**: new rows for the long note tail's height and offset (TriWheel's noteskins; the tail always stays at the end of the body) and, in the osu! look, the error bar's background opacity. Space skips an intro of 8 seconds or more there too.\n- **Map preview**: Mirror, Full LN and Inverse show in the preview.\n- **osu! look results**: the grade sits behind the panels, so a big grade image no longer covers the numbers; the back button is the skin's own; \"J4\" sits under the accuracy instead of over it.\n- **Skin numbers**: skins with small digits and a big ScoreOverlap (AIMKID, for one) no longer get their numbers cut.\n- **Fixes**: a play left before the first key press shows \"-\" as its clear type, and \"Mines hit\" counts the mines actually hit."
- },
- {
-  "version": "1.8.0-beta.1",
-  "date": "2026-10-12",
-  "notes": "- **Frosted glass in the osu! look**: on the main menu, song select and results, bars, panels, lists, dialogs and the options show the background blurred through a grey tint, darker for what opens on top. It needs Etterna's OpenGL renderer: new option VIDEO > Renderer (from the next start). With Direct3D the same parts stay plain see-through grey, because Etterna's Direct3D crashes on the next screen setup (changing look, display settings, Alt+Tab) once anything draws into a picture.\n- **Til' Death and Rebirth get the other looks' features** in their Ctrl+O TriWheel menu, drawn in each theme's own style: timing (Etterna judge or osu! OD), pointer and pointer size, play time for 4K / 7K / total, and on song select practice mode, the long note mod (Full LN / Inverse), collection / playlist filters and group by pattern. The menu now keeps the keyboard and mouse while it is open.\n- **Random song is Ctrl+R** (osu!'s F2 is Etterna's reload key and never reached the look).\n- **Fixes (osu! look)**: clicks went through the mods and profile panels to the song wheel behind them; Esc in an open dropdown closes it; typing the first letter starts the search without losing it; the mouse wheel and arrows work while searching; Ctrl+O always opens the options; the pointer shows in practice mode; the osu! OD row turns on from \"off\"; a failed play's grade on the results is a grey F; the results panel no longer covers the skin's big grade; picking a playlist applies it.\n- **Fixes (Quaver look, look unchanged)**: Esc on the main menu asks to quit; type-to-search, Ctrl+R random and Esc in dropdowns work like the osu! look; the gameplay mods line lists Hidden, Fade In and Practice; scores without a replay say so; the results show the judge used.\n- Judgement counter, mean and NPS work while watching a replay."
+  "covers": [
+   "1.8.0-beta.1",
+   "1.8.0-beta.2",
+   "1.8.0-beta.3"
+  ],
+  "notes": "- **Frosted glass in the osu! look**: bars, panels, lists, dialogs and the options show the background blurred through a grey tint (OpenGL).\n- **Til' Death and Rebirth get the other looks' features** in their Ctrl+O menu: timing (Etterna judge or osu! OD), pointer and pointer size, play time per key mode.\n- **Keybinds, in every look** (Ctrl+K): every key worth knowing, by category, and a way to change VSRG Hub's shortcuts and Etterna's note keys there.\n- **Pause** goes on from where the notes stopped, without jumping; **accuracy** can go below 0% as in Etterna, with a hover window showing the play at J4 to Justice and OD 6 to 10; played on an osu! OD, the accuracy is osu!mania's.\n- Customize gameplay: long note tail height and offset, the error bar's background opacity; Space skips a long intro; Mirror, Full LN and Inverse show in the map preview.\n- Random song is Ctrl+R; the rate keys change the rate on song select; many small fixes in the osu! and Quaver looks (clicks through panels, Esc in dropdowns, skin digits cut by a big ScoreOverlap)."
  },
  {
   "version": "1.7.11",

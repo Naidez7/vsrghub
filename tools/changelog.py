@@ -19,11 +19,25 @@ def key(v):
 
 
 def main():
-    out = []
+    # tools/changelog/history/<shown>.md: a version as the page shows it, standing for several
+    # versions that were published (its second line, "covers: a b c"); those are left out, and the
+    # launcher marks the shown one as "yours" when one of them is running
+    out, covered = [], set()
+    hist = os.path.join(SRC, "history")
+    for f in sorted(os.listdir(hist)) if os.path.isdir(hist) else []:
+        if not f.endswith(".md"):
+            continue
+        lines = open(os.path.join(hist, f), encoding="utf-8").read().split("\n")
+        covers = lines[1].removeprefix("covers:").split()
+        covered.update(covers)
+        out.append({"version": f[:-3], "date": lines[0].strip(), "covers": covers,
+                    "notes": "\n".join(lines[2:]).strip()})
     for f in os.listdir(SRC):
         if not f.endswith(".md"):
             continue
         v = f[:-3]
+        if v in covered:
+            continue
         text = open(os.path.join(SRC, f), encoding="utf-8").read()
         date, _, body = text.partition("\n")
         out.append({"version": v, "date": date.strip(), "notes": body.strip()})
