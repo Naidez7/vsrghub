@@ -159,6 +159,7 @@ function TW.autoSkinLayout()
 	end
 end
 function TW.importSkinLayout(f, quiet)
+	if skinKey() == "" then return nil, "No noteskin is in use (pick a song first)" end
 	local ok, txt = pcall(function() return File.Read(TW.skinFilesDir .. f) end)
 	if not ok or type(txt) ~= "string" or not txt:find("VSRG Hub skin settings", 1, true) then return nil, "That isn't a VSRG Hub skin settings file" end
 	local _, pre = skinLayoutKeys()
