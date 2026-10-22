@@ -55,6 +55,7 @@ function TW.setNoteskin(name, game)
 		TW.notesPicked[game] = true
 	end
 	TW.saveSetting("notes_" .. game, name:lower())
+	if TW.autoSkinLayout then TW.autoSkinLayout() end
 	MESSAGEMAN:Broadcast("TWNoteskinChanged")
 end
 -- Called whenever song select comes up: keeps the picked noteskin in force, picks up a change made
@@ -83,6 +84,7 @@ function TW.syncNoteskin()
 		TW.lastNotes[g] = cur
 		TW.saveSetting("notes_" .. g, cur)
 		if TW_OSU_CHANGED then TW.saveSetting("osuSeen_" .. g, TW_OSU_SKIN or "") end
+		if TW.autoSkinLayout then TW.autoSkinLayout() end
 		return
 	end
 	-- (your osu! skin's notes come only while no noteskin is saved for this key mode: the first time.
@@ -92,7 +94,7 @@ function TW.syncNoteskin()
 	elseif picked and picked ~= "" and TW.realNoteskin(picked) then want = picked
 	else want = fromOsu end
 	if want and TW.realNoteskin(want) then TW.setNoteskin(want, g)
-	else TW.lastNotes[g] = cur end
+	else TW.lastNotes[g] = cur; if TW.autoSkinLayout then TW.autoSkinLayout() end end
 end
 
 -- Scroll speed / direction ------------------------------------------------------------------
@@ -448,6 +450,25 @@ local function rows()
 		  activate = function()
 			  TW.openList { title = "Combo skin", items = TW.comboItems(), current = TW.comboChoice(), combo = true,
 				  onPick = function(v) TW.setComboSkin(v) end }
+		  end },
+		-- a noteskin's settings as a file, to share (Scripts/27 VSRG Hub layout.lua)
+		{ label = "Export skin settings", button = true, value = function() return "save" end,
+		  activate = function()
+			  local file, n = TW.exportSkinLayout()
+			  if not file then SCREENMAN:SystemMessage(n) return end
+			  SCREENMAN:SystemMessage(string.format("Saved %d settings to %s. Send that file to share them, or put it in the skin's folder as vsrghub-%s.vhskin and the skin brings them along", n, file, TW.gameName() == "kb7" and "7k" or "4k"))
+		  end },
+		{ label = "Import skin settings", button = true, value = function() return "open" end,
+		  activate = function()
+			  local items = TW.skinLayoutFiles()
+			  if #items == 0 then SCREENMAN:SystemMessage("Put the .vhskin file in Etterna's " .. TW.skinFilesDir .. " folder first") return end
+			  TW.openList { title = "Import skin settings onto " .. TW.prettyNoteskin(currentNotes(TW.gameName())), items = items,
+				  onPick = function(v)
+					  local n, note = TW.importSkinLayout(v)
+					  if not n then SCREENMAN:SystemMessage(note) return end
+					  SCREENMAN:SystemMessage(string.format("%d settings applied to this noteskin %s", n, note or ""))
+					  TW.closeOptions()
+				  end }
 		  end },
 		{ kind = "head", text = "GAMEPLAY" },
 		{ label = "Keys", value = function() return TW.gameName() == "kb7" and "7K" or "4K" end,

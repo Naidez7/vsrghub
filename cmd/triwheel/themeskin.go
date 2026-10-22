@@ -4,6 +4,7 @@ package main
 // link to the skin folder plus a Lua table of which elements it has.
 
 import (
+	"bytes"
 	_ "embed"
 	"encoding/json"
 	"fmt"
@@ -410,6 +411,7 @@ func buildThemeSkins(root, etterna, osuDir string, noteSkins []noteSkin, collect
 	if isLink(filepath.Join(themeDir, "skin")) { // the single link older versions made
 		removeLink(filepath.Join(themeDir, "skin"))
 	}
+	copySkinSettings(etterna, noteSkins)
 	dataFile := filepath.Join(themeDir, "Scripts", "00 VSRG Hub skin.lua")
 	keepAdd(keep, "Themes/"+themeName+"/Scripts/00 VSRG Hub skin.lua")
 	var sb strings.Builder
@@ -831,4 +833,44 @@ func hslToRGB(h, s, l float64) (r, g, b float64) {
 		return p
 	}
 	return hue(h + 1.0/3), hue(h), hue(h - 1.0/3)
+}
+
+// copySkinSettings brings a skin's own VSRG Hub settings along: a skin maker can put the file the
+// game's "Export skin settings" writes into the skin's folder, as vsrghub-4k.vhskin or
+// vsrghub-7k.vhskin (or vsrghub.vhskin for both), and whoever installs the skin gets its notefield
+// set up as the maker had it, the first time they play with it (Scripts/27 VSRG Hub layout.lua
+// reads Save/VSRGHub/skins/auto/<noteskin>.vhskin). Save/VSRGHub/skins/ is where the game's own
+// exports go.
+func copySkinSettings(etterna string, noteSkins []noteSkin) {
+	dir := filepath.Join(etterna, "Save", "VSRGHub", "skins", "auto")
+	os.MkdirAll(dir, 0o755)
+	for _, ns := range noteSkins {
+		if ns.Source == "" {
+			continue
+		}
+		keys := "4k"
+		if ns.Game == "kb7" {
+			keys = "7k"
+		}
+		dst := filepath.Join(dir, strings.ToLower(ns.Name)+".vhskin")
+		var src string
+		for _, name := range []string{"vsrghub-" + keys + ".vhskin", "vsrghub.vhskin"} {
+			if st, err := os.Stat(filepath.Join(ns.Source, name)); err == nil && !st.IsDir() && st.Size() < 1<<20 {
+				src = filepath.Join(ns.Source, name)
+				break
+			}
+		}
+		if src == "" {
+			os.Remove(dst)
+			continue
+		}
+		b, err := os.ReadFile(src)
+		if err != nil || !bytes.Contains(b, []byte("VSRG Hub skin settings")) {
+			continue
+		}
+		if old, err := os.ReadFile(dst); err == nil && bytes.Equal(old, b) {
+			continue
+		}
+		os.WriteFile(dst, b, 0o644)
+	}
 }

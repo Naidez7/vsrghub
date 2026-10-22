@@ -313,6 +313,14 @@ Etterna packs:
   the notes at the bottom of the stage (the top when scrolling up), moved and sized in Customize
   gameplay. Kept per noteskin and key mode. Stage art (sides, bottom) follows the skin.ini's 7K
   section in 7K.
+- **Skin settings to share**: Options > Export skin settings writes everything Customize gameplay
+  keeps per noteskin (notefield, columns, notes, receptors, lane cover, LN tail, stage hint,
+  lighting) for the key mode in use to `Save/VSRGHub/skins/<noteskin> (4K).vhskin`, a small text
+  file to send to someone; Import skin settings lists the files in that folder and puts one onto
+  the noteskin in use. A skin can bring its own: put that file in the skin's folder (osu! or
+  Quaver) as `vsrghub-4k.vhskin` / `vsrghub-7k.vhskin` (`vsrghub.vhskin` for both), and whoever
+  installs the skin gets its notefield set up as the maker had it the first time they play with it,
+  nothing to do by hand (Reset in Customize gameplay goes back to the skin's own settings).
 - **Customize gameplay**: Options > Customize gameplay (or Etterna's own Customize Gameplay player
   option, which then opens the editor for the next song you start and turns itself off) plays the
   selected chart on autoplay with an editor over it, separately for 4K and 7K. Its panel is drawn

@@ -92,6 +92,90 @@ function TW.resetLayout()
 	save()
 	MESSAGEMAN:Broadcast("TWLayoutChanged", {})
 end
+-- Sharing a noteskin's settings: everything kept per noteskin for the current key mode (notefield,
+-- columns, notes, receptors, lane cover, LN tail, stage hint, lighting) goes to a small text file in
+-- Save/VSRGHub/skins/, "<noteskin> (4K).vhskin", to send to someone; TW.importSkinLayout reads one
+-- back onto the noteskin and key mode in use. The game's own options (judge, scroll speed) and the
+-- HUD parts (shared by every skin) aren't part of it.
+TW.skinFilesDir = "Save/VSRGHub/skins/"
+local function skinLayoutKeys()
+	local pre = gameKey() .. "_" .. skinKey() .. "__"
+	local out = {}
+	for k, v in pairs(data) do
+		if k:sub(1, #pre) == pre then out[k:sub(#pre + 1)] = v end
+	end
+	return out, pre
+end
+local function keysLabel() return gameKey() == "kb7" and "7K" or "4K" end
+function TW.exportSkinLayout()
+	local ns = ""
+	pcall(function() ns = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):NoteSkin() or "" end)
+	if ns == "" then return nil, "No noteskin is in use (pick a song first)" end
+	local vals = skinLayoutKeys()
+	local lines = { "# VSRG Hub skin settings", "skin=" .. ns, "keys=" .. keysLabel() }
+	local names = {}
+	for k in pairs(vals) do names[#names + 1] = k end
+	table.sort(names)
+	for _, k in ipairs(names) do if k ~= "auto" then lines[#lines + 1] = k .. "=" .. tostring(vals[k]) end end
+	local pretty = TW.prettyNoteskin and TW.prettyNoteskin(ns) or ns
+	local file = TW.skinFilesDir .. (pretty:gsub("[\\/:*?\"<>|]", "_")) .. " (" .. keysLabel() .. ").vhskin"
+	local ok = pcall(function() File.Write(file, table.concat(lines, "\n") .. "\n") end)
+	if not ok then return nil, "The file couldn't be written" end
+	return file, #names
+end
+-- the files there, newest name last: { { label, value = path, sub }, ... }
+function TW.skinLayoutFiles()
+	local files = {}
+	pcall(function() files = FILEMAN:GetDirListing(TW.skinFilesDir) or {} end)
+	table.sort(files, function(a, b) return a:lower() < b:lower() end)
+	local items = {}
+	for _, f in ipairs(files) do
+		if f:lower():match("%.vhskin$") then
+			local sub = ""
+			pcall(function()
+				local txt = File.Read(TW.skinFilesDir .. f) or ""
+				local skin, keys = txt:match("\nskin=([^\r\n]*)"), txt:match("\nkeys=([^\r\n]*)")
+				sub = (skin and ("for " .. (TW.prettyNoteskin and TW.prettyNoteskin(skin) or skin)) or "") .. (keys and ("  ·  " .. keys) or "")
+			end)
+			items[#items + 1] = { label = (f:gsub("%.vhskin$", "")), value = f, sub = sub }
+		end
+	end
+	return items
+end
+-- A skin that brings its own settings (vsrghub-4k.vhskin in the skin's folder: the launcher copies
+-- it to skins/auto/<noteskin>.vhskin) sets the notefield up the first time it is used, or again
+-- after "Reset" in Customize gameplay. Called when a noteskin is put in use.
+function TW.autoSkinLayout()
+	local ns = ""
+	pcall(function() ns = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):NoteSkin() or "" end)
+	if ns == "" then return end
+	local vals, pre = skinLayoutKeys()
+	if next(vals) ~= nil then return end -- (set up already, by hand or by the skin's file)
+	local n = TW.importSkinLayout("auto/" .. ns:lower() .. ".vhskin", true)
+	if n then
+		data[pre .. "auto"] = 1
+		save()
+		SCREENMAN:SystemMessage((TW.prettyNoteskin and TW.prettyNoteskin(ns) or ns) .. " came with its own settings: applied")
+	end
+end
+function TW.importSkinLayout(f, quiet)
+	local ok, txt = pcall(function() return File.Read(TW.skinFilesDir .. f) end)
+	if not ok or type(txt) ~= "string" or not txt:find("VSRG Hub skin settings", 1, true) then return nil, "That isn't a VSRG Hub skin settings file" end
+	local _, pre = skinLayoutKeys()
+	for k in pairs(data) do if k:sub(1, #pre) == pre then data[k] = nil end end
+	local n = 0
+	for k, v in txt:gmatch("\n([%w_]+)=([^\r\n]*)") do
+		if k ~= "skin" and k ~= "keys" then
+			local item = k:match("^(%w+)_")
+			if item and SKIN_ITEMS[item] then data[pre .. k] = tonumber(v) or v; n = n + 1 end
+		end
+	end
+	save()
+	MESSAGEMAN:Broadcast("TWLayoutChanged", {})
+	local keys = txt:match("\nkeys=([^\r\n]*)")
+	return n, (keys and keys ~= keysLabel()) and ("(the file was made for " .. keys .. ", you're on " .. keysLabel() .. ")") or nil
+end
+
 function TW.layoutOn(item)
 	if item == "lanecover" and TW.coverMode then return TW.coverMode() ~= 0 end
 	return TW.lv(item, "on") ~= 0

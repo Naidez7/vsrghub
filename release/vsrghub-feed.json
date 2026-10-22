@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.14",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.14.zip",
- "sha256": "9a8abb610aadd1e436d7a21cdfe2745b634183f2409669b1b041be342c04f89b",
- "notes": "- **osu! look: how long ago each score was played**, at the top right of its row on the ranking, as osu! puts it: 5s, 12m, 18h, 3d. It keeps counting while you look.\n- **Failing fades into the results.** Instead of a black cut, a failed play's results come up behind a black cover that says FAILED and fades away, in the osu!, lazer and Quaver looks.",
+ "version": "1.8.15",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.15.zip",
+ "sha256": "44121b986c7f9b98c0a3ade1f9f693512727e5909edde32ee0b1b53c62cc32e0",
+ "notes": "- **Skin settings to share.** Options > Export skin settings writes everything Customize gameplay keeps for the noteskin in use (notefield, columns, notes, receptors, lane cover, LN tail, stage hint, lighting) to `Save/VSRGHub/skins/<noteskin> (4K).vhskin`, a small file to send to someone; Import skin settings puts one of those onto the noteskin you're using.\n- **Skins that come set up.** A skin can carry that file in its own folder, as `vsrghub-4k.vhskin` or `vsrghub-7k.vhskin` (`vsrghub.vhskin` for both): whoever installs the skin gets its notefield as its maker had it the first time they play with it, nothing to set by hand. Reset in Customize gameplay goes back to the skin's own settings.",
  "latest": {
-  "version": "1.8.14",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.14.zip",
-  "sha256": "9a8abb610aadd1e436d7a21cdfe2745b634183f2409669b1b041be342c04f89b",
-  "notes": "- **osu! look: how long ago each score was played**, at the top right of its row on the ranking, as osu! puts it: 5s, 12m, 18h, 3d. It keeps counting while you look.\n- **Failing fades into the results.** Instead of a black cut, a failed play's results come up behind a black cover that says FAILED and fades away, in the osu!, lazer and Quaver looks."
+  "version": "1.8.15",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.15.zip",
+  "sha256": "44121b986c7f9b98c0a3ade1f9f693512727e5909edde32ee0b1b53c62cc32e0",
+  "notes": "- **Skin settings to share.** Options > Export skin settings writes everything Customize gameplay keeps for the noteskin in use (notefield, columns, notes, receptors, lane cover, LN tail, stage hint, lighting) to `Save/VSRGHub/skins/<noteskin> (4K).vhskin`, a small file to send to someone; Import skin settings puts one of those onto the noteskin you're using.\n- **Skins that come set up.** A skin can carry that file in its own folder, as `vsrghub-4k.vhskin` or `vsrghub-7k.vhskin` (`vsrghub.vhskin` for both): whoever installs the skin gets its notefield as its maker had it the first time they play with it, nothing to set by hand. Reset in Customize gameplay goes back to the skin's own settings."
  },
  "changelog": [
+  {
+   "version": "1.8.15",
+   "date": "2026-10-22",
+   "notes": "- **Skin settings to share.** Options > Export skin settings writes everything Customize gameplay keeps for the noteskin in use (notefield, columns, notes, receptors, lane cover, LN tail, stage hint, lighting) to `Save/VSRGHub/skins/<noteskin> (4K).vhskin`, a small file to send to someone; Import skin settings puts one of those onto the noteskin you're using.\n- **Skins that come set up.** A skin can carry that file in its own folder, as `vsrghub-4k.vhskin` or `vsrghub-7k.vhskin` (`vsrghub.vhskin` for both): whoever installs the skin gets its notefield as its maker had it the first time they play with it, nothing to set by hand. Reset in Customize gameplay goes back to the skin's own settings."
+  },
   {
    "version": "1.8.14",
    "date": "2026-10-17",
