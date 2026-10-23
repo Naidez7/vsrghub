@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.17",
+  "date": "2026-10-22",
+  "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings."
+ },
+ {
   "version": "1.8.16",
   "date": "2026-10-22",
   "notes": "- Import skin settings from the main menu (no noteskin in use yet) says to pick a song first instead of writing settings to nothing."

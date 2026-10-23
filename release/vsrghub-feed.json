@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.16",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.16.zip",
- "sha256": "190cf9bb437c0bed437644c807d39dfcccea4f59ab439995ddd97c23d211f9a7",
- "notes": "- Import skin settings from the main menu (no noteskin in use yet) says to pick a song first instead of writing settings to nothing.",
+ "version": "1.8.17",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.17.zip",
+ "sha256": "d9fc186e9ae48f347ddcb01740f8d225c1a222203dc8d793fa4a1183cfc86323",
+ "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings.",
  "latest": {
-  "version": "1.8.16",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.16.zip",
-  "sha256": "190cf9bb437c0bed437644c807d39dfcccea4f59ab439995ddd97c23d211f9a7",
-  "notes": "- Import skin settings from the main menu (no noteskin in use yet) says to pick a song first instead of writing settings to nothing."
+  "version": "1.8.17",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.17.zip",
+  "sha256": "d9fc186e9ae48f347ddcb01740f8d225c1a222203dc8d793fa4a1183cfc86323",
+  "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings."
  },
  "changelog": [
+  {
+   "version": "1.8.17",
+   "date": "2026-10-22",
+   "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings."
+  },
   {
    "version": "1.8.16",
    "date": "2026-10-22",

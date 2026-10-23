@@ -456,13 +456,13 @@ local function rows()
 		  activate = function()
 			  local file, n = TW.exportSkinLayout()
 			  if not file then SCREENMAN:SystemMessage(n) return end
-			  SCREENMAN:SystemMessage(string.format("Saved %d settings to %s. Send that file to share them, or put it in the skin's folder as vsrghub-%s.vhskin and the skin brings them along", n, file, TW.gameName() == "kb7" and "7k" or "4k"))
+			  SCREENMAN:SystemMessage(string.format("Saved to %s: send it, or put it in the skin's folder as vsrghub-%s.vhskin", file, TW.gameName() == "kb7" and "7k" or "4k"))
 		  end },
 		{ label = "Import skin settings", button = true, value = function() return "open" end,
 		  activate = function()
 			  local items = TW.skinLayoutFiles()
 			  if #items == 0 then SCREENMAN:SystemMessage("Put the .vhskin file in Etterna's " .. TW.skinFilesDir .. " folder first") return end
-			  TW.openList { title = "Import skin settings onto " .. TW.prettyNoteskin(currentNotes(TW.gameName())), items = items,
+			  TW.openList { title = "Import skin settings", items = items,
 				  onPick = function(v)
 					  local n, note = TW.importSkinLayout(v)
 					  if not n then SCREENMAN:SystemMessage(note) return end

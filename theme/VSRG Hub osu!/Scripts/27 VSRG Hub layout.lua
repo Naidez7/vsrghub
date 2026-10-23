@@ -98,8 +98,15 @@ end
 -- back onto the noteskin and key mode in use. The game's own options (judge, scroll speed) and the
 -- HUD parts (shared by every skin) aren't part of it.
 TW.skinFilesDir = "Save/VSRGHub/skins/"
+-- the noteskin whose settings these are: the one picked for the key mode (Options > Notes), which
+-- is the one in play; on the main menu the player's options still hold Etterna's default noteskin
+local function usedSkin()
+	local ns = TW.currentNotes and TW.currentNotes(gameKey()) or ""
+	if ns == "" then pcall(function() ns = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):NoteSkin() or "" end) end
+	return ns or ""
+end
 local function skinLayoutKeys()
-	local pre = gameKey() .. "_" .. skinKey() .. "__"
+	local pre = gameKey() .. "_" .. safe(usedSkin()) .. "__"
 	local out = {}
 	for k, v in pairs(data) do
 		if k:sub(1, #pre) == pre then out[k:sub(#pre + 1)] = v end
@@ -108,10 +115,10 @@ local function skinLayoutKeys()
 end
 local function keysLabel() return gameKey() == "kb7" and "7K" or "4K" end
 function TW.exportSkinLayout()
-	local ns = ""
-	pcall(function() ns = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):NoteSkin() or "" end)
+	local ns = usedSkin()
 	if ns == "" then return nil, "No noteskin is in use (pick a song first)" end
 	local vals = skinLayoutKeys()
+	if next(vals) == nil then return nil, "This noteskin has no settings of its own yet: everything is as it comes (Customize gameplay sets them)" end
 	local lines = { "# VSRG Hub skin settings", "skin=" .. ns, "keys=" .. keysLabel() }
 	local names = {}
 	for k in pairs(vals) do names[#names + 1] = k end
@@ -146,8 +153,7 @@ end
 -- it to skins/auto/<noteskin>.vhskin) sets the notefield up the first time it is used, or again
 -- after "Reset" in Customize gameplay. Called when a noteskin is put in use.
 function TW.autoSkinLayout()
-	local ns = ""
-	pcall(function() ns = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):NoteSkin() or "" end)
+	local ns = usedSkin()
 	if ns == "" then return end
 	local vals, pre = skinLayoutKeys()
 	if next(vals) ~= nil then return end -- (set up already, by hand or by the skin's file)
@@ -159,18 +165,20 @@ function TW.autoSkinLayout()
 	end
 end
 function TW.importSkinLayout(f, quiet)
-	if skinKey() == "" then return nil, "No noteskin is in use (pick a song first)" end
+	if usedSkin() == "" then return nil, "No noteskin is in use (pick a song first)" end
 	local ok, txt = pcall(function() return File.Read(TW.skinFilesDir .. f) end)
 	if not ok or type(txt) ~= "string" or not txt:find("VSRG Hub skin settings", 1, true) then return nil, "That isn't a VSRG Hub skin settings file" end
-	local _, pre = skinLayoutKeys()
-	for k in pairs(data) do if k:sub(1, #pre) == pre then data[k] = nil end end
-	local n = 0
+	local new, n = {}, 0
 	for k, v in txt:gmatch("\n([%w_]+)=([^\r\n]*)") do
 		if k ~= "skin" and k ~= "keys" then
 			local item = k:match("^(%w+)_")
-			if item and SKIN_ITEMS[item] then data[pre .. k] = tonumber(v) or v; n = n + 1 end
+			if item and SKIN_ITEMS[item] then new[k] = tonumber(v) or v; n = n + 1 end
 		end
 	end
+	if n == 0 then return nil, "That file has no settings in it" end
+	local _, pre = skinLayoutKeys()
+	for k in pairs(data) do if k:sub(1, #pre) == pre then data[k] = nil end end
+	for k, v in pairs(new) do data[pre .. k] = v end
 	save()
 	MESSAGEMAN:Broadcast("TWLayoutChanged", {})
 	local keys = txt:match("\nkeys=([^\r\n]*)")
