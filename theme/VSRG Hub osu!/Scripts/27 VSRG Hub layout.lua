@@ -292,7 +292,19 @@ function TW.applyFieldLayout(pl, nf, reverse)
 	local hit = TW.lv("field", "y")
 	nf:x(b.x + TW.lv("field", "x"))
 	nf:y(b.y + (reverse and -hit or hit))
-	nf:zoom(TW.lv("field", "z"))
+	-- Notefield size: Etterna's Mini (its zoom of the whole notefield: notes, receptors and the
+	-- space between them, about the field's origin), which the player sets on the notefield every
+	-- frame, so a zoom put on the notefield itself would be undone at once
+	if data[key("field", "z")] == nil then
+		-- (no size set yet: a Mini already on in Etterna, e.g. Til' Death's receptor size, is kept)
+		local m = 0
+		pcall(function() m = GAMESTATE:GetPlayerState():GetPlayerOptions("ModsLevel_Preferred"):Mini() or 0 end)
+		if m ~= 0 then data[key("field", "z")] = 1 - m * 0.5; save() end
+	end
+	local mini = 2 * (1 - TW.lv("field", "z"))
+	for _, lvl in ipairs({ "ModsLevel_Preferred", "ModsLevel_Stage", "ModsLevel_Song", "ModsLevel_Current" }) do
+		pcall(function() GAMESTATE:GetPlayerState():GetPlayerOptions(lvl):Mini(mini) end)
+	end
 end
 function TW.columnExtra() return TW.lv("columns", "x") end
 -- how much further apart the notes are than the columns (0: the notes sit on their receptors; for
@@ -954,7 +966,7 @@ function TW.customizeEditor()
 				V("Notefield X", "field", "x", "%+dpx", -SW / 2, SW / 2, 1),
 				V("Hit position", "field", "y", "%+dpx", -SH / 4, SH / 2, 1),
 				H("Size and spacing"),
-				V("Notefield size", "field", "z", "%.2fx", 0.5, 1.5, 0.05),
+				V("Notefield size", "field", "z", "%.2fx", 0.5, 2, 0.05),
 				V("Column spacing", "columns", "x", "%+dpx", -32, 96, 1),
 				V("Note spacing", "columns", "n", "%+dpx", -32, 96, 1),
 				{ kind = "info", text = "Note spacing moves the notes apart from their columns (0 keeps them on their receptors), for skins whose notes and receptors don't line up." },

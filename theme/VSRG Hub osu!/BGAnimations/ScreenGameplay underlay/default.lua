@@ -45,7 +45,9 @@ local function layout()
 			recX[i] = off * 64 + x -- (the style's own 64-pixel spacing plus the column's x)
 		end
 	end
-	local fz = nf and nf:GetZoom() or 1
+	-- (the notefield's zoom is Mini itself, which Etterna puts on the notefield each frame: zoom
+	-- above is the whole of it)
+	local fz = 1
 	local half = cols * w * zoom * fz / 2
 	-- (the notefield's own x isn't scaled by Mini: Etterna zooms the field about its own origin, so
 	-- a field moved with Customize gameplay moves the same whatever the receptor size)
@@ -55,7 +57,7 @@ local function layout()
 		fieldScale = zoom * fz, -- the notefield's size (Mini, Customize gameplay's notefield size)
 		recX = recX, stageW = cols * w, -- each receptor's x in the notefield, and the stage's width there
 		noteShift = noteShift, -- per column: the receptors' x inside their column (Note spacing)
-		reverse = reverse, keys = cols, plX = pl:GetX(), plY = pl:GetY(), receptorY = pl:GetY() + ((nf and nf:GetY() or 0) + ry) * fz }
+		reverse = reverse, keys = cols, plX = pl:GetX(), plY = pl:GetY(), receptorY = pl:GetY() + (nf and nf:GetY() or 0) + ry * zoom }
 	MESSAGEMAN:Broadcast("TWStage")
 	return TW.stage
 end

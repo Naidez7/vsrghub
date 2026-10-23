@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.17",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.17.zip",
- "sha256": "d9fc186e9ae48f347ddcb01740f8d225c1a222203dc8d793fa4a1183cfc86323",
- "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings.",
+ "version": "1.8.18",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.18.zip",
+ "sha256": "870e2954bc424188ba05ea4d7e5810313a442b9dc6439a5407657cef09e62cef",
+ "notes": "- **Notefield size works**: in Customize gameplay (Notefield tab) it now scales the whole notefield together, notes, receptors and the space between them, from 0.5x to 2x. It did nothing to the notes before: Etterna puts its own zoom (Mini) on the notefield every frame, so the size is now set through that. A Mini you already had on (Til' Death's receptor size) becomes the notefield size the first time.",
  "latest": {
-  "version": "1.8.17",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.17.zip",
-  "sha256": "d9fc186e9ae48f347ddcb01740f8d225c1a222203dc8d793fa4a1183cfc86323",
-  "notes": "- Export / Import skin settings go by the noteskin picked for the key mode (Options > Notes) wherever you are, not Etterna's default noteskin on the main menu; exporting a noteskin with no settings of its own says so instead of writing an empty file, and an empty file isn't imported over your settings."
+  "version": "1.8.18",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.18.zip",
+  "sha256": "870e2954bc424188ba05ea4d7e5810313a442b9dc6439a5407657cef09e62cef",
+  "notes": "- **Notefield size works**: in Customize gameplay (Notefield tab) it now scales the whole notefield together, notes, receptors and the space between them, from 0.5x to 2x. It did nothing to the notes before: Etterna puts its own zoom (Mini) on the notefield every frame, so the size is now set through that. A Mini you already had on (Til' Death's receptor size) becomes the notefield size the first time."
  },
  "changelog": [
+  {
+   "version": "1.8.18",
+   "date": "2026-10-23",
+   "notes": "- **Notefield size works**: in Customize gameplay (Notefield tab) it now scales the whole notefield together, notes, receptors and the space between them, from 0.5x to 2x. It did nothing to the notes before: Etterna puts its own zoom (Mini) on the notefield every frame, so the size is now set through that. A Mini you already had on (Til' Death's receptor size) becomes the notefield size the first time."
+  },
   {
    "version": "1.8.17",
    "date": "2026-10-22",
