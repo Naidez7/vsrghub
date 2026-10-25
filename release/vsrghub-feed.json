@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.22",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.22.zip",
- "sha256": "0dfcc423bfd04c90ebf4e3f0c73461d98720267f3bfd0b5a202e3559e14c425d",
- "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export.",
+ "version": "1.8.23",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.23.zip",
+ "sha256": "a161d89fd4c5d670d3b2958e4e82a3bcaa0f91751d252dde5c8ec3448784aa2b",
+ "notes": "- Colours: the colour picked wasn't reaching the notes (nor the picker's own square and swatches): colours were handed over in a form Etterna reads as white. Fixed; the Quaver skins' column lighting, which had the same slip, now lights in the column's colour too.",
  "latest": {
-  "version": "1.8.22",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.22.zip",
-  "sha256": "0dfcc423bfd04c90ebf4e3f0c73461d98720267f3bfd0b5a202e3559e14c425d",
-  "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export."
+  "version": "1.8.23",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.23.zip",
+  "sha256": "a161d89fd4c5d670d3b2958e4e82a3bcaa0f91751d252dde5c8ec3448784aa2b",
+  "notes": "- Colours: the colour picked wasn't reaching the notes (nor the picker's own square and swatches): colours were handed over in a form Etterna reads as white. Fixed; the Quaver skins' column lighting, which had the same slip, now lights in the column's colour too."
  },
  "changelog": [
+  {
+   "version": "1.8.23",
+   "date": "2026-10-25",
+   "notes": "- Colours: the colour picked wasn't reaching the notes (nor the picker's own square and swatches): colours were handed over in a form Etterna reads as white. Fixed; the Quaver skins' column lighting, which had the same slip, now lights in the column's colour too."
+  },
   {
    "version": "1.8.22",
    "date": "2026-10-25",

@@ -89,7 +89,7 @@ t[#t + 1] = Def.ActorFrame {
 	Def.Quad { Name = "Black", InitCommand = function(self) self:valign(0):zoomto(0, SCREEN_HEIGHT):diffuse(color("#000000")) end,
 		ColourCommand = function(self)
 			local r, g, b, a = TW.skinColour and TW.skinColour("stage")
-			if r then self:diffuse(color(r, g, b, a)) else self:diffuse(color("#000000")) end
+			if r then self:diffuse({ r, g, b, a }) else self:diffuse(color("#000000")) end
 		end,
 		TWLayoutChangedMessageCommand = function(self) self:playcommand("Colour") end },
 	-- osu! stretches the stage art to the screen's height and keeps its width at the skin's scale

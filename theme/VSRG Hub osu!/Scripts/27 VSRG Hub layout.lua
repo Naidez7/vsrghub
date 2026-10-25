@@ -1655,7 +1655,7 @@ function TW.customizeEditor()
 				ac.SwBg:visible(true):xy(RX - sw, h / 2 - M(2)):zoomto(sw, M(20))
 				ac.SwBg2:visible(true):xy(RX - sw / 2, h / 2 - M(2)):zoomto(sw / 2, M(20))
 				ac.Swatch:visible(cr ~= nil):xy(RX - sw, h / 2 - M(2)):zoomto(sw, M(20))
-				if cr then ac.Swatch:diffuse(color(cr, cg, cb, ca)) end
+				if cr then ac.Swatch:diffuse({ cr, cg, cb, ca }) end
 				region(PAD, y, PAD + CW, y + h, { press = function()
 					if colourSel == r.part then colourSel = nil else colourSel = r.part; hexEdit = nil; pick.hex = nil end
 				end })
@@ -1670,16 +1670,16 @@ function TW.customizeEditor()
 				pc:visible(true)
 				local k = pc:GetChildren()
 				local hr, hg, hb = hsvToRgb(pick.h, 1, 1)
-				local hue = color(hr, hg, hb, 1)
+				local hue = { hr, hg, hb, 1 }
 				k.SqW:xy(sx, sy):zoomto(sw, sh):diffuseupperleft(color("#FFFFFF")):diffuselowerleft(color("#FFFFFF")):diffuseupperright(hue):diffuselowerright(hue)
 				k.SqD:xy(sx, sy):zoomto(sw, sh)
 				local cx, cy = sx + pick.s * sw, sy + (1 - pick.v) * sh
-				k.CurO:xy(cx, cy); k.CurI:xy(cx, cy); k.CurC:xy(cx, cy):diffuse(color(cr, cg, cb, 1))
+				k.CurO:xy(cx, cy); k.CurI:xy(cx, cy); k.CurC:xy(cx, cy):diffuse({ cr, cg, cb, 1 })
 				for i = 1, 6 do k["Hue" .. i]:xy(hx, sy + (i - 1) * sh / 6):zoomto(hw, sh / 6 + 0.5) end
 				k.HueCur:xy(hx + hw / 2, sy + pick.h * sh)
 				k.AlBg:xy(sx, ay):zoomto(sw, ah)
 				k.AlBg2:xy(sx, ay):zoomto(sw, ah / 2)
-				k.AlGr:xy(sx, ay):zoomto(sw, ah):diffuseupperleft(color(cr, cg, cb, 0)):diffuselowerleft(color(cr, cg, cb, 0)):diffuseupperright(color(cr, cg, cb, 1)):diffuselowerright(color(cr, cg, cb, 1))
+				k.AlGr:xy(sx, ay):zoomto(sw, ah):diffuseupperleft({ cr, cg, cb, 0 }):diffuselowerleft({ cr, cg, cb, 0 }):diffuseupperright({ cr, cg, cb, 1 }):diffuselowerright({ cr, cg, cb, 1 })
 				k.AlCur:xy(sx + ca * sw, ay + ah / 2)
 				local function sqAt(mx, my)
 					local sa = math.max(0, math.min(1, (mx - panel.x - sx) / sw))
@@ -1722,7 +1722,7 @@ function TW.customizeEditor()
 					k["C" .. i]:visible(hex ~= nil):xy(x0, py):zoomto(sz, sz)
 					if hex then
 						local r2, g2, b2, a2 = TW.hexToRGBA(hex)
-						k["C" .. i]:diffuse(color(r2, g2, b2, a2))
+						k["C" .. i]:diffuse({ r2, g2, b2, a2 })
 						region(x0, py, x0 + sz, py + sz, { press = function()
 							local _, _, _, a3 = selColour()
 							setRGBA(r2, g2, b2, i <= #TW.coverColours and a3 or a2)

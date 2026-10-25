@@ -126,7 +126,7 @@ local function tinted(spec, part, idx, tex, grey, setup)
 			self.twTex = want
 			if setup and not (first and want == tex) then setup(self) end
 		end
-		if r then self:diffuse(color(r, g, b, a)) else self:diffuse(color(1, 1, 1, 1)) end
+		if r then self:diffuse({ r, g, b, a }) else self:diffuse({ 1, 1, 1, 1 }) end
 	end
 	spec.Texture = tex
 	local init, changed = spec.InitCommand, spec.TWLayoutChangedMessageCommand
@@ -284,7 +284,7 @@ local function receptor(c, idx, overlay)
 			PressCommand = function(self)
 				local col = c.colour or { 255, 255, 255 }
 				local r, g, b, a = colourOf("collight", idx)
-				if r then self:diffuse(color(r, g, b, 0)) else self:diffuse(color(col[1] / 255, col[2] / 255, col[3] / 255, 0)) end
+				if r then self:diffuse({ r, g, b, 0 }) else self:diffuse({ col[1] / 255, col[2] / 255, col[3] / 255, 0 }) end
 				self:stoptweening():linear(0.02):diffusealpha(r and a or 1)
 			end,
 			LiftCommand = function(self) self:stoptweening():decelerate(0.15):diffusealpha(0) end,
