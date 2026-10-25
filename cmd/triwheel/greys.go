@@ -9,11 +9,13 @@ package main
 // next to the noteskin as grey-<name>.png. Until a copy exists the game tints the original.
 
 import (
+	"bytes"
 	"image"
 	"image/color"
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -112,6 +114,82 @@ func greyImage(img image.Image) *image.NRGBA {
 			l := uint8((299*uint32(c.R) + 587*uint32(c.G) + 114*uint32(c.B)) / 1000)
 			i := out.PixOffset(x-b.Min.X, y-b.Min.Y)
 			out.Pix[i], out.Pix[i+1], out.Pix[i+2], out.Pix[i+3] = l, l, l, c.A
+		}
+	}
+	return out
+}
+
+// serveTints makes the coloured copies of hold art the game asks for while it runs (Etterna
+// draws hold bodies and ends from their texture alone, so a colour has to be in the picture):
+// Save/VSRGHub/colours/want.txt lists "art<TAB>copy<TAB>#rrggbbaa" lines, paths as Etterna has
+// them (/NoteSkins/<game>/<skin>/...). Each copy is the art (its grey copy when there is one)
+// multiplied by the colour, alpha included. Called from the online service's tick.
+func serveTints(data string) {
+	p := filepath.Join(data, "colours", "want.txt")
+	b, err := os.ReadFile(p)
+	if err != nil || len(bytes.TrimSpace(b)) == 0 {
+		return
+	}
+	root := filepath.Join(filepath.Dir(filepath.Dir(data)), "VSRGHub", "Root")
+	made := 0
+	for _, line := range strings.Split(string(b), "\n") {
+		f := strings.Split(strings.TrimSpace(line), "\t")
+		if len(f) != 3 || !strings.HasPrefix(f[0], "/NoteSkins/") || !strings.HasPrefix(f[1], "/NoteSkins/") || strings.Contains(f[1], "..") {
+			continue
+		}
+		dst := filepath.Join(root, filepath.FromSlash(strings.TrimPrefix(f[1], "/")))
+		if _, err := os.Stat(dst); err == nil {
+			continue
+		}
+		col, ok := parseHexColour(f[2])
+		if !ok {
+			continue
+		}
+		img, err := decodeFile(filepath.Join(root, filepath.FromSlash(strings.TrimPrefix(f[0], "/"))))
+		if err != nil {
+			logf("colours: %s: %v", f[0], err)
+			continue
+		}
+		if err := writePNGIfChanged(dst, tintImage(img, col)); err != nil {
+			logf("colours: %s: %v", f[1], err)
+			continue
+		}
+		made++
+	}
+	if made > 0 {
+		logf("colours: %d coloured copies of hold art made", made)
+	}
+}
+
+// parseHexColour reads "#rrggbb" or "#rrggbbaa".
+func parseHexColour(s string) (color.NRGBA, bool) {
+	s = strings.TrimPrefix(strings.TrimSpace(s), "#")
+	if len(s) != 6 && len(s) != 8 {
+		return color.NRGBA{}, false
+	}
+	var v [4]uint8 = [4]uint8{0, 0, 0, 255}
+	for i := 0; i < len(s)/2; i++ {
+		n, err := strconv.ParseUint(s[2*i:2*i+2], 16, 8)
+		if err != nil {
+			return color.NRGBA{}, false
+		}
+		v[i] = uint8(n)
+	}
+	return color.NRGBA{v[0], v[1], v[2], v[3]}, true
+}
+
+// tintImage is img with every pixel multiplied by col (alpha too).
+func tintImage(img image.Image, col color.NRGBA) *image.NRGBA {
+	b := img.Bounds()
+	out := image.NewNRGBA(image.Rect(0, 0, b.Dx(), b.Dy()))
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			c := color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
+			i := out.PixOffset(x-b.Min.X, y-b.Min.Y)
+			out.Pix[i] = uint8(uint32(c.R) * uint32(col.R) / 255)
+			out.Pix[i+1] = uint8(uint32(c.G) * uint32(col.G) / 255)
+			out.Pix[i+2] = uint8(uint32(c.B) * uint32(col.B) / 255)
+			out.Pix[i+3] = uint8(uint32(c.A) * uint32(col.A) / 255)
 		}
 	}
 	return out

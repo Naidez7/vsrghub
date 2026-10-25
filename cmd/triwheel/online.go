@@ -730,6 +730,8 @@ func startOnlineService(data string) func() {
 	os.Remove(filepath.Join(dir, "want.txt"))
 	os.Remove(filepath.Join(dir, "wantdetail.txt"))
 	os.RemoveAll(filepath.Join(dir, "detail"))
+	os.MkdirAll(filepath.Join(data, "colours"), 0o755)
+	os.Remove(filepath.Join(data, "colours", "want.txt"))
 	go func() {
 		if s, err := onlineToken(); err != nil {
 			logf("online: not signed in (%v): plays wait in the outbox", err)
@@ -794,6 +796,8 @@ func startOnlineService(data string) func() {
 				lastSend = time.Now()
 				sendOutbox(data)
 			}
+			// (Customize gameplay's colours on hold art: greys.go)
+			serveTints(data)
 		}
 	}()
 	return func() {

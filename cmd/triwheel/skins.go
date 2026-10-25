@@ -1116,6 +1116,12 @@ func buildNoteSkins(root, osuDir, quaverDir string, keep map[string]bool) (all [
 				ns.Grey[k] = g
 			}
 		}
+		// (the coloured copies of hold art made while the game ran stay: greys.go's serveTints)
+		if tints, _ := filepath.Glob(filepath.Join(dir, "tint-*.png")); len(tints) > 0 {
+			for _, t := range tints {
+				keepAdd(keep, rel+"/"+filepath.Base(t))
+			}
+		}
 		writeIfChanged(filepath.Join(dir, "NoteSkin.lua"), strings.Replace(noteSkinTemplate, "SKIN_DATA", ns.lua(), 1))
 		writeIfChanged(filepath.Join(dir, "metrics.ini"), noteSkinMetrics+ns.stretchMetrics())
 		for _, f := range []string{"", "/src", "/NoteSkin.lua", "/metrics.ini"} {

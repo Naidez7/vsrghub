@@ -1297,7 +1297,13 @@ function TW.customizeEditor()
 	local regions = {}
 	local held = nil
 	local p = Def.ActorFrame {
-		InitCommand = function(self) self:x(panel.x) end,
+		InitCommand = function(self)
+			self:x(panel.x)
+			-- (the coloured copies of hold art the launcher makes for the Colours tab: the
+			-- noteskin looks for them when asked)
+			self:SetUpdateFunction(function() MESSAGEMAN:Broadcast("TWTintPoll") end)
+			self:SetUpdateFunctionInterval(0.5)
+		end,
 		OnCommand = function(self) self:playcommand("Render") end,
 		TWPanelToggleMessageCommand = function(self) self:visible(panelOn) end,
 		TWLayoutSelectedMessageCommand = function(self) self:playcommand("Render") end,

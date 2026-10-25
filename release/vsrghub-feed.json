@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.23",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.23.zip",
- "sha256": "a161d89fd4c5d670d3b2958e4e82a3bcaa0f91751d252dde5c8ec3448784aa2b",
- "notes": "- Colours: the colour picked wasn't reaching the notes (nor the picker's own square and swatches): colours were handed over in a form Etterna reads as white. Fixed; the Quaver skins' column lighting, which had the same slip, now lights in the column's colour too.",
+ "version": "1.8.24",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.24.zip",
+ "sha256": "b07e06ae4237c2339569b16e5d9341c0d7d2ff0288a907f25d86959268a12261",
+ "notes": "- Colours: notes take their colour (Etterna sets each note's own colour while drawing, which was wiping the tint; the picture now sits in a frame whose colour multiplies it instead). LN bodies and ends, which Etterna draws from the picture alone, get a copy of their art in your colour made by the launcher while the game runs: it shows a moment after you pick.",
  "latest": {
-  "version": "1.8.23",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.23.zip",
-  "sha256": "a161d89fd4c5d670d3b2958e4e82a3bcaa0f91751d252dde5c8ec3448784aa2b",
-  "notes": "- Colours: the colour picked wasn't reaching the notes (nor the picker's own square and swatches): colours were handed over in a form Etterna reads as white. Fixed; the Quaver skins' column lighting, which had the same slip, now lights in the column's colour too."
+  "version": "1.8.24",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.24.zip",
+  "sha256": "b07e06ae4237c2339569b16e5d9341c0d7d2ff0288a907f25d86959268a12261",
+  "notes": "- Colours: notes take their colour (Etterna sets each note's own colour while drawing, which was wiping the tint; the picture now sits in a frame whose colour multiplies it instead). LN bodies and ends, which Etterna draws from the picture alone, get a copy of their art in your colour made by the launcher while the game runs: it shows a moment after you pick."
  },
  "changelog": [
+  {
+   "version": "1.8.24",
+   "date": "2026-10-25",
+   "notes": "- Colours: notes take their colour (Etterna sets each note's own colour while drawing, which was wiping the tint; the picture now sits in a frame whose colour multiplies it instead). LN bodies and ends, which Etterna draws from the picture alone, get a copy of their art in your colour made by the launcher while the game runs: it shows a moment after you pick."
+  },
   {
    "version": "1.8.23",
    "date": "2026-10-25",

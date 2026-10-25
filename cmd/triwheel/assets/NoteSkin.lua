@@ -111,11 +111,42 @@ local function fileExists(p)
 	local ok, yes = pcall(function() return FILEMAN:DoesFileExist(p) end)
 	return ok and yes
 end
-local function tinted(spec, part, idx, tex, grey, setup)
+-- Etterna draws hold bodies and ends from their texture alone (their actor's colour is not
+-- used), so those get a copy of the art already in the colour, made by the launcher while the
+-- game runs: the game lists what it wants in Save/VSRGHub/colours/want.txt ("art<TAB>copy<TAB>
+-- #rrggbbaa", paths as Etterna has them) and looks for the copy until it is there.
+local tintWant = {}
+local function askTint(src, dst, hex)
+	tintWant[dst] = src .. "\t" .. dst .. "\t" .. hex
+	local lines = {}
+	for _, l in pairs(tintWant) do lines[#lines + 1] = l end
+	pcall(function() File.Write("Save/VSRGHub/colours/want.txt", table.concat(lines, "\n") .. "\n") end)
+end
+local function tintFile(base, hex)
+	local dir, name = base:match("^(.*/)([^/]+)$")
+	if not dir then return nil end
+	name = name:gsub("%.%w+$", "")
+	return dir .. "tint-" .. name .. "-" .. hex:gsub("#", "") .. ".png"
+end
+local function tinted(spec, part, idx, tex, grey, setup, byFile)
 	local function apply(self)
 		local r, g, b, a = colourOf(part, idx)
 		local want = tex
-		if r and grey then
+		if r and byFile then
+			-- a copy in the colour: shown once the launcher has made it (asked for meanwhile)
+			local hex = TW and TW.rgbaToHex and TW.rgbaToHex(r, g, b, a) or nil
+			local dst = hex and tintFile(grey or tex, hex)
+			if dst then
+				if self.twTintOk == dst or fileExists(dst) then
+					self.twTintOk = dst
+					tintWant[dst] = nil
+					want = dst
+				else
+					askTint(grey or tex, dst, hex)
+					self.twPoll = dst
+				end
+			end
+		elseif r and grey then
 			if self.twGreyOk == nil then self.twGreyOk = fileExists(grey) end
 			if self.twGreyOk then want = grey end
 		end
@@ -126,6 +157,7 @@ local function tinted(spec, part, idx, tex, grey, setup)
 			self.twTex = want
 			if setup and not (first and want == tex) then setup(self) end
 		end
+		if byFile then return end
 		if r then self:diffuse({ r, g, b, a }) else self:diffuse({ 1, 1, 1, 1 }) end
 	end
 	spec.Texture = tex
@@ -133,10 +165,22 @@ local function tinted(spec, part, idx, tex, grey, setup)
 	spec.InitCommand = function(self)
 		if init then init(self) end
 		apply(self)
+		if byFile then
+			-- (looks for the copy asked for, every half second, until it is there)
+			self:SetUpdateFunction(function(s)
+				if s.twPoll and fileExists(s.twPoll) then s.twPoll = nil; apply(s) end
+			end)
+			self:SetUpdateFunctionInterval(0.5)
+		end
 	end
 	spec.TWLayoutChangedMessageCommand = function(self, p)
 		apply(self)
 		if changed then changed(self, p) end
+	end
+	-- (the looks ask every half second while Customize gameplay is open, for actors Etterna
+	-- doesn't update)
+	spec.TWTintPollMessageCommand = function(self)
+		if self.twPoll and fileExists(self.twPoll) then self.twPoll = nil; apply(self) end
 	end
 	return spec
 end
@@ -166,9 +210,9 @@ local function note(nw, file, sheet, sheetN, ratio, rot, hs, part, idx, grey)
 		end,
 		TWLayoutChangedMessageCommand = scaled,
 	}, part or "note", idx, sheet or path(file), grey, setup)
-	-- (Etterna sets the note actor's own zoom and turn while drawing: the picture sits inside)
-	if (rot and rot ~= 0) or flip then return Def.ActorFrame { s } end
-	return s
+	-- (Etterna sets the note actor's own zoom, turn and colour while drawing: the picture sits
+	-- inside a frame, whose colour multiplies the picture's own tint instead of replacing it)
+	return Def.ActorFrame { s }
 end
 -- Receptors under or over the notes: Quaver's ReceptorsOverHitObjects puts the key art in front of
 -- the notes (Etterna's explosion layer, drawn after the notes and placed with the columns), and
@@ -522,10 +566,10 @@ ret.Load = function()
 			end
 			scaled(self)
 		end
-		if c.body then return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, path(c.body), g.body, bodyFit) end
+		if c.body then return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, path(c.body), g.body, bodyFit, true) end
 		-- the skin's own body can't be used: a plain body in its colour (made by VSRG Hub)
 		if c.bodyGen and c.bodyFit then
-			return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, bodyFit)
+			return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, bodyFit, true)
 		end
 		if c.bodyGen then
 			local function plainFit(self)
@@ -533,7 +577,7 @@ ret.Load = function()
 				self.twW, self.twH = nw * ((c.bodyW and c.bodyW > 0) and c.bodyW or 0.9), nw
 				scaled(self)
 			end
-			return tinted(Def.Sprite { InitCommand = plainFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, plainFit)
+			return tinted(Def.Sprite { InitCommand = plainFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, plainFit, true)
 		end
 		return blank()
 	end
@@ -572,7 +616,7 @@ ret.Load = function()
 			self.twH0 = self:GetHeight(); tailLayout(self)
 		end
 		return tinted(Def.Sprite { InitCommand = setup,
-			TWLayoutChangedMessageCommand = function(self) tailLayout(self) end }, "tail", idx, tex, grey, setup)
+			TWLayoutChangedMessageCommand = function(self) tailLayout(self) end }, "tail", idx, tex, grey, setup, true)
 	end
 	local function cap(flip)
 		if flip and c.tailF then return tailSprite(c.tailF, g.tailF) end

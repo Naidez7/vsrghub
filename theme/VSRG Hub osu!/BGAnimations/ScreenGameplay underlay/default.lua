@@ -64,6 +64,12 @@ end
 
 t[#t + 1] = Def.ActorFrame {
 	TWRelayoutMessageCommand = function(self) self:playcommand("On") end,
+	-- (coloured copies of hold art not made yet, e.g. colours imported with skin settings: the
+	-- noteskin looks for them once a second)
+	InitCommand = function(self)
+		self:SetUpdateFunction(function() MESSAGEMAN:Broadcast("TWTintPoll") end)
+		self:SetUpdateFunctionInterval(1)
+	end,
 	OnCommand = function(self)
 		local s = layout()
 		if not s then return end
