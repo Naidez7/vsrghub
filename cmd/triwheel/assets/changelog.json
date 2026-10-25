@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.19",
+  "date": "2026-10-24",
+  "notes": "- **osu! skins whose long notes end short of their time** (Low Zenith and skins built like it: a very tall body image whose top is the rounded end, with a see-through gap above it) keep that rounded end in VSRG Hub. The end was taken for too tall to be one and the body got stretched over the hold instead, which flattened the rounding away."
+ },
+ {
   "version": "1.8.18",
   "date": "2026-10-23",
   "notes": "- **Notefield size works**: in Customize gameplay (Notefield tab) it now scales the whole notefield together, notes, receptors and the space between them, from 0.5x to 2x. It did nothing to the notes before: Etterna puts its own zoom (Mini) on the notefield every frame, so the size is now set through that. A Mini you already had on (Til' Death's receptor size) becomes the notefield size the first time."

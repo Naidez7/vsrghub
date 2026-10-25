@@ -101,7 +101,7 @@ func writeOsuBodyEnd(src, tail, endDst, bodyDst string, colUnits, hs float64) (r
 	}
 	// the styled end's height in column widths, as osu! draws it
 	endCW := float64(k) * osuBodyLength / float64(texH) / colUnits
-	if endCW < 0.05 || endCW > 4 {
+	if endCW < 0.05 || endCW > 16 {
 		return 0, false
 	}
 	outW := min(texW, 256)
