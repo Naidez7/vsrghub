@@ -182,14 +182,18 @@ func serveTints(data string) {
 			continue
 		}
 		dst := filepath.Join(root, filepath.FromSlash(strings.TrimPrefix(f[1], "/")))
-		if _, err := os.Stat(dst); err == nil {
-			continue
+		src := filepath.Join(root, filepath.FromSlash(strings.TrimPrefix(f[0], "/")))
+		// (made already, from the art as it is now: a grey copy made again means this one is too)
+		if di, err := os.Stat(dst); err == nil {
+			if si, err := os.Stat(src); err == nil && !di.ModTime().Before(si.ModTime()) {
+				continue
+			}
 		}
 		col, ok := parseHexColour(f[2])
 		if !ok {
 			continue
 		}
-		img, err := decodeFile(filepath.Join(root, filepath.FromSlash(strings.TrimPrefix(f[0], "/"))))
+		img, err := decodeFile(src)
 		if err != nil {
 			logf("colours: %s: %v", f[0], err)
 			continue
