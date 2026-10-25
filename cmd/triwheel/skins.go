@@ -961,6 +961,7 @@ func buildNoteSkins(root, osuDir, quaverDir string, keep map[string]bool) (all [
 			c.BodyGen, c.BodyFit, c.Stretch = "/"+filepath.ToSlash(rel)+"/"+bodyName, true, true
 			c.Tail, c.TailRatio = "/"+filepath.ToSlash(rel)+"/"+endName, ratio
 			keepAdd(keep, rel+"/"+endName)
+			keepAdd(keep, rel+"/"+endName+".ver")
 			keepAdd(keep, rel+"/"+bodyName)
 		}
 		for i := range ns.Cols {

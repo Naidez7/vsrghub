@@ -18,6 +18,9 @@ import (
 	xdraw "golang.org/x/image/draw"
 )
 
+// osuBodyVersion changes whenever the split's output changes, so older splits are redone.
+const osuBodyVersion = "2"
+
 // osuStableScale turns osu!mania skin.ini sizes (480-tall) into osu!'s 768-tall units.
 const osuStableScale = 768.0 / 480
 
@@ -69,9 +72,13 @@ func writeOsuBodyEnd(src, tail, endDst, bodyDst string, colUnits, hs float64) (r
 	if hs <= 0 {
 		hs = 1
 	}
-	// already split from this very file
+	// already split from this very file, by this version of the split (a sidecar notes which)
+	verFile := endDst + ".ver"
 	if si, err := os.Stat(src); err == nil {
-		if ei, err := os.Stat(endDst); err == nil && !ei.ModTime().Before(si.ModTime()) {
+		if v, err := os.ReadFile(verFile); err != nil || string(v) != osuBodyVersion {
+			si = nil
+		}
+		if ei, err := os.Stat(endDst); si != nil && err == nil && !ei.ModTime().Before(si.ModTime()) {
 			if bi, err := os.Stat(bodyDst); err == nil && !bi.ModTime().Before(si.ModTime()) {
 				if f, err := os.Open(endDst); err == nil {
 					cfg, _, err := image.DecodeConfig(f)
@@ -142,6 +149,7 @@ func writeOsuBodyEnd(src, tail, endDst, bodyDst string, colUnits, hs float64) (r
 	if err := writePNGIfChanged(bodyDst, body); err != nil {
 		return 0, false
 	}
+	os.WriteFile(verFile, []byte(osuBodyVersion), 0o644)
 	return float64(outH) / float64(outW), true
 }
 

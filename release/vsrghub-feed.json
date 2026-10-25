@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.20",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.20.zip",
- "sha256": "10a9e572ee33552ff46f59d1181615c287819cd5defa042fffe8a6373e76be5e",
- "notes": "- **Low Zenith's long notes, again**: the rounded end was drawn far too tall (1.8.19 sized it the way osu!lazer stretches such bodies; osu! stable draws the body image at the scale that fits the column, so a 44-row rounded top is a half circle). It is now the half circle, with the skin's short gap before the hold's real end, from the moment the note appears.",
+ "version": "1.8.21",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.21.zip",
+ "sha256": "82bd28ad5c1c937bb3853b474e43a9870f3a007e7ee6cca55a24409392259595",
+ "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now.",
  "latest": {
-  "version": "1.8.20",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.20.zip",
-  "sha256": "10a9e572ee33552ff46f59d1181615c287819cd5defa042fffe8a6373e76be5e",
-  "notes": "- **Low Zenith's long notes, again**: the rounded end was drawn far too tall (1.8.19 sized it the way osu!lazer stretches such bodies; osu! stable draws the body image at the scale that fits the column, so a 44-row rounded top is a half circle). It is now the half circle, with the skin's short gap before the hold's real end, from the moment the note appears."
+  "version": "1.8.21",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.21.zip",
+  "sha256": "82bd28ad5c1c937bb3853b474e43a9870f3a007e7ee6cca55a24409392259595",
+  "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now."
  },
  "changelog": [
+  {
+   "version": "1.8.21",
+   "date": "2026-10-24",
+   "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now."
+  },
   {
    "version": "1.8.20",
    "date": "2026-10-24",
