@@ -1,8 +1,8 @@
 package main
 
 // osu!'s repeating hold bodies (NoteBodyStyle 1 and 2) are drawn from the hold's end: the top of
-// the body image sits on the end of the hold and the image runs down towards the head, stretched
-// so the whole image is 32800 osu! units long (osu!lazer's LegacyBodyPiece; stable looks the same).
+// the body image sits on the end of the hold and the image runs down towards the head at the
+// scale that fits its width to the column, repeating when the hold is longer than it.
 // Many skins use that for the hold's tail: the body is one very tall image (tens of thousands of
 // pixels) whose top is the rounded or styled end of the hold, and the rest a plain strip. Etterna
 // can't load such an image, and stretching a shrunk copy over each hold flattens that end away.
@@ -17,9 +17,6 @@ import (
 
 	xdraw "golang.org/x/image/draw"
 )
-
-// osuBodyLength is how long osu! draws a repeating hold body image, in osu!'s 768-tall units.
-const osuBodyLength = 32800.0
 
 // osuStableScale turns osu!mania skin.ini sizes (480-tall) into osu!'s 768-tall units.
 const osuStableScale = 768.0 / 480
@@ -99,9 +96,12 @@ func writeOsuBodyEnd(src, tail, endDst, bodyDst string, colUnits, hs float64) (r
 	if k == 0 {
 		return 0, false
 	}
-	// the styled end's height in column widths, as osu! draws it
-	endCW := float64(k) * osuBodyLength / float64(texH) / colUnits
-	if endCW < 0.05 || endCW > 16 {
+	// the styled end's height in column widths, as osu! stable draws it: the body image scaled to
+	// the column's width, its rows at that scale, run from the hold's end towards the head (not
+	// stretched over the hold, however tall the image: a 102-wide image with a 44-row rounded top
+	// ends in a half circle, whatever is under it)
+	endCW := float64(k) / float64(texW)
+	if endCW < 0.05 || endCW > 4 {
 		return 0, false
 	}
 	outW := min(texW, 256)

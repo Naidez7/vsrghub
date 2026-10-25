@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.20",
+  "date": "2026-10-24",
+  "notes": "- **Low Zenith's long notes, again**: the rounded end was drawn far too tall (1.8.19 sized it the way osu!lazer stretches such bodies; osu! stable draws the body image at the scale that fits the column, so a 44-row rounded top is a half circle). It is now the half circle, with the skin's short gap before the hold's real end, from the moment the note appears."
+ },
+ {
   "version": "1.8.19",
   "date": "2026-10-24",
   "notes": "- **osu! skins whose long notes end short of their time** (Low Zenith and skins built like it: a very tall body image whose top is the rounded end, with a see-through gap above it) keep that rounded end in VSRG Hub. The end was taken for too tall to be one and the body got stretched over the hold instead, which flattened the rounding away."
