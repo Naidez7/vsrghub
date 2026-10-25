@@ -111,6 +111,18 @@ local function fileExists(p)
 	local ok, yes = pcall(function() return FILEMAN:DoesFileExist(p) end)
 	return ok and yes
 end
+-- (Etterna keeps a list of each folder's files from when it first looked: a file written since, by
+-- the launcher, shows up only after the folder is looked at again, at most once a second here)
+local flushedAt = {}
+local function fileExistsFresh(p)
+	local dir = p:match("^(.*/)")
+	local now = GetTimeSinceStart()
+	if dir and (not flushedAt[dir] or now - flushedAt[dir] > 1) then
+		flushedAt[dir] = now
+		pcall(function() FILEMAN:FlushDirCache(dir) end)
+	end
+	return fileExists(p)
+end
 -- Etterna draws hold bodies and ends from their texture alone (their actor's colour is not
 -- used), so those get a copy of the art already in the colour, made by the launcher while the
 -- game runs: the game lists what it wants in Save/VSRGHub/colours/want.txt ("art<TAB>copy<TAB>
@@ -137,7 +149,7 @@ local function tinted(spec, part, idx, tex, grey, setup, byFile)
 			local hex = TW and TW.rgbaToHex and TW.rgbaToHex(r, g, b, a) or nil
 			local dst = hex and tintFile(grey or tex, hex)
 			if dst then
-				if self.twTintOk == dst or fileExists(dst) then
+				if self.twTintOk == dst or fileExistsFresh(dst) then
 					self.twTintOk = dst
 					tintWant[dst] = nil
 					want = dst
@@ -147,7 +159,8 @@ local function tinted(spec, part, idx, tex, grey, setup, byFile)
 				end
 			end
 		elseif r and grey then
-			if self.twGreyOk == nil then self.twGreyOk = fileExists(grey) end
+			-- (the grey copy may still be being made by the launcher: looked for again until found)
+			if not self.twGreyOk then self.twGreyOk = fileExistsFresh(grey) end
 			if self.twGreyOk then want = grey end
 		end
 		if self.twTex ~= want then
@@ -168,7 +181,7 @@ local function tinted(spec, part, idx, tex, grey, setup, byFile)
 		if byFile then
 			-- (looks for the copy asked for, every half second, until it is there)
 			self:SetUpdateFunction(function(s)
-				if s.twPoll and fileExists(s.twPoll) then s.twPoll = nil; apply(s) end
+				if s.twPoll and fileExistsFresh(s.twPoll) then s.twPoll = nil; apply(s) end
 			end)
 			self:SetUpdateFunctionInterval(0.5)
 		end
@@ -180,7 +193,7 @@ local function tinted(spec, part, idx, tex, grey, setup, byFile)
 	-- (the looks ask every half second while Customize gameplay is open, for actors Etterna
 	-- doesn't update)
 	spec.TWTintPollMessageCommand = function(self)
-		if self.twPoll and fileExists(self.twPoll) then self.twPoll = nil; apply(self) end
+		if self.twPoll and fileExistsFresh(self.twPoll) then self.twPoll = nil; apply(self) end
 	end
 	return spec
 end
