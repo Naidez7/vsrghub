@@ -313,6 +313,14 @@ Etterna packs:
   the notes at the bottom of the stage (the top when scrolling up), moved and sized in Customize
   gameplay. Kept per noteskin and key mode. Stage art (sides, bottom) follows the skin.ini's 7K
   section in 7K.
+- **Colours** (Customize gameplay > Colours): any part of the noteskin in a colour of yours: notes
+  (all, or per column), LN heads, bodies and ends, receptors (and pressed), the stage background,
+  the stage hint, hit and hold lighting, mines. A picker with a saturation / value square, a hue
+  strip, an alpha strip, R / G / B / A sliders, a hex field to type into and a palette of stock and
+  recent colours; Undo (or Ctrl+Z) steps back, "Skin's own" puts the skin's art back for that part.
+  The part is drawn from a grey copy of its art tinted in the colour (made by the launcher in the
+  background on the first start after installing), so a purple note asked for in red comes out red,
+  not brown. Kept per noteskin and key mode, and part of the skin settings you export.
 - **Skin settings to share**: Options > Export skin settings writes everything Customize gameplay
   keeps per noteskin (notefield, columns, notes, receptors, lane cover, LN tail, stage hint,
   lighting) for the key mode in use to `Save/VSRGHub/skins/<noteskin> (4K).vhskin`, a small text

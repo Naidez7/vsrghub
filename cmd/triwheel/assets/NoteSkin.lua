@@ -98,29 +98,74 @@ local function blank()
 	end
 	return Def.Actor { InitCommand = function(self) self:visible(false) end }
 end
+-- Customize gameplay's colours (TW.skinColour(part, column) -> r, g, b, a in 0..1, or nil for the
+-- skin's own): a part with a colour draws its grey copy (made by VSRG Hub: SKIN.cols[i].g /
+-- SKIN.grey; the original until the copy exists) tinted in it. tinted(spec, part, idx, tex, grey,
+-- setup): the sprite's texture is picked for the colour in force and set again when it changes;
+-- setup(self) does what depends on the texture (fitting, the texture rect) and runs after each load.
+local function colourOf(part, idx)
+	if TW and TW.skinColour then return TW.skinColour(part, idx) end
+	return nil
+end
+local function fileExists(p)
+	local ok, yes = pcall(function() return FILEMAN:DoesFileExist(p) end)
+	return ok and yes
+end
+local function tinted(spec, part, idx, tex, grey, setup)
+	local function apply(self)
+		local r, g, b, a = colourOf(part, idx)
+		local want = tex
+		if r and grey then
+			if self.twGreyOk == nil then self.twGreyOk = fileExists(grey) end
+			if self.twGreyOk then want = grey end
+		end
+		if self.twTex ~= want then
+			-- (the first time the sprite already has tex from its definition)
+			if self.twTex ~= nil or want ~= tex then self:Load(want) end
+			local first = self.twTex == nil
+			self.twTex = want
+			if setup and not (first and want == tex) then setup(self) end
+		end
+		if r then self:diffuse(color(r, g, b, a)) else self:diffuse(color(1, 1, 1, 1)) end
+	end
+	spec.Texture = tex
+	local init, changed = spec.InitCommand, spec.TWLayoutChangedMessageCommand
+	spec.InitCommand = function(self)
+		if init then init(self) end
+		apply(self)
+	end
+	spec.TWLayoutChangedMessageCommand = function(self, p)
+		apply(self)
+		if changed then changed(self, p) end
+	end
+	return spec
+end
+
 -- a note, hold head or mine: from the skin's picture, or from the sheet VSRG Hub wrote with one
 -- picture per beat snap (sheetN pictures high; Etterna moves down to the note's snap), as tall as
 -- the skin draws it (HS), turned for its column and over in upscroll when the skin asks for it
-local function note(nw, file, sheet, sheetN, ratio, rot, hs)
+local function note(nw, file, sheet, sheetN, ratio, rot, hs, part, idx, grey)
 	local HS = hs or HS
 	local flip = SKIN.quaver and SKIN.flipUp and not rev()
-	local s = Def.Sprite {
-		Texture = sheet or path(file),
+	local function setup(self)
+		if sheet then
+			self:customtexturerect(0, 0, 1, 1 / sheetN)
+			self.twW, self.twH = nw, nw * ratio * HS
+		else
+			local w, h = self:GetWidth(), self:GetHeight()
+			if w and w > 0 then self.twW, self.twH = nw, h * nw / w * HS end
+			inset(self)
+		end
+		scaled(self)
+	end
+	local s = tinted(Def.Sprite {
 		InitCommand = function(self)
-			if sheet then
-				self:customtexturerect(0, 0, 1, 1 / sheetN)
-				self.twW, self.twH = nw, nw * ratio * HS
-			else
-				local w, h = self:GetWidth(), self:GetHeight()
-				if w and w > 0 then self.twW, self.twH = nw, h * nw / w * HS end
-				inset(self)
-			end
-			scaled(self)
+			setup(self)
 			if flip then self:zoomy(-1) end
 			if rot and rot ~= 0 then self:rotationz(rot) end
 		end,
 		TWLayoutChangedMessageCommand = scaled,
-	}
+	}, part or "note", idx, sheet or path(file), grey, setup)
 	-- (Etterna sets the note actor's own zoom and turn while drawing: the picture sits inside)
 	if (rot and rot ~= 0) or flip then return Def.ActorFrame { s } end
 	return s
@@ -199,11 +244,9 @@ local function receptor(c, idx, overlay)
 	if SKIN.hint then
 		local h = (SKIN.hintH and SKIN.hintH > 0) and SKIN.hintH or 8
 		if SKIN.hintR then h = W * SKIN.hintR end -- Quaver: as wide as the stage, its own proportions
-		t[#t + 1] = hintFrame(Def.Sprite { Texture = SKIN.dir .. SKIN.hint, InitCommand = function(self)
-			self:setsize(W, h)
-			inset(self)
+		t[#t + 1] = hintFrame(tinted(Def.Sprite { InitCommand = function(self)
 			if hintFlip then self:zoomy(-1) end
-		end }, h)
+		end }, "hint", idx, SKIN.dir .. SKIN.hint, SKIN.grey and SKIN.grey.hint, function(self) self:setsize(W, h); inset(self) end), h)
 	end
 	if SKIN.judgeLine then
 		t[#t + 1] = hintFrame(Def.Quad { InitCommand = function(self) self:zoomto(W, 1):diffuse(color("#FFFFFFE6")) end }, 1, true)
@@ -234,12 +277,16 @@ local function receptor(c, idx, overlay)
 				if rev() then self:valign(1); base = { y = -edge } else self:valign(0); base = { y = edge } end
 				if SKIN.flipUp and not rev() then self:valign(1); flip = true end
 				base.flip = flip
-				local col = c.colour or { 255, 255, 255 }
-				self:diffuse(color(col[1] / 255, col[2] / 255, col[3] / 255, 0))
+				self:diffusealpha(0)
 				lightPlace(self)
 			end,
 			TWLayoutChangedMessageCommand = lightPlace,
-			PressCommand = function(self) self:stoptweening():linear(0.02):diffusealpha(1) end,
+			PressCommand = function(self)
+				local col = c.colour or { 255, 255, 255 }
+				local r, g, b, a = colourOf("collight", idx)
+				if r then self:diffuse(color(r, g, b, 0)) else self:diffuse(color(col[1] / 255, col[2] / 255, col[3] / 255, 0)) end
+				self:stoptweening():linear(0.02):diffusealpha(r and a or 1)
+			end,
 			LiftCommand = function(self) self:stoptweening():decelerate(0.15):diffusealpha(0) end,
 		}
 	end
@@ -260,16 +307,19 @@ local function receptor(c, idx, overlay)
 		InitCommand = function(self) self:visible(overlay == overOn()) end,
 		TWLayoutChangedMessageCommand = function(self) self:visible(overlay == overOn()) end,
 	}
+	-- (place sets the art's size and turn from its texture: done again when a grey copy loads,
+	-- the turn taken back first)
+	local function replace(self) if self:GetZoomY() < 0 then self:zoomy(-self:GetZoomY()) end; place(self) end
 	if c.key then
-		keys[#keys + 1] = Def.Sprite { Texture = path(c.key), InitCommand = place,
+		keys[#keys + 1] = tinted(Def.Sprite { InitCommand = place,
 			PressCommand = function(self) if c.keyD then self:visible(false) end end,
-			LiftCommand = function(self) self:visible(true) end }
+			LiftCommand = function(self) self:visible(true) end }, "key", idx, path(c.key), c.g and c.g.key, replace)
 	end
 	if c.keyD then
-		keys[#keys + 1] = Def.Sprite { Texture = path(c.keyD),
+		keys[#keys + 1] = tinted(Def.Sprite {
 			InitCommand = function(self) place(self); self:visible(false) end,
 			PressCommand = function(self) self:visible(true) end,
-			LiftCommand = function(self) self:visible(false) end }
+			LiftCommand = function(self) self:visible(false) end }, "keyd", idx, path(c.keyD), c.g and c.g.keyD, replace)
 	end
 	if #keys > 0 then k[#k + 1] = keys end
 	if #k > 0 then t[#t + 1] = k end
@@ -288,9 +338,8 @@ local function lighting(c)
 	local sprites = {}
 	local function part(spec, name)
 		if not spec then return Def.Actor {} end
-		return Def.Sprite {
+		return tinted(Def.Sprite {
 			Name = name,
-			Texture = spec.file,
 			InitCommand = function(self)
 				sprites[name] = self
 				-- (added onto what is under it, as Quaver does: lighting art is drawn on black)
@@ -304,10 +353,14 @@ local function lighting(c)
 				self:xy(x, rev() and -y or y):zoomx(z * zz * zw):zoomy(z * zz * zh)
 				if spec.rotate and c.rot then self:rotationz(c.rot) end
 			end
-		}
+		}, name == "hit" and "lightn" or "lightl", nil, spec.file, SKIN.grey and (name == "hit" and SKIN.grey.hitLight or SKIN.grey.holdLight), function(self) self:animate(false):setstate(0) end)
+	end
+	local function lightAlpha(n)
+		local _, _, _, a = colourOf(n == "hit" and "lightn" or "lightl")
+		return a or 1
 	end
 	local function show(which)
-		for n, sp in pairs(sprites) do sp:visible(n == which and sp.twOn ~= false):setstate(0):diffusealpha(1) end
+		for n, sp in pairs(sprites) do sp:visible(n == which and sp.twOn ~= false):setstate(0):diffusealpha(lightAlpha(n)) end
 	end
 	local function update(self, dt)
 		if not mode then return end
@@ -322,12 +375,13 @@ local function lighting(c)
 		else
 			-- one picture: Quaver fades it out (a hit) or pulses it (a hold) over 120 ms
 			local a = t / 0.12
+			local la = lightAlpha(mode)
 			if mode == "hit" then
 				if a >= 1 then sp:visible(false); mode = nil; return end
-				sp:diffusealpha(1 - a)
+				sp:diffusealpha((1 - a) * la)
 			else
 				local p = a % 2
-				sp:diffusealpha(p < 1 and 1 - p or p - 1)
+				sp:diffusealpha((p < 1 and 1 - p or p - 1) * la)
 			end
 		end
 	end
@@ -383,8 +437,7 @@ local function osuLighting(c)
 	end
 	local function part(spec, name, scale)
 		if not spec then return Def.Actor {} end
-		return Def.Sprite {
-			Texture = spec.file,
+		return tinted(Def.Sprite {
 			InitCommand = function(self)
 				sprites[name] = self
 				self:animate(false):setstate(0):diffusealpha(0):blend("BlendMode_Add")
@@ -392,7 +445,12 @@ local function osuLighting(c)
 				place(self, name)
 			end,
 			TWLayoutChangedMessageCommand = function(self) place(self, name) end,
-		}
+		}, name == "N" and "lightn" or "lightl", nil, spec.file, SKIN.grey and (name == "N" and SKIN.grey.lightN or SKIN.grey.lightL), function(self) self:animate(false):setstate(0) end)
+	end
+	-- (the tint's alpha caps the flash)
+	local function lightAlpha(name)
+		local _, _, _, a = colourOf(name == "N" and "lightn" or "lightl")
+		return a or 1
 	end
 	local function update(self, dt)
 		for name, spec in pairs({ N = N, L = L }) do
@@ -409,13 +467,13 @@ local function osuLighting(c)
 		local sp = sprites.N
 		if not sp then return end
 		clock.N = 0
-		sp:setstate(0):stoptweening():diffusealpha(0):linear(0.08):diffusealpha(1):linear(0.12):diffusealpha(0)
+		sp:setstate(0):stoptweening():diffusealpha(0):linear(0.08):diffusealpha(lightAlpha("N")):linear(0.12):diffusealpha(0)
 	end
 	local function hold(on)
 		local sp = sprites.L
 		if not sp or on == holding then return end
 		holding = on
-		if on then clock.L = 0; sp:setstate(0):stoptweening():linear(0.08):diffusealpha(1)
+		if on then clock.L = 0; sp:setstate(0):stoptweening():linear(0.08):diffusealpha(lightAlpha("L"))
 		else sp:stoptweening():linear(0.12):diffusealpha(0) end
 	end
 	return Def.ActorFrame { Def.ActorFrame {
@@ -436,10 +494,11 @@ ret.PartsToRotate = {}
 ret.Blank = {}
 
 -- a hold's head
-local function headArt(c, nw)
-	if c.headS then return note(nw, nil, c.headS, c.headN, c.headR, c.rot, c.hs) end
-	if c.head then return note(nw, c.head, nil, nil, nil, c.rot, c.hs) end
-	return note(nw, c.note, c.noteS, c.noteN, c.noteR, c.rot, c.hs)
+local function headArt(c, nw, idx)
+	local g = c.g or {}
+	if c.headS then return note(nw, nil, c.headS, c.headN, c.headR, c.rot, c.hs, "head", idx, g.headS) end
+	if c.head then return note(nw, c.head, nil, nil, nil, c.rot, c.hs, "head", idx, g.head) end
+	return note(nw, c.note, c.noteS, c.noteN, c.noteR, c.rot, c.hs, "head", idx, g.noteS or g.note)
 end
 
 ret.Load = function()
@@ -448,9 +507,10 @@ ret.Load = function()
 	local e = string.lower(Var "Element")
 	if not c then return fallbackLoad() end
 	local nw = colNW(c)
-	if e == "tap note" or e == "tap lift" or e == "tap fake" then return note(nw, c.note, c.noteS, c.noteN, c.noteR, c.rot, c.hs) end
-	if e:find("head") then return headArt(c, nw) end
-	if e == "tap mine" and c.mine then return note(nw, c.mine, nil, nil, nil, c.rot, c.hs) end
+	local g = c.g or {}
+	if e == "tap note" or e == "tap lift" or e == "tap fake" then return note(nw, c.note, c.noteS, c.noteN, c.noteR, c.rot, c.hs, "note", idx, g.noteS or g.note) end
+	if e:find("head") then return headArt(c, nw, idx) end
+	if e == "tap mine" and c.mine then return note(nw, c.mine, nil, nil, nil, c.rot, c.hs, "mine", idx, g.mine) end
 	if e:find("body") then
 		-- (a body VSRG Hub copied at a power-of-two size keeps the skin's proportions: bodyR)
 		local function bodyFit(self)
@@ -462,17 +522,18 @@ ret.Load = function()
 			end
 			scaled(self)
 		end
-		if c.body then return Def.Sprite { Texture = path(c.body), InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled } end
+		if c.body then return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, path(c.body), g.body, bodyFit) end
 		-- the skin's own body can't be used: a plain body in its colour (made by VSRG Hub)
 		if c.bodyGen and c.bodyFit then
-			return Def.Sprite { Texture = c.bodyGen, InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }
+			return tinted(Def.Sprite { InitCommand = bodyFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, bodyFit)
 		end
 		if c.bodyGen then
-			return Def.Sprite { Texture = c.bodyGen, InitCommand = function(self)
+			local function plainFit(self)
 				self.twBody = true
 				self.twW, self.twH = nw * ((c.bodyW and c.bodyW > 0) and c.bodyW or 0.9), nw
 				scaled(self)
-			end, TWLayoutChangedMessageCommand = scaled }
+			end
+			return tinted(Def.Sprite { InitCommand = plainFit, TWLayoutChangedMessageCommand = scaled }, "body", idx, c.bodyGen, g.body, plainFit)
 		end
 		return blank()
 	end
@@ -504,18 +565,18 @@ ret.Load = function()
 		self:SetStateProperties { { Frame = 0, Delay = 0, { 0, f0 }, { 1, 1 } } }
 		self:setsize(nw * k * dw, H)
 	end
-	local function tailSprite(tex)
-		return Def.Sprite { Texture = tex,
-			InitCommand = function(self)
-				-- (an end VSRG Hub copied at a power-of-two size keeps the skin's proportions: tailR)
-				if c.tailR then self:setsize(nw, nw * c.tailR * (c.hs or 1)) else fitH(self, nw, c.hs) end
-				self.twH0 = self:GetHeight(); tailLayout(self)
-			end,
-			TWLayoutChangedMessageCommand = function(self) tailLayout(self) end }
+	local function tailSprite(tex, grey)
+		local function setup(self)
+			-- (an end VSRG Hub copied at a power-of-two size keeps the skin's proportions: tailR)
+			if c.tailR then self:setsize(nw, nw * c.tailR * (c.hs or 1)) else fitH(self, nw, c.hs) end
+			self.twH0 = self:GetHeight(); tailLayout(self)
+		end
+		return tinted(Def.Sprite { InitCommand = setup,
+			TWLayoutChangedMessageCommand = function(self) tailLayout(self) end }, "tail", idx, tex, grey, setup)
 	end
 	local function cap(flip)
-		if flip and c.tailF then return tailSprite(c.tailF) end
-		return tailSprite(path(c.tail))
+		if flip and c.tailF then return tailSprite(c.tailF, g.tailF) end
+		return tailSprite(path(c.tail), g.tail)
 	end
 	if e:find("bottomcap") then
 		if not c.tail then return blank() end
@@ -533,7 +594,7 @@ ret.Load = function()
 		local t = Def.ActorFrame {}
 		-- In VSRG Hub's map preview a hold's head stays on the receptor while the hold goes by (the
 		-- preview says when: TW.previewHeld); it is never drawn in play, where Etterna does that.
-		local held = headArt(c, nw)
+		local held = headArt(c, nw, idx)
 		t[#t + 1] = Def.ActorFrame {
 			InitCommand = function(self)
 				self:SetDrawFunction(function(frame)

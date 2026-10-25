@@ -280,9 +280,12 @@ func (l *launch) start(progress func(string)) (*exec.Cmd, func(), error) {
 	root := filepath.Join(home, "Root")
 	progress("Setting up skins and themes")
 	buildRoot(root, etterna, *dirs["osu"], *dirs["quaver"], buildCollections(lib, *dirs["osu"]))
+	// (the grey copies of the skins' art for Customize gameplay's colours: made while the game starts)
 	if l.buildOnly {
+		makeGreys()
 		return nil, nil, nil
 	}
+	go makeGreys()
 
 	exe := filepath.Join(etterna, "Program", "Etterna.exe")
 	if _, err := os.Stat(exe); err != nil {

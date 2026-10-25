@@ -1,5 +1,10 @@
 [
  {
+  "version": "1.8.22",
+  "date": "2026-10-25",
+  "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export."
+ },
+ {
   "version": "1.8.21",
   "date": "2026-10-24",
   "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now."

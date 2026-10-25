@@ -136,6 +136,9 @@ type nsColumn struct {
 	Stretch bool
 	// Repeat: osu!'s repeating body (NoteBodyStyle 1, 2), drawn from the hold's end (see osubody.go)
 	Repeat bool
+	// Grey: the grey copies of this column's art, by part (greys.go): note, noteS, head, headS,
+	// body, tail, tailF, key, keyD, mine
+	Grey map[string]string
 	// BodyColour: when the skin's hold body can't be used by Etterna (or there is none), VSRG Hub
 	// draws the body in this colour, taken from the skin's own art; BodyGen is that generated image.
 	BodyColour  *color.NRGBA
@@ -301,6 +304,9 @@ type noteSkin struct {
 	// ColumnLightingScale tall, ColumnLightingOffsetY above the receptor (Etterna pixels)
 	Hud                      *qvHud // Quaver: the skin's judgements, digits and health bar
 	ColLight                 string
+	// Grey: the grey copies of the skin-wide art (greys.go): hint, lightN, lightL, hitLight,
+	// holdLight, colLight
+	Grey map[string]string
 	ColLightScale, ColLightY float64
 	FlipUp                   bool
 	EndFlipUp                bool
@@ -672,6 +678,22 @@ func (f skinFiles) real(rel string) string {
 	return rel
 }
 
+// luaMap writes a string map as a Lua table with its keys in order.
+func luaMap(m map[string]string) string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	var sb strings.Builder
+	sb.WriteString("{")
+	for _, k := range keys {
+		fmt.Fprintf(&sb, " %s = %s,", k, luaStr(m[k]))
+	}
+	sb.WriteString(" }")
+	return sb.String()
+}
+
 func luaStr(s string) string {
 	r := strings.NewReplacer(`\`, `\\`, `"`, `\"`, "\n", `\n`)
 	return `"` + r.Replace(s) + `"`
@@ -698,6 +720,9 @@ func (ns noteSkin) lua() string {
 		if ns.ColLight != "" {
 			fmt.Fprintf(&sb, "\tcolLight = %s,\n\tcolLightScale = %s,\n\tcolLightY = %s,\n", luaStr(ns.ColLight), luaNum(ns.ColLightScale), luaNum(math.Round(ns.ColLightY*100)/100))
 		}
+	}
+	if len(ns.Grey) > 0 {
+		sb.WriteString("\tgrey = " + luaMap(ns.Grey) + ",\n")
 	}
 	fmt.Fprintf(&sb, "\tjudgeLine = %v,\n\ttailFlip = %v,\n\tbuttons = {", ns.JudgeLine, ns.TailFlip)
 	buttons := map[string][]string{"dance": {"Left", "Down", "Up", "Right"}, "kb7": {"Key1", "Key2", "Key3", "Key4", "Key5", "Key6", "Key7"}}[ns.Game]
@@ -746,6 +771,9 @@ func (ns noteSkin) lua() string {
 		}
 		if ns.Quaver {
 			fmt.Fprintf(&sb, ", keyR = %s, colour = { %d, %d, %d }", luaNum(math.Round(c.KeyRatio*10000)/10000), c.Colour[0], c.Colour[1], c.Colour[2])
+		}
+		if len(c.Grey) > 0 {
+			sb.WriteString(", g = " + luaMap(c.Grey))
 		}
 		sb.WriteString(" },\n")
 	}
@@ -1057,6 +1085,36 @@ func buildNoteSkins(root, osuDir, quaverDir string, keep map[string]bool) (all [
 			c.Tail, rT = pot(c.Tail, "pottail")
 			c.TailFlipped, rF = pot(c.TailFlipped, "pottailf")
 			c.TailR = max(rT, rF)
+		}
+		// grey copies of every piece of art, for Customize gameplay's colours (greys.go)
+		for i := range ns.Cols {
+			c := &ns.Cols[i]
+			c.Grey = map[string]string{}
+			for k, p := range map[string]string{"note": c.Note, "noteS": c.NoteSheet, "head": c.Head, "headS": c.HeadSheet,
+				"body": firstNonEmpty(c.Body, c.BodyGen), "tail": c.Tail, "tailF": c.TailFlipped, "key": c.Key, "keyD": c.KeyD, "mine": c.Mine} {
+				if g := greyFor(root, ns.Source, rel, dir, p, keep); g != "" {
+					c.Grey[k] = g
+				}
+			}
+		}
+		ns.Grey = map[string]string{}
+		skinArt := map[string]string{"hint": ns.Hint, "colLight": ns.ColLight}
+		if ns.LightN != nil {
+			skinArt["lightN"] = ns.LightN.File
+		}
+		if ns.LightL != nil {
+			skinArt["lightL"] = ns.LightL.File
+		}
+		if ns.HitLight != nil {
+			skinArt["hitLight"] = ns.HitLight.File
+		}
+		if ns.HoldLight != nil {
+			skinArt["holdLight"] = ns.HoldLight.File
+		}
+		for k, p := range skinArt {
+			if g := greyFor(root, ns.Source, rel, dir, p, keep); g != "" {
+				ns.Grey[k] = g
+			}
 		}
 		writeIfChanged(filepath.Join(dir, "NoteSkin.lua"), strings.Replace(noteSkinTemplate, "SKIN_DATA", ns.lua(), 1))
 		writeIfChanged(filepath.Join(dir, "metrics.ini"), noteSkinMetrics+ns.stretchMetrics())

@@ -22,7 +22,7 @@ local function save()
 end
 -- the parts that belong to the notes, kept per noteskin: "<game>_<noteskin>__<item>_<field>"
 local SKIN_ITEMS = { field = true, columns = true, receptors = true, lanecover = true, lntail = true, notes = true, hint = true,
-	lighting = true, holdlight = true, collight = true }
+	lighting = true, holdlight = true, collight = true, colour = true }
 local function safe(ns) return ((ns or ""):lower():gsub("[^%w]", "_")) end
 local function skinKey()
 	local ns = ""
@@ -183,6 +183,66 @@ function TW.importSkinLayout(f, quiet)
 	MESSAGEMAN:Broadcast("TWLayoutChanged", {})
 	local keys = txt:match("\nkeys=([^\r\n]*)")
 	return n, (keys and keys ~= keysLabel()) and ("(the file was made for " .. keys .. ", you're on " .. keysLabel() .. ")") or nil
+end
+
+-- Colours: a colour of the player's for a part of the noteskin, kept per noteskin and key mode as
+-- "#rrggbbaa" under colour_<part> (notes also per column: colour_note_3). The noteskin draws the
+-- part's grey copy tinted in it (NoteSkin.lua: tinted); the stage's background is a plain colour.
+-- TW.skinColour(part, column) -> r, g, b, a (0..1), or nil for the skin's own.
+TW.colourParts = {
+	{ "note", "Notes", cols = true }, { "head", "LN heads" }, { "body", "LN bodies" }, { "tail", "LN ends" },
+	{ "key", "Receptors" }, { "keyd", "Receptors, pressed" }, { "stage", "Stage background" }, { "hint", "Stage hint" },
+	{ "lightn", "Hit lighting" }, { "lightl", "Hold lighting" }, { "collight", "Column lighting", quaver = true }, { "mine", "Mines" },
+}
+function TW.hexToRGBA(hex)
+	if type(hex) ~= "string" then return nil end
+	local r, g, b, a = hex:match("^#?(%x%x)(%x%x)(%x%x)(%x?%x?)$")
+	if not r then return nil end
+	if a == "" then a = "ff" end
+	return tonumber(r, 16) / 255, tonumber(g, 16) / 255, tonumber(b, 16) / 255, tonumber(a, 16) / 255
+end
+function TW.rgbaToHex(r, g, b, a)
+	local function q(v) return math.max(0, math.min(255, math.floor(v * 255 + 0.5))) end
+	return string.format("#%02x%02x%02x%02x", q(r), q(g), q(b), q(a == nil and 1 or a))
+end
+function TW.skinColourHex(part, idx)
+	local v
+	if idx then v = data[key("colour", part .. "_" .. idx)] end
+	if v == nil then v = data[key("colour", part)] end
+	if type(v) == "string" and v ~= "" then return v end
+	return nil
+end
+function TW.skinColour(part, idx)
+	return TW.hexToRGBA(TW.skinColourHex(part, idx))
+end
+-- the undo list: the field changed and what it was (one step per change, a drag counts once)
+TW.colourUndo = {}
+function TW.setSkinColour(field, hex, noSave, noUndo)
+	local k = key("colour", field)
+	if not noUndo then
+		local u = TW.colourUndo
+		u[#u + 1] = { k = k, old = data[k] }
+		if #u > 60 then table.remove(u, 1) end
+	end
+	data[k] = hex
+	if not noSave then save() end
+	MESSAGEMAN:Broadcast("TWLayoutChanged", { item = "colour" })
+end
+function TW.undoSkinColour()
+	local u = TW.colourUndo
+	local last = u[#u]
+	if not last then return false end
+	u[#u] = nil
+	data[last.k] = last.old
+	save()
+	MESSAGEMAN:Broadcast("TWLayoutChanged", { item = "colour" })
+	return true
+end
+-- whether any column of a part has its own colour
+function TW.colourPerColumn(part)
+	local pre = key("colour", part .. "_")
+	for k in pairs(data) do if k:sub(1, #pre) == pre then return true end end
+	return false
 end
 
 function TW.layoutOn(item)
@@ -714,6 +774,8 @@ function TW.customizeEditor()
 	local panelOn = true
 	-- the panel (built further down): where it is, and what it does with the mouse
 	local panel = { x = 0, w = 0, press = function() end, wheel = function() end, release = function() end, follow = function() end }
+	-- (the Colours tab's keys: its hex field and Ctrl+Z, filled in by the panel below)
+	panel.keys = function() return false end
 	local function step(field) return (field == "z") and 0.05 or 1 end
 	local function nudge(item, field, d)
 		local it = TW.layoutItems[item]
@@ -761,6 +823,7 @@ function TW.customizeEditor()
 
 	local function input(event)
 		local b = event.DeviceInput.button
+		if panel.keys(event) then return true end
 		if event.type == "InputEventType_Release" then
 			if b == "DeviceButton_left mouse button" and dragging then dragging = nil; if selected then TW.setLv(selected, "x", TW.lv(selected, "x")) end end
 			if b == "DeviceButton_left mouse button" then panel.release() end
@@ -947,7 +1010,75 @@ function TW.customizeEditor()
 	placePanel()
 
 	-- the rows of each tab
-	local TABS = { { "field", "Notefield" }, { "notes", "Notes" }, { "receptors", "Receptors" }, { "cover", "Lane cover" }, { "light", "Lighting" }, { "hud", "HUD" } }
+	local TABS = { { "field", "Notefield" }, { "notes", "Notes" }, { "receptors", "Receptors" }, { "cover", "Lane cover" }, { "light", "Lighting" }, { "colours", "Colours" }, { "hud", "HUD" } }
+	-- the Colours tab: the part being coloured ("note", "note_3"...), whether the notes are coloured
+	-- per column, the picker's hue / saturation / value (the hue kept when the colour has none),
+	-- the hex field being typed, and the colours picked lately
+	local colourSel, colourCols = nil, false
+	local pick = { h = 0, s = 1, v = 1, hex = nil }
+	local hexEdit = nil
+	local recent = {}
+	local dragPushed = false
+	local function hsvToRgb(h, sa, v)
+		local i = math.floor(h * 6) % 6
+		local f = h * 6 - math.floor(h * 6)
+		local p, q, t = v * (1 - sa), v * (1 - f * sa), v * (1 - (1 - f) * sa)
+		if i == 0 then return v, t, p elseif i == 1 then return q, v, p elseif i == 2 then return p, v, t
+		elseif i == 3 then return p, q, v elseif i == 4 then return t, p, v else return v, p, q end
+	end
+	local function rgbToHsv(r, g, b)
+		local mx, mn = math.max(r, g, b), math.min(r, g, b)
+		local d = mx - mn
+		local h = 0
+		if d > 0 then
+			if mx == r then h = ((g - b) / d) % 6 elseif mx == g then h = (b - r) / d + 2 else h = (r - g) / d + 4 end
+			h = h / 6
+		end
+		return h, mx > 0 and d / mx or 0, mx
+	end
+	-- the picked part's colour: r, g, b, a (the skin's own: white, marked own)
+	local function selColour()
+		local hex = colourSel and data[key("colour", colourSel)]
+		local r, g, b, a = TW.hexToRGBA(hex)
+		if not r then return 1, 1, 1, 1, true end
+		return r, g, b, a, false
+	end
+	-- (the picker follows the colour; its hue stays when the colour has no hue of its own)
+	local function syncPick()
+		local r, g, b, a, own = selColour()
+		local hex = TW.rgbaToHex(r, g, b, a)
+		if pick.hex == hex then return end
+		pick.hex = hex
+		local h, sa, v = rgbToHsv(r, g, b)
+		if sa > 0 and v > 0 then pick.h = h end
+		pick.s, pick.v = sa, v
+	end
+	local function remember(hex)
+		for i = #recent, 1, -1 do if recent[i] == hex then table.remove(recent, i) end end
+		table.insert(recent, 1, hex)
+		while #recent > 4 do recent[#recent] = nil end
+	end
+	-- sets the picked part's colour; a drag (noSave) goes on the undo list once, at its start
+	local function setSel(hex, noSave)
+		if not colourSel then return end
+		if noSave then
+			TW.setSkinColour(colourSel, hex, true, dragPushed)
+			dragPushed = true
+		else
+			TW.setSkinColour(colourSel, hex, false, dragPushed)
+			dragPushed = false
+			if hex then remember(hex) end
+		end
+	end
+	local function setRGBA(r, g, b, a, noSave) setSel(TW.rgbaToHex(r, g, b, a), noSave) end
+	local function setHSV(h, sa, v, noSave)
+		pick.h, pick.s, pick.v = h, sa, v
+		local _, _, _, a = selColour()
+		local r, g, b = hsvToRgb(h, sa, v)
+		local hex = TW.rgbaToHex(r, g, b, a)
+		pick.hex = hex -- (the picker keeps its hue: the colour written is read back as the same)
+		setSel(hex, noSave)
+	end
 	local tab, first = "field", 1
 	local function itemOf(r) if type(r.item) == "function" then return r.item() end return r.item end
 	local function V(label, item, field, fmt, lo, hi, st) return { kind = "slider", label = label, item = item, field = field, fmt = fmt, lo = lo, hi = hi, step = st } end
@@ -1050,6 +1181,61 @@ function TW.customizeEditor()
 				.. "Kept per noteskin and key mode; on the screen, drag it or use Up / Down (height) and Left / Right (opacity)." }
 			return rows
 		end
+		if t == "colours" then
+			local rows = { H("Colours") }
+			rows[#rows + 1] = { kind = "info", text = "Pick a part, then its colour: the part is drawn in grey tinted that colour, so it comes out that colour whatever the skin's art. \"Skin's own\" puts the skin's back. Kept per noteskin and key mode." }
+			local function channel(label, ch)
+				return { kind = "slider", label = label, fmt = "%d", lo = 0, hi = 255, step = 1,
+					get = function() local c = { selColour() }; return c[ch] * 255 end,
+					set = function(v, noSave)
+						local c = { selColour() }
+						c[ch] = math.max(0, math.min(1, v / 255))
+						setRGBA(c[1], c[2], c[3], c[4], noSave)
+					end }
+			end
+			local function picker()
+				syncPick()
+				rows[#rows + 1] = { kind = "picker" }
+				rows[#rows + 1] = channel("Red", 1)
+				rows[#rows + 1] = channel("Green", 2)
+				rows[#rows + 1] = channel("Blue", 3)
+				rows[#rows + 1] = channel("Alpha", 4)
+				rows[#rows + 1] = { kind = "hex" }
+				rows[#rows + 1] = { kind = "pal" }
+			end
+			for _, part in ipairs(TW.colourParts) do
+				if not part.quaver or Q then
+					rows[#rows + 1] = { kind = "colour", part = part[1], label = part[2] }
+					local cols = part.cols and (colourCols or TW.colourPerColumn(part[1]))
+					if colourSel == part[1] then
+						picker()
+						local btns = { { "Skin's own", function() setSel(nil) end }, { "Undo", function() TW.undoSkinColour() end } }
+						if part.cols then
+							btns[#btns + 1] = { cols and "One colour" or "Per column", function()
+								if cols then
+									-- (the columns' own colours go, the shared one stays)
+									for i = 1, 7 do if data[key("colour", part[1] .. "_" .. i)] ~= nil then TW.setSkinColour(part[1] .. "_" .. i, nil) end end
+									colourCols = false
+								else colourCols = true end
+							end }
+						end
+						rows[#rows + 1] = { kind = "cbtn", buttons = btns }
+					end
+					if cols then
+						local n = (TW.stage and TW.stage.keys) or (gameKey() == "kb7" and 7 or 4)
+						for i = 1, n do
+							local sub = part[1] .. "_" .. i
+							rows[#rows + 1] = { kind = "colour", part = sub, label = "    Column " .. i, sub = true }
+							if colourSel == sub then
+								picker()
+								rows[#rows + 1] = { kind = "cbtn", buttons = { { "Skin's own", function() setSel(nil) end }, { "Undo", function() TW.undoSkinColour() end } } }
+							end
+						end
+					end
+				end
+			end
+			return rows
+		end
 		-- HUD: the picked part's size, then every part with its switch
 		local rows = {}
 		if pickedOk() then
@@ -1075,7 +1261,8 @@ function TW.customizeEditor()
 		for _, name in ipairs(listItems) do rows[#rows + 1] = { kind = "part", name = name } end
 		return rows
 	end
-	local HEIGHT = { head = M(36), slider = M(58), mode = M(60), seg = M(60), colours = M(62), part = M(32), info = M(40) }
+	local HEIGHT = { head = M(36), slider = M(58), mode = M(60), seg = M(60), colours = M(62), part = M(32), info = M(40),
+		colour = M(32), picker = M(146), hex = M(34), pal = M(40), cbtn = M(38) }
 
 	-- values
 	local function relayout(item)
@@ -1083,6 +1270,12 @@ function TW.customizeEditor()
 		MESSAGEMAN:Broadcast("TWLayoutSelected")
 	end
 	local function setValue(r, v, noSave)
+		if r.set then
+			v = math.floor(v / r.step + 0.5) * r.step
+			r.set(math.max(r.lo, math.min(r.hi, v)), noSave)
+			MESSAGEMAN:Broadcast("TWLayoutSelected")
+			return
+		end
 		local item = itemOf(r)
 		if not item then return end
 		v = math.floor(v / r.step + 0.5) * r.step
@@ -1164,6 +1357,10 @@ function TW.customizeEditor()
 			Def.Quad { Name = "B2", InitCommand = function(self) self:align(0, 0.5):diffuse(S.btn) end },
 			T(15, true, function(self) self:align(0.5, 0.5):settext("-"):diffuse(S.btnText) end) .. { Name = "T1" },
 			T(15, true, function(self) self:align(0.5, 0.5):settext("+"):diffuse(S.btnText) end) .. { Name = "T2" },
+			-- (a colour row's swatch: a light-and-dark ground under it shows its alpha)
+			Def.Quad { Name = "SwBg", InitCommand = function(self) self:align(0, 0.5):diffuse(TW.rgb(70, 70, 76)) end },
+			Def.Quad { Name = "SwBg2", InitCommand = function(self) self:align(0, 0.5):diffuse(TW.rgb(190, 190, 196)) end },
+			Def.Quad { Name = "Swatch", InitCommand = function(self) self:align(0, 0.5) end },
 		}
 		if Q then
 			-- Quaver: a white handle on the bar, a square check box
@@ -1183,6 +1380,36 @@ function TW.customizeEditor()
 		return r
 	end
 	for i = 1, MAXR do p[#p + 1] = rowActor(i) end
+	-- the colour picker: a saturation / value square in the hue, a hue strip, an alpha strip
+	local pk = Def.ActorFrame { Name = "Pick",
+		Def.Quad { Name = "SqW", InitCommand = function(self) self:align(0, 0) end },
+		Def.Quad { Name = "SqD", InitCommand = function(self)
+			self:align(0, 0):diffuseupperleft(color("0,0,0,0")):diffuseupperright(color("0,0,0,0")):diffuselowerleft(color("0,0,0,1")):diffuselowerright(color("0,0,0,1"))
+		end },
+		TW.circle(M(7), color("#FFFFFF")) .. { Name = "CurO" },
+		TW.circle(M(5), color("#000000")) .. { Name = "CurI" },
+		TW.circle(M(3.5), color("#FFFFFF")) .. { Name = "CurC" },
+		Def.Quad { Name = "HueCur", InitCommand = function(self) self:align(0.5, 0.5):zoomto(M(20), M(3)):diffuse(color("#FFFFFF")) end },
+		Def.Quad { Name = "AlBg", InitCommand = function(self) self:align(0, 0):diffuse(TW.rgb(60, 60, 66)) end },
+		Def.Quad { Name = "AlBg2", InitCommand = function(self) self:align(0, 0):diffuse(TW.rgb(170, 170, 176)) end },
+		Def.Quad { Name = "AlGr", InitCommand = function(self) self:align(0, 0) end },
+		Def.Quad { Name = "AlCur", InitCommand = function(self) self:align(0.5, 0.5):zoomto(M(3), M(18)):diffuse(color("#FFFFFF")) end },
+	}
+	local HUES = { "#FF0000", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF", "#FF0000" }
+	for i = 1, 6 do
+		pk[#pk + 1] = Def.Quad { Name = "Hue" .. i, InitCommand = function(self)
+			self:align(0, 0):diffuseupperleft(color(HUES[i])):diffuseupperright(color(HUES[i])):diffuselowerleft(color(HUES[i + 1])):diffuselowerright(color(HUES[i + 1]))
+		end }
+	end
+	p[#p + 1] = pk
+	-- the palette: the stock colours and the ones picked lately
+	local NPAL = #TW.coverColours + 4
+	local pal = Def.ActorFrame { Name = "Pal" }
+	for i = 1, NPAL do
+		pal[#pal + 1] = Def.Quad { Name = "G" .. i, InitCommand = function(self) self:align(0, 0):diffuse(TW.rgb(70, 70, 76)) end }
+		pal[#pal + 1] = Def.Quad { Name = "C" .. i, InitCommand = function(self) self:align(0, 0) end }
+	end
+	p[#p + 1] = pal
 	-- the lane cover's choices (one row), and its colours
 	-- (segment rows and colour rows: a few of each, used in turn by the rows on show)
 	local NSEG, NSW = 6, 3
@@ -1229,7 +1456,7 @@ function TW.customizeEditor()
 
 	local function resetTab()
 		local items = { field = { "field", "columns" }, notes = { "notes", "lntail", "hint" }, receptors = { "receptors" }, cover = { "lanecover" },
-			light = { "lighting", "holdlight", "collight" } }
+			light = { "lighting", "holdlight", "collight" }, colours = { "colour" } }
 		if tab == "hud" then
 			if pickedOk() then TW.resetItem(selected) end
 		else
@@ -1262,6 +1489,8 @@ function TW.customizeEditor()
 		local c = self:GetChildren()
 		for si = 1, NSEG do c["Seg" .. si]:visible(false) end
 		for si = 1, NSW do c["Sw" .. si]:visible(false) end
+		c.Pick:visible(false)
+		c.Pal:visible(false)
 		local nSeg, nSw = 0, 0
 		local y = CY0
 		local n = 0
@@ -1278,7 +1507,7 @@ function TW.customizeEditor()
 			local a = c["R" .. n]
 			local ac = a:GetChildren()
 			a:visible(true):y(y)
-			for _, k in ipairs({ "Bg", "Mark", "Rule", "Head", "Label", "Value", "Info", "Track", "Fill", "Nub", "B1", "B2", "T1", "T2", "Pill", "PillRim", "PillIn", "Knob" }) do
+			for _, k in ipairs({ "Bg", "Mark", "Rule", "Head", "Label", "Value", "Info", "Track", "Fill", "Nub", "B1", "B2", "T1", "T2", "Pill", "PillRim", "PillIn", "Knob", "SwBg", "SwBg2", "Swatch" }) do
 				ac[k]:visible(false)
 			end
 			ac.Value:zoom(M(13.5) * FS / (Q and 24 or 17))
@@ -1413,6 +1642,112 @@ function TW.customizeEditor()
 					setC((ci - 1 - d) % nC + 1)
 					MESSAGEMAN:Broadcast("TWLayoutSelected")
 				end })
+			elseif r.kind == "colour" then
+				local on2 = colourSel == r.part
+				local hex = data[key("colour", r.part)]
+				local cr, cg, cb, ca = TW.hexToRGBA(hex)
+				ac.Bg:visible(Q or on2):xy(Q and PAD or PAD - M(8), 0):zoomto(Q and CW or CW + M(16), h - M(Q and 6 or 2)):diffuse(on2 and S.cardOn or S.card)
+				ac.Mark:visible(on2):xy(Q and PAD or PAD - M(8), 0):zoomto(M(3), h - M(Q and 6 or 2))
+				ac.Label:visible(true):xy(LX, h / 2 - M(2)):settext(r.label):diffuse(on2 and S.accent or S.text):maxwidth(CW * 0.6 / ac.Label:GetZoom())
+				ac.Value:visible(true):xy(RX - M(40), h / 2 - M(2)):settext(cr and hex:sub(2, 7):upper() or "skin's own"):diffuse(S.dim)
+					:zoom(M(10.5) * FS / (Q and 24 or 17))
+				local sw = M(30)
+				ac.SwBg:visible(true):xy(RX - sw, h / 2 - M(2)):zoomto(sw, M(20))
+				ac.SwBg2:visible(true):xy(RX - sw / 2, h / 2 - M(2)):zoomto(sw / 2, M(20))
+				ac.Swatch:visible(cr ~= nil):xy(RX - sw, h / 2 - M(2)):zoomto(sw, M(20))
+				if cr then ac.Swatch:diffuse(color(cr, cg, cb, ca)) end
+				region(PAD, y, PAD + CW, y + h, { press = function()
+					if colourSel == r.part then colourSel = nil else colourSel = r.part; hexEdit = nil; pick.hex = nil end
+				end })
+			elseif r.kind == "picker" then
+				local cr, cg, cb, ca = selColour()
+				local sx, sy = LX, y + M(6)
+				local sw = RX - LX - M(32)
+				local sh = M(110)
+				local hx, hw = LX + sw + M(14), M(16)
+				local ay, ah = y + M(124), M(14)
+				local pc = c.Pick
+				pc:visible(true)
+				local k = pc:GetChildren()
+				local hr, hg, hb = hsvToRgb(pick.h, 1, 1)
+				local hue = color(hr, hg, hb, 1)
+				k.SqW:xy(sx, sy):zoomto(sw, sh):diffuseupperleft(color("#FFFFFF")):diffuselowerleft(color("#FFFFFF")):diffuseupperright(hue):diffuselowerright(hue)
+				k.SqD:xy(sx, sy):zoomto(sw, sh)
+				local cx, cy = sx + pick.s * sw, sy + (1 - pick.v) * sh
+				k.CurO:xy(cx, cy); k.CurI:xy(cx, cy); k.CurC:xy(cx, cy):diffuse(color(cr, cg, cb, 1))
+				for i = 1, 6 do k["Hue" .. i]:xy(hx, sy + (i - 1) * sh / 6):zoomto(hw, sh / 6 + 0.5) end
+				k.HueCur:xy(hx + hw / 2, sy + pick.h * sh)
+				k.AlBg:xy(sx, ay):zoomto(sw, ah)
+				k.AlBg2:xy(sx, ay):zoomto(sw, ah / 2)
+				k.AlGr:xy(sx, ay):zoomto(sw, ah):diffuseupperleft(color(cr, cg, cb, 0)):diffuselowerleft(color(cr, cg, cb, 0)):diffuseupperright(color(cr, cg, cb, 1)):diffuselowerright(color(cr, cg, cb, 1))
+				k.AlCur:xy(sx + ca * sw, ay + ah / 2)
+				local function sqAt(mx, my)
+					local sa = math.max(0, math.min(1, (mx - panel.x - sx) / sw))
+					local v = 1 - math.max(0, math.min(1, (my - sy) / sh))
+					return sa, v
+				end
+				region(sx, sy, sx + sw, sy + sh, { press = function(mx, my)
+					local sa, v = sqAt(mx, my); setHSV(pick.h, sa, v, true)
+					return { move = function(mx2, my2) local s2, v2 = sqAt(mx2, my2); setHSV(pick.h, s2, v2, true) end, done = function() setHSV(pick.h, pick.s, pick.v) end }
+				end })
+				local function hueAt(my) return math.max(0, math.min(0.9999, (my - sy) / sh)) end
+				region(hx - M(4), sy, hx + hw + M(4), sy + sh, { press = function(mx, my)
+					setHSV(hueAt(my), pick.s, pick.v, true)
+					return { move = function(_, my2) setHSV(hueAt(my2), pick.s, pick.v, true) end, done = function() setHSV(pick.h, pick.s, pick.v) end }
+				end })
+				local function alAt(mx) return math.max(0, math.min(1, (mx - panel.x - sx) / sw)) end
+				region(sx, ay - M(4), sx + sw, ay + ah + M(4), { press = function(mx)
+					local r2, g2, b2 = selColour(); setRGBA(r2, g2, b2, alAt(mx), true)
+					return { move = function(mx2) local r3, g3, b3 = selColour(); setRGBA(r3, g3, b3, alAt(mx2), true) end,
+						done = function() local r3, g3, b3, a3 = selColour(); setRGBA(r3, g3, b3, a3) end }
+				end })
+			elseif r.kind == "hex" then
+				local cr, cg, cb, ca, own = selColour()
+				ac.Label:visible(true):xy(LX, h / 2 - M(2)):settext("Hex"):diffuse(S.text)
+				local shown = hexEdit and ("#" .. hexEdit .. "_") or (own and "skin's own" or TW.rgbaToHex(cr, cg, cb, ca):upper())
+				ac.Value:visible(true):xy(RX, h / 2 - M(2)):settext(shown):diffuse(hexEdit and S.accent or (Q and S.accent or S.text))
+				ac.Info:visible(true):xy(LX + M(40), h / 2 - M(8)):settext(hexEdit and "type RRGGBB or RRGGBBAA, Enter applies" or "click to type"):diffuse(S.dim)
+				region(PAD, y, PAD + CW, y + h, { press = function() hexEdit = hexEdit or "" end })
+			elseif r.kind == "pal" then
+				local pa = c.Pal
+				pa:visible(true)
+				local k = pa:GetChildren()
+				local gap = M(5)
+				local sz = (RX - LX - gap * (NPAL - 1)) / NPAL
+				local py = y + M(8)
+				for i = 1, NPAL do
+					local hex = i <= #TW.coverColours and (TW.coverColours[i][2] .. "ff") or recent[i - #TW.coverColours]
+					local x0 = LX + (i - 1) * (sz + gap)
+					k["G" .. i]:visible(hex ~= nil):xy(x0, py):zoomto(sz, sz)
+					k["C" .. i]:visible(hex ~= nil):xy(x0, py):zoomto(sz, sz)
+					if hex then
+						local r2, g2, b2, a2 = TW.hexToRGBA(hex)
+						k["C" .. i]:diffuse(color(r2, g2, b2, a2))
+						region(x0, py, x0 + sz, py + sz, { press = function()
+							local _, _, _, a3 = selColour()
+							setRGBA(r2, g2, b2, i <= #TW.coverColours and a3 or a2)
+						end })
+					end
+				end
+			elseif r.kind == "cbtn" and nSeg < NSEG then
+				local opts = #r.buttons
+				local gap = M(6)
+				local sw_ = (RX - LX - gap * (opts - 1)) / opts
+				local sy = M(6)
+				nSeg = nSeg + 1
+				local segA = c["Seg" .. nSeg]
+				segA:visible(true):xy(LX, y + sy)
+				local sc = segA:GetChildren()
+				for k = 1, 4 do
+					local bt = r.buttons[k]
+					local show = bt ~= nil
+					sc["B" .. k]:visible(show):xy((k - 1) * (sw_ + gap), 0):zoomto(sw_, M(26)):diffuse(S.btn)
+					sc["T" .. k]:visible(show):xy((k - 1) * (sw_ + gap) + sw_ / 2, M(13)):settext(bt and bt[1] or ""):diffuse(S.btnText):maxwidth((sw_ - M(6)) / sc["T" .. k]:GetZoom())
+					if show then
+						local x0 = LX + (k - 1) * (sw_ + gap)
+						region(x0, y + sy, x0 + sw_, y + sy + M(26), { press = function() bt[2](); pick.hex = nil; MESSAGEMAN:Broadcast("TWLayoutSelected") end })
+					end
+				end
 			elseif r.kind == "part" then
 				local name = r.name
 				local it = TW.layoutItems[name]
@@ -1450,6 +1785,32 @@ function TW.customizeEditor()
 		panel.overflow = overflow
 	end
 
+	-- the Colours tab's keys: the hex field being typed into, Ctrl+Z
+	panel.keys = function(event)
+		local b = event.DeviceInput.button
+		if hexEdit ~= nil and event.type ~= "InputEventType_Release" and not b:find("mouse") then
+			local ch = (event.char or ""):lower()
+			if b == "DeviceButton_escape" then hexEdit = nil
+			elseif b == "DeviceButton_enter" or b == "DeviceButton_KP enter" then
+				local t = hexEdit
+				hexEdit = nil
+				if #t == 6 or #t == 8 then
+					local r, g, bb, a = TW.hexToRGBA("#" .. t)
+					if r then setRGBA(r, g, bb, a) end
+				else SCREENMAN:SystemMessage("Type six or eight hex digits: RRGGBB or RRGGBBAA") end
+			elseif b == "DeviceButton_backspace" then hexEdit = hexEdit:sub(1, -2)
+			elseif ch:match("^[0-9a-f]$") and #hexEdit < 8 then hexEdit = hexEdit .. ch
+			end
+			MESSAGEMAN:Broadcast("TWLayoutSelected")
+			return true
+		end
+		if event.type ~= "InputEventType_Release" and b == "DeviceButton_z" and INPUTFILTER:IsControlPressed() and tab == "colours" then
+			TW.undoSkinColour(); pick.hex = nil; MESSAGEMAN:Broadcast("TWLayoutSelected")
+			return true
+		end
+		return false
+	end
+
 	-- the mouse on the panel (screen coordinates in, panel coordinates for the regions)
 	local function find(mx, my, field)
 		local lx = mx - panel.x
@@ -1470,7 +1831,7 @@ function TW.customizeEditor()
 				MESSAGEMAN:Broadcast("TWLayoutSelected")
 			end
 		elseif held and held.move then
-			panel.held = function(mx2) held.move(mx2) end
+			panel.held = function(mx2, my2) held.move(mx2, my2) end
 		end
 		MESSAGEMAN:Broadcast("TWLayoutSelected")
 	end

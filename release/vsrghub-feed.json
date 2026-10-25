@@ -1,16 +1,21 @@
 {
  "about": "VSRG Hub update feed: the newest version and what is new. Read by the VSRG Hub launcher.",
- "version": "1.8.21",
- "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.21.zip",
- "sha256": "82bd28ad5c1c937bb3853b474e43a9870f3a007e7ee6cca55a24409392259595",
- "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now.",
+ "version": "1.8.22",
+ "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.22.zip",
+ "sha256": "0dfcc423bfd04c90ebf4e3f0c73461d98720267f3bfd0b5a202e3559e14c425d",
+ "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export.",
  "latest": {
-  "version": "1.8.21",
-  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.21.zip",
-  "sha256": "82bd28ad5c1c937bb3853b474e43a9870f3a007e7ee6cca55a24409392259595",
-  "notes": "- The long-note ends 1.8.20 fixed were still the old ones for anyone who had run 1.8.19: the split was kept from last time. It is redone now."
+  "version": "1.8.22",
+  "url": "https://raw.githubusercontent.com/Naidez7/vsrghub/main/release/VSRGHub-1.8.22.zip",
+  "sha256": "0dfcc423bfd04c90ebf4e3f0c73461d98720267f3bfd0b5a202e3559e14c425d",
+  "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export."
  },
  "changelog": [
+  {
+   "version": "1.8.22",
+   "date": "2026-10-25",
+   "notes": "- **Colours in Customize gameplay**: a new Colours tab. Any part of the noteskin in a colour of yours: notes (all, or column by column), LN heads, bodies and ends, receptors (and pressed), the stage background, the stage hint, hit and hold lighting, mines. A full picker: a saturation / value square, a hue strip, an alpha strip, R / G / B / A sliders, a hex field to type into, and a palette of stock and recent colours. Undo (or Ctrl+Z) steps back one change at a time; \"Skin's own\" puts the skin's art back for that part alone; Reset this tab clears them all.\n- The part is drawn from a grey copy of its art tinted in your colour, so a purple note asked for in red comes out red, not brown. The launcher makes those copies in the background the first time it starts after this update (a few seconds; until a copy exists the original is tinted instead).\n- Colours are kept per noteskin and key mode, and go with the skin settings you export."
+  },
   {
    "version": "1.8.21",
    "date": "2026-10-24",

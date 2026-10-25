@@ -67,7 +67,7 @@ t[#t + 1] = Def.ActorFrame {
 	OnCommand = function(self)
 		local s = layout()
 		if not s then return end
-		self:GetChild("Black"):x(s.cx):zoomto(s.width, SCREEN_HEIGHT)
+		self:GetChild("Black"):x(s.cx):zoomto(s.width, SCREEN_HEIGHT):playcommand("Colour")
 		self:GetChild("L"):x(s.left)
 		self:GetChild("R"):x(s.right)
 		-- a Quaver skin's notes: its own stage borders, as tall as the screen at their own width
@@ -85,7 +85,13 @@ t[#t + 1] = Def.ActorFrame {
 			end
 		end
 	end,
-	Def.Quad { Name = "Black", InitCommand = function(self) self:valign(0):zoomto(0, SCREEN_HEIGHT):diffuse(color("#000000")) end },
+	-- (Customize gameplay's Stage background colour; the skin's black otherwise)
+	Def.Quad { Name = "Black", InitCommand = function(self) self:valign(0):zoomto(0, SCREEN_HEIGHT):diffuse(color("#000000")) end,
+		ColourCommand = function(self)
+			local r, g, b, a = TW.skinColour and TW.skinColour("stage")
+			if r then self:diffuse(color(r, g, b, a)) else self:diffuse(color("#000000")) end
+		end,
+		TWLayoutChangedMessageCommand = function(self) self:playcommand("Colour") end },
 	-- osu! stretches the stage art to the screen's height and keeps its width at the skin's scale
 	TW.sprite("stage_left", function(self) self:align(1, 0):zoomx(TW.scale("stage_left")):zoomy(SCREEN_HEIGHT / self:GetHeight()) end) .. { Name = "L" },
 	TW.sprite("stage_right", function(self) self:align(0, 0):zoomx(TW.scale("stage_right")):zoomy(SCREEN_HEIGHT / self:GetHeight()) end) .. { Name = "R" },
